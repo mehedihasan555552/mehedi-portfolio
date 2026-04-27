@@ -3,6 +3,7 @@ import { useCallback, memo } from 'react'
 import Image from 'next/image'
 import SocialIcon from './SocialIcon'
 import { useTypewriter } from '@/hooks/useTypewriter'
+import me from '../../images/1.jpg'
 
 const ROLES = ['Full-Stack Developer', 'AI/ML Engineer', 'LLM Architect', 'Python Expert', 'Backend Craftsman']
 
@@ -115,12 +116,7 @@ export default function Hero() {
            */}
           <div className="order-2 lg:order-1 animate-fade-in-up">
 
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-card text-sm mb-8 shadow-sm">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="dark:text-white/70 text-[#3b3860] font-semibold">
-                Available for new opportunities
-              </span>
-            </div>
+            
 
             <div className="mb-6 space-y-1">
               <p
@@ -232,18 +228,20 @@ export default function Hero() {
               />
               <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-[--border] shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=480&q=80&auto=format"
+                  src={me}
                   alt="Mehedi Hasan — Full-Stack & AI Engineer"
                   fill
                   priority
                   fetchPriority="high"
-                  className="object-cover"
+                  quality={100}
+                  className="object-cover [image-rendering:-webkit-optimize-contrast]"
                   sizes="(max-width:640px) 256px,(max-width:1280px) 320px,384px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" aria-hidden="true" />
+                {/* Reduced overlay opacity from /25 → /10 for better clarity */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" aria-hidden="true" />
               </div>
 
-              {(['🐍', '🤖', '⚛️', '🔥'] as const).map((emoji, i) => (
+              {(['💻', '🤖', '⚛️', '🔥'] as const).map((emoji, i) => (
                 <div
                   key={i}
                   className="absolute w-10 h-10 rounded-full glass-card flex items-center justify-center text-lg shadow-xl animate-float"

@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback, memo } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import SocialIcon from './SocialIcon'
+import Link from 'next/link'
+
 
 const NAV_ITEMS = [
   { label: 'About', id: 'about' },
@@ -94,9 +96,8 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
           {/* Logo */}
-          <a
-            href="#hero"
-            onClick={e => { e.preventDefault(); navTo('hero') }}
+          <Link
+            href="/"
             className="flex items-center gap-2.5 flex-shrink-0"
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#4f7fff] to-[#9b5de5] flex items-center justify-center text-sm font-bold text-white shadow-lg">
@@ -108,7 +109,7 @@ export default function Navbar() {
               </div>
               <div className="text-[10px] font-mono text-[--text-dim] tracking-widest uppercase">Full-Stack &amp; AI</div>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-1" role="list">

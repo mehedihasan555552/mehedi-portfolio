@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useReveal } from '@/hooks/useReveal'
+import swpu from '../../images/swpu.png'
 
 const EDUCATION = [
   { period:'2021–2024', degree:"Master's Degree", field:'Computer Science & Engineering', institution:'Southwest Petroleum University', desc:'Focused on ML, Deep Learning, and Advanced Algorithms. Thesis on NLP applications.', color:'#4f7fff' },
@@ -69,10 +70,10 @@ export default function Education() {
 
           {/* Certs */}
           <div className="reveal-right space-y-8">
-            <div className="relative h-52 rounded-3xl overflow-hidden">
+           <div className="relative h-52 rounded-3xl overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=700&q=75&auto=format"
-                alt="University campus"
+                src={swpu}
+                alt="Southwest Petroleum University campus"
                 fill
                 loading="lazy"
                 className="object-cover"

@@ -1,15 +1,69 @@
 'use client'
-import { useState, memo } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { useReveal } from '@/hooks/useReveal'
 
-const EXPERIENCES = [
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+type Experience = {
+  id: number
+  period: string
+  role: string
+  company: string
+  type: string
+  description: string
+  highlights: string[]
+  stack: string[]
+  color: string
+  colorBg: string
+  companyUrl?: string
+}
+
+const EXPERIENCES: Experience[] = [
+  {
+    id: 0,
+    period: 'Mar 2026 – Present',
+    role: 'Senior LLM Engineer',
+    company: 'MYai Robotics',
+    type: 'Full-time',
+    description:
+      'Working at the forefront of Human AI teammate development — building intelligent agents that augment workforce capabilities across industries. Contributing to advanced search engine applications that deliver clarity in authentication and amplify unfiltered insights to guide business strategies and inform public policy.',
+    highlights: [
+      'Engineering advanced LLM-powered agents that act as Human AI teammates across enterprise workflows',
+      'Building intelligent search engine applications for authentication clarity and business strategy insights',
+      'Designing multi-agent systems that amplify workforce capabilities and automate complex decision-making',
+      'Contributing to AI infrastructure powering public policy insight and real-time data intelligence',
+    ],
+    stack: ['LLMs', 'LangChain', 'LangGraph', 'RAG', 'FastAPI', 'Python', 'Vector DB', 'OpenAI'],
+    color: '#00e5ff',
+    colorBg: 'rgba(0,229,255,0.10)',
+    companyUrl: 'https://www.facebook.com/MYai-Robotics-1058509204012017/',
+  },
+  {
+    id: 5,
+    period: '2023 – Present',
+    role: 'CEO & Full-Stack Developer',
+    company: 'StyleBuzzBD',
+    type: 'Founder',
+    description:
+      'Founded and leading StyleBuzzBD as CEO while hands-on developing the full-stack platform. Overseeing product vision, team management, and technical architecture to build a thriving fashion-tech brand in Bangladesh.',
+    highlights: [
+      'Founded and scaled StyleBuzzBD from concept to a live fashion-tech platform',
+      'Architected and built the full-stack platform with React frontend and Django backend',
+      'Leading product strategy, brand direction, and business development as CEO',
+      'Managing a cross-functional team across design, development, and marketing',
+    ],
+    stack: ['React', 'Next.js', 'Django', 'PostgreSQL', 'Tailwind CSS', 'Python', 'Stripe'],
+    color: '#ff6b9d',
+    colorBg: 'rgba(255,107,157,0.10)',
+  },
   {
     id: 1,
     period: '2024 – Present',
     role: 'Python Backend & AI Developer',
     company: 'CodeMindsTech',
     type: 'Full-time',
-    description: 'Building intelligent backend systems with Python Django and integrating AI/ML models into production pipelines. Leading architecture decisions and deploying scalable, high-performance applications for enterprise clients.',
+    description:
+      'Building intelligent backend systems with Python Django and integrating AI/ML models into production pipelines. Leading architecture decisions and deploying scalable, high-performance applications for enterprise clients.',
     highlights: [
       'Designed AI-powered REST APIs serving 10K+ requests/day with sub-100ms response',
       'Integrated LLM models (GPT-4, Claude) into live web applications with streaming responses',
@@ -26,7 +80,8 @@ const EXPERIENCES = [
     role: 'Python Backend Developer',
     company: 'Automation Solutionz',
     type: 'Full-time',
-    description: 'Developed and maintained robust Python Django applications, REST APIs, and intelligent automation scripts. Collaborated closely with frontend teams to deliver complete, production-ready web solutions.',
+    description:
+      'Developed and maintained robust Python Django applications, REST APIs, and intelligent automation scripts. Collaborated closely with frontend teams to deliver complete, production-ready web solutions.',
     highlights: [
       'Built and maintained 15+ Django REST API applications across diverse industries',
       'Automated critical business workflows reducing manual processing time by 60%',
@@ -43,7 +98,8 @@ const EXPERIENCES = [
     role: 'Full-Stack Developer',
     company: 'DevHub Tech',
     type: 'Full-time',
-    description: 'Built complete web applications from design to deployment, handling both React frontend and Python Django backend. Delivered polished, responsive products in a fast-paced agile team environment.',
+    description:
+      'Built complete web applications from design to deployment, handling both React frontend and Python Django backend. Delivered polished, responsive products in a fast-paced agile team environment.',
     highlights: [
       'Delivered 8+ full-stack web applications end-to-end within tight deadlines',
       'Implemented pixel-perfect responsive UIs using React.js and Tailwind CSS',
@@ -60,7 +116,8 @@ const EXPERIENCES = [
     role: 'Freelance AI/ML Consultant',
     company: 'Freelancer.com',
     type: 'Freelance',
-    description: 'Providing expert AI/ML consulting and development services to international clients across 10+ countries. Building custom ML models, NLP solutions, computer vision systems, and intelligent web applications that deliver real business value.',
+    description:
+      'Providing expert AI/ML consulting and development services to international clients across 10+ countries. Building custom ML models, NLP solutions, computer vision systems, and intelligent web applications that deliver real business value.',
     highlights: [
       'Delivered 30+ successful freelance projects with 5-star ratings from global clients',
       'Built custom NLP pipelines for sentiment analysis, text classification & summarization',
@@ -73,7 +130,9 @@ const EXPERIENCES = [
   },
 ]
 
-const DetailPanel = memo(function DetailPanel({ exp }: { exp: typeof EXPERIENCES[0] }) {
+// ─── Detail Panel ─────────────────────────────────────────────────────────────
+
+const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
   return (
     <article
       className="rounded-3xl p-7 md:p-8 h-full border"
@@ -83,7 +142,10 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: typeof EXPERIENCES
       }}
     >
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-5 pb-5 border-b" style={{ borderColor: `${exp.color}20` }}>
+      <div
+        className="flex flex-wrap items-start justify-between gap-4 mb-5 pb-5 border-b"
+        style={{ borderColor: `${exp.color}20` }}
+      >
         <div>
           <h3
             className="text-2xl md:text-3xl font-black dark:text-white text-[#0e0c1f] leading-tight"
@@ -92,18 +154,41 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: typeof EXPERIENCES
             {exp.role}
           </h3>
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-xl font-bold" style={{ color: exp.color }}>@</span>
-            <span className="text-lg font-bold dark:text-white text-[#0e0c1f]">{exp.company}</span>
+            <span className="text-xl font-bold" style={{ color: exp.color }}>
+              @
+            </span>
+            {exp.companyUrl ? (
+              <a
+                href={exp.companyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg font-bold dark:text-white text-[#0e0c1f] hover:underline underline-offset-2 transition-colors"
+                style={{ color: exp.color }}
+              >
+                {exp.company}
+              </a>
+            ) : (
+              <span className="text-lg font-bold dark:text-white text-[#0e0c1f]">
+                {exp.company}
+              </span>
+            )}
           </div>
         </div>
+
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <span
             className="px-4 py-1.5 rounded-full text-sm font-bold"
-            style={{ background: `${exp.color}20`, color: exp.color, border: `1.5px solid ${exp.color}40` }}
+            style={{
+              background: `${exp.color}20`,
+              color: exp.color,
+              border: `1.5px solid ${exp.color}40`,
+            }}
           >
             {exp.type}
           </span>
-          <span className="text-sm font-mono font-semibold dark:text-white/60 text-[#3b3860]">{exp.period}</span>
+          <span className="text-sm font-mono font-semibold dark:text-white/60 text-[#3b3860]">
+            {exp.period}
+          </span>
         </div>
       </div>
 
@@ -130,7 +215,9 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: typeof EXPERIENCES
               >
                 {i + 1}
               </span>
-              <span className="text-base dark:text-white/75 text-[#1a1640] font-medium leading-snug">{h}</span>
+              <span className="text-base dark:text-white/75 text-[#1a1640] font-medium leading-snug">
+                {h}
+              </span>
             </li>
           ))}
         </ul>
@@ -163,9 +250,13 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: typeof EXPERIENCES
   )
 })
 
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function Experience() {
   const [active, setActive] = useState(0)
   const ref = useReveal()
+
+  const handleSelect = useCallback((i: number) => setActive(i), [])
 
   return (
     <section
@@ -175,7 +266,7 @@ export default function Experience() {
     >
       {/* Background glow */}
       <div
-        className="absolute top-1/2 right-0 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
+        className="absolute top-1/2 right-0 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none transition-colors duration-500"
         style={{ background: EXPERIENCES[active].color }}
         aria-hidden="true"
       />
@@ -183,16 +274,21 @@ export default function Experience() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         {/* Section header */}
         <div className="flex items-center gap-4 mb-6 reveal">
-          <span className="font-mono text-sm font-bold" style={{ color: 'var(--accent)' }}>02.</span>
+          <span className="font-mono text-sm font-bold" style={{ color: 'var(--accent)' }}>
+            02.
+          </span>
           <h2
             className="text-4xl md:text-5xl font-black dark:text-white text-[#0e0c1f]"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Professional{' '}
-            <em className="italic" style={{ color: 'var(--accent)' }}>Experience</em>
+            <em className="italic" style={{ color: 'var(--accent)' }}>
+              Experience
+            </em>
           </h2>
           <div className="flex-1 h-px dark:bg-white/10 bg-[#0e0c1f]/15" />
         </div>
+
         <p
           className="text-lg italic dark:text-white/50 text-[#3b3860] mb-14 reveal font-medium"
           style={{ fontFamily: 'var(--font-italic)' }}
@@ -205,13 +301,16 @@ export default function Experience() {
           <div className="lg:col-span-2 reveal-left">
             <div className="relative">
               {/* Timeline line */}
-              <div className="absolute left-5 top-6 bottom-6 w-0.5 dark:bg-white/10 bg-[#0e0c1f]/12" aria-hidden="true" />
+              <div
+                className="absolute left-5 top-6 bottom-6 w-0.5 dark:bg-white/10 bg-[#0e0c1f]/12"
+                aria-hidden="true"
+              />
 
               <div className="space-y-3">
                 {EXPERIENCES.map((e, i) => (
                   <button
                     key={e.id}
-                    onClick={() => setActive(i)}
+                    onClick={() => handleSelect(i)}
                     aria-pressed={active === i}
                     className={`w-full text-left p-4 pl-14 rounded-2xl border-2 transition-all duration-200 relative ${
                       active === i
@@ -220,10 +319,7 @@ export default function Experience() {
                     }`}
                     style={
                       active === i
-                        ? {
-                            background: `${e.colorBg}`,
-                            borderColor: `${e.color}50`,
-                          }
+                        ? { background: e.colorBg, borderColor: `${e.color}50` }
                         : {}
                     }
                   >
@@ -243,12 +339,20 @@ export default function Experience() {
                     {/* Text */}
                     <div
                       className={`text-base font-bold transition-colors ${
-                        active === i ? 'dark:text-white text-[#0e0c1f]' : 'dark:text-white/70 text-[#1a1640]'
+                        active === i
+                          ? 'dark:text-white text-[#0e0c1f]'
+                          : 'dark:text-white/70 text-[#1a1640]'
                       }`}
                     >
                       {e.role}
                     </div>
-                    <div className={`text-sm mt-0.5 font-semibold ${active === i ? 'dark:text-white/70 text-[#3b3860]' : 'dark:text-white/40 text-[#6b689a]'}`}>
+                    <div
+                      className={`text-sm mt-0.5 font-semibold ${
+                        active === i
+                          ? 'dark:text-white/70 text-[#3b3860]'
+                          : 'dark:text-white/40 text-[#6b689a]'
+                      }`}
+                    >
                       @ {e.company}
                     </div>
                     <div
