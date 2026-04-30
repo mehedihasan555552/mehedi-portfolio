@@ -24,15 +24,17 @@ export default function About() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-center">
+
           {/* Image */}
           <div className="reveal-left relative">
             <div className="relative h-[480px] rounded-3xl overflow-hidden shadow-2xl">
+              {/* Updated: AI/LLM-themed workspace image */}
               <Image
-                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=700&q=80&auto=format"
-                alt="Mehedi Hasan at work — coding environment"
+                src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=85&auto=format"
+                alt="Mehedi Hasan — AI and LLM engineering environment"
                 fill
                 className="object-cover"
-                sizes="(max-width:1024px) 100vw,50vw"
+                sizes="(max-width:1024px) 100vw, 50vw"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#080810]/55 via-transparent to-transparent" aria-hidden="true" />
@@ -42,9 +44,10 @@ export default function About() {
                 </p>
               </blockquote>
             </div>
-            {/* Stat card */}
+
+            {/* Stat card — updated: 3+ → 5+ */}
             <div className="absolute -top-5 -right-5 glass-card rounded-2xl p-5 shadow-2xl hidden sm:block">
-              <div className="text-3xl font-black gradient-text" style={{ fontFamily: 'var(--font-display)' }}>3+</div>
+              <div className="text-3xl font-black gradient-text" style={{ fontFamily: 'var(--font-display)' }}>5+</div>
               <div className="text-sm text-[--text-muted] font-medium">Years Experience</div>
               <div className="mt-2 flex -space-x-1.5" aria-hidden="true">
                 {['🐍','🤖','⚛️'].map((e, i) => (
@@ -52,11 +55,19 @@ export default function About() {
                 ))}
               </div>
             </div>
-            {/* Role badge */}
+
+            {/* Role badge — updated: Senior LLM Engineer @ MYai Robotics */}
             <div className="absolute -bottom-5 -left-5 glass-card rounded-2xl px-5 py-3 shadow-2xl hidden sm:block">
               <div className="text-xs text-[--text-dim] font-mono uppercase tracking-wider">Current Role</div>
-              <div className="font-bold dark:text-white text-[#1a1830] text-sm">Python Backend &amp; AI Dev</div>
-              <div className="text-xs text-[--accent]">@ CodeMindsTech</div>
+              <div className="font-bold dark:text-white text-[#1a1830] text-sm">Senior LLM Engineer</div>
+              <a
+                href="https://www.facebook.com/MYai-Robotics-1058509204012017/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[--accent] hover:underline underline-offset-2 transition-colors"
+              >
+                @ MYai Robotics
+              </a>
             </div>
           </div>
 
@@ -71,18 +82,28 @@ export default function About() {
               intelligent web applications and training advanced models in Machine Learning, Deep Learning, and NLP.
             </p>
             <p className="text-lg dark:text-white/75 text-[#1a1640] leading-relaxed font-medium">
-              With 3+ years of experience, I combine strong full-stack development with a passion for AI/ML,
-              delivering high-quality data-driven solutions for international clients.
+              With 5+ years of experience, I combine strong full-stack development with a passion for AI/ML,
+              delivering high-quality data-driven solutions for international clients. Currently engineering
+              advanced LLM-powered agents at{' '}
+              <a
+                href="https://www.facebook.com/MYai-Robotics-1058509204012017/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-[--accent] hover:underline underline-offset-2 transition-colors"
+              >
+                MYai Robotics
+              </a>
+              .
             </p>
             <blockquote className="text-xl italic dark:text-[#e8e6ff] text-[#1a1830] leading-relaxed" style={{ fontFamily: 'var(--font-italic)' }}>
               &ldquo;From concept to deployment — I manage the entire software development lifecycle with precision and efficiency.&rdquo;
             </blockquote>
             <div className="grid sm:grid-cols-2 gap-3 pt-2">
               {[
-                { icon: '✉️', label: 'Email', value: 'mehediswpu@gmail.com', href: 'mailto:mehediswpu@gmail.com' },
-                { icon: '📞', label: 'Phone', value: '+8801521-333362', href: 'tel:+8801521333362' },
-                { icon: '📍', label: 'Location', value: 'Savar, Dhaka, BD', href: null },
-                { icon: '🏢', label: 'Company', value: 'CEO, StyleBuzzBD', href: null },
+                { icon: '✉️', label: 'Email',    value: 'mehediswpu@gmail.com', href: 'mailto:mehediswpu@gmail.com' },
+                { icon: '📞', label: 'Phone',    value: '+8801521-333362',       href: 'tel:+8801521333362'         },
+                { icon: '📍', label: 'Location', value: 'Savar, Dhaka, BD',    href: null                         },
+                { icon: '🏢', label: 'Company',  value: 'CEO, StyleBuzzBD',     href: null                         },
               ].map(item => (
                 <div key={item.label} className="flex items-center gap-3 p-3 rounded-xl glass-card">
                   <span className="text-xl" aria-hidden="true">{item.icon}</span>

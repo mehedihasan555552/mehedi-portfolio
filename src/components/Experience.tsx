@@ -1,5 +1,5 @@
 'use client'
-import { useState, memo, useCallback } from 'react'
+import { useState, memo, useCallback, useEffect, useRef } from 'react'
 import { useReveal } from '@/hooks/useReveal'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ const EXPERIENCES: Experience[] = [
     id: 1,
     period: '2024 – Present',
     role: 'Python Backend & AI Developer',
-    company: 'CodeMindsTech',
+    company: 'SoftwareBari',
     type: 'Full-time',
     description:
       'Building intelligent backend systems with Python Django and integrating AI/ML models into production pipelines. Leading architecture decisions and deploying scalable, high-performance applications for enterprise clients.',
@@ -130,15 +130,25 @@ const EXPERIENCES: Experience[] = [
   },
 ]
 
-// ─── Detail Panel ─────────────────────────────────────────────────────────────
+// ─── Detail Panel with transition ────────────────────────────────────────────
 
-const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
+const DetailPanel = memo(function DetailPanel({
+  exp,
+  visible,
+}: {
+  exp: Experience
+  visible: boolean
+}) {
   return (
     <article
       className="rounded-3xl p-7 md:p-8 h-full border"
       style={{
         background: exp.colorBg,
         borderColor: `${exp.color}30`,
+        // Fade + slide-up transition
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(16px)',
+        transition: 'opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1)',
       }}
     >
       {/* Header */}
@@ -154,9 +164,7 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
             {exp.role}
           </h3>
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-xl font-bold" style={{ color: exp.color }}>
-              @
-            </span>
+            <span className="text-xl font-bold" style={{ color: exp.color }}>@</span>
             {exp.companyUrl ? (
               <a
                 href={exp.companyUrl}
@@ -168,9 +176,7 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
                 {exp.company}
               </a>
             ) : (
-              <span className="text-lg font-bold dark:text-white text-[#0e0c1f]">
-                {exp.company}
-              </span>
+              <span className="text-lg font-bold dark:text-white text-[#0e0c1f]">{exp.company}</span>
             )}
           </div>
         </div>
@@ -197,7 +203,7 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
         {exp.description}
       </p>
 
-      {/* Highlights */}
+      {/* Highlights — staggered entrance */}
       <div className="mb-6">
         <h4
           className="text-xs font-mono font-bold uppercase tracking-widest mb-4"
@@ -207,7 +213,16 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
         </h4>
         <ul className="space-y-3">
           {exp.highlights.map((h, i) => (
-            <li key={i} className="flex items-start gap-3">
+            <li
+              key={i}
+              className="flex items-start gap-3"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateX(0)' : 'translateX(-12px)',
+                transition: `opacity 0.4s cubic-bezier(0.16,1,0.3,1) ${0.1 + i * 0.07}s,
+                             transform 0.4s cubic-bezier(0.16,1,0.3,1) ${0.1 + i * 0.07}s`,
+              }}
+            >
               <span
                 className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-white shadow-sm"
                 style={{ background: exp.color }}
@@ -223,7 +238,7 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
         </ul>
       </div>
 
-      {/* Stack */}
+      {/* Stack — staggered entrance */}
       <div>
         <h4
           className="text-xs font-mono font-bold uppercase tracking-widest mb-3"
@@ -232,13 +247,17 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
           ✦ Tech Stack
         </h4>
         <div className="flex flex-wrap gap-2">
-          {exp.stack.map(tech => (
+          {exp.stack.map((tech, i) => (
             <span
               key={tech}
               className="px-3 py-1.5 rounded-lg text-sm font-mono font-semibold dark:text-white text-[#0e0c1f]"
               style={{
                 background: `${exp.color}15`,
                 border: `1px solid ${exp.color}30`,
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'scale(1)' : 'scale(0.85)',
+                transition: `opacity 0.35s cubic-bezier(0.16,1,0.3,1) ${0.25 + i * 0.04}s,
+                             transform 0.35s cubic-bezier(0.16,1,0.3,1) ${0.25 + i * 0.04}s`,
               }}
             >
               {tech}
@@ -253,10 +272,25 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function Experience() {
-  const [active, setActive] = useState(0)
+  const [active, setActive]     = useState(0)
+  const [visible, setVisible]   = useState(true)
+  const [displayed, setDisplayed] = useState(0)   // the exp currently rendered
   const ref = useReveal()
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const handleSelect = useCallback((i: number) => setActive(i), [])
+  // When active changes: fade out → swap content → fade in
+  const handleSelect = useCallback((i: number) => {
+    if (i === active) return
+    setVisible(false)
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      setDisplayed(i)
+      setActive(i)
+      setVisible(true)
+    }, 220)            // matches fade-out duration
+  }, [active])
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   return (
     <section
@@ -264,10 +298,23 @@ export default function Experience() {
       ref={ref as React.RefObject<HTMLDivElement>}
       className="py-28 relative overflow-hidden"
     >
-      {/* Background glow */}
+      {/* Background glow — smoothly colour-transitions */}
       <div
-        className="absolute top-1/2 right-0 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none transition-colors duration-500"
-        style={{ background: EXPERIENCES[active].color }}
+        className="absolute top-1/2 right-0 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
+        style={{
+          background: EXPERIENCES[active].color,
+          transition: 'background 0.6s cubic-bezier(0.16,1,0.3,1)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Second ambient glow on the left for depth */}
+      <div
+        className="absolute bottom-1/4 left-0 w-64 h-64 rounded-full opacity-[0.04] blur-3xl pointer-events-none"
+        style={{
+          background: EXPERIENCES[active].color,
+          transition: 'background 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s',
+        }}
         aria-hidden="true"
       />
 
@@ -297,12 +344,25 @@ export default function Experience() {
         </p>
 
         <div className="grid lg:grid-cols-5 gap-8">
+
           {/* ── Sidebar tabs ── */}
           <div className="lg:col-span-2 reveal-left">
             <div className="relative">
-              {/* Timeline line */}
+              {/* Timeline line — animated fill */}
               <div
                 className="absolute left-5 top-6 bottom-6 w-0.5 dark:bg-white/10 bg-[#0e0c1f]/12"
+                aria-hidden="true"
+              />
+              {/* Active progress indicator that slides down */}
+              <div
+                className="absolute left-5 w-0.5 rounded-full pointer-events-none"
+                style={{
+                  top: `calc(${active / EXPERIENCES.length * 100}% + 24px)`,
+                  height: `${100 / EXPERIENCES.length}%`,
+                  background: EXPERIENCES[active].color,
+                  boxShadow: `0 0 8px ${EXPERIENCES[active].color}80`,
+                  transition: 'top 0.35s cubic-bezier(0.16,1,0.3,1), background 0.35s, box-shadow 0.35s',
+                }}
                 aria-hidden="true"
               />
 
@@ -312,7 +372,7 @@ export default function Experience() {
                     key={e.id}
                     onClick={() => handleSelect(i)}
                     aria-pressed={active === i}
-                    className={`w-full text-left p-4 pl-14 rounded-2xl border-2 transition-all duration-200 relative ${
+                    className={`w-full text-left p-4 pl-14 rounded-2xl border-2 transition-all duration-200 relative group ${
                       active === i
                         ? 'shadow-lg dark:shadow-black/30'
                         : 'border-transparent dark:hover:bg-white/5 hover:bg-[#0e0c1f]/5'
@@ -323,22 +383,30 @@ export default function Experience() {
                         : {}
                     }
                   >
-                    {/* Timeline dot */}
+                    {/* Timeline dot — pulses when active */}
                     <div
-                      className={`absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full border-2 transition-all duration-200 ${
-                        active === i ? 'w-6 h-6' : 'w-5 h-5'
+                      className={`absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${
+                        active === i ? 'w-6 h-6' : 'w-5 h-5 group-hover:scale-110'
                       }`}
                       style={{
                         background: e.color,
                         borderColor: active === i ? 'transparent' : 'var(--bg)',
-                        boxShadow: active === i ? `0 0 12px ${e.color}70` : 'none',
+                        boxShadow: active === i ? `0 0 14px ${e.color}80` : 'none',
                       }}
                       aria-hidden="true"
                     />
+                    {/* Ping ring when active */}
+                    {active === i && (
+                      <span
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full animate-ping opacity-30 pointer-events-none"
+                        style={{ background: e.color }}
+                        aria-hidden="true"
+                      />
+                    )}
 
                     {/* Text */}
                     <div
-                      className={`text-base font-bold transition-colors ${
+                      className={`text-base font-bold transition-colors duration-200 ${
                         active === i
                           ? 'dark:text-white text-[#0e0c1f]'
                           : 'dark:text-white/70 text-[#1a1640]'
@@ -347,7 +415,7 @@ export default function Experience() {
                       {e.role}
                     </div>
                     <div
-                      className={`text-sm mt-0.5 font-semibold ${
+                      className={`text-sm mt-0.5 font-semibold transition-colors duration-200 ${
                         active === i
                           ? 'dark:text-white/70 text-[#3b3860]'
                           : 'dark:text-white/40 text-[#6b689a]'
@@ -356,7 +424,7 @@ export default function Experience() {
                       @ {e.company}
                     </div>
                     <div
-                      className="text-xs font-mono font-bold mt-1.5"
+                      className="text-xs font-mono font-bold mt-1.5 transition-colors duration-200"
                       style={{ color: active === i ? e.color : `${e.color}80` }}
                     >
                       {e.period}
@@ -369,8 +437,9 @@ export default function Experience() {
 
           {/* ── Detail panel ── */}
           <div className="lg:col-span-3 reveal-right">
-            <DetailPanel exp={EXPERIENCES[active]} />
+            <DetailPanel exp={EXPERIENCES[displayed]} visible={visible} />
           </div>
+
         </div>
       </div>
     </section>

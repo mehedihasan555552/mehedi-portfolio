@@ -1,5 +1,5 @@
 'use client'
-import { useState, memo } from 'react'
+import { useState, memo, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { projects } from '@/data/projects'
@@ -14,15 +14,27 @@ const GitHubIcon = () => (
 )
 
 const ProjectCard = memo(function ProjectCard({
-  project, delay,
+  project,
+  delay,
 }: {
   project: typeof projects[0]
   delay: number
 }) {
   return (
     <article
-      className={`reveal group glass-card glass-card-hover rounded-3xl overflow-hidden flex flex-col d${Math.min(delay + 1, 6)}`}
+      className={`reveal group glass-card glass-card-hover rounded-3xl overflow-hidden flex flex-col d${Math.min(delay + 1, 6)} relative`}
     >
+      {/*
+       * Full-card link — covers the entire card via absolute inset.
+       * GitHub / Live buttons sit above it with relative + z-10.
+       */}
+      <Link
+        href={`/projects/${project.id}`}
+        className="absolute inset-0 z-0 rounded-3xl focus-visible:ring-2 focus-visible:ring-[--accent] focus-visible:outline-none"
+        aria-label={`View details for ${project.title}`}
+        prefetch   // ← prefetch on hover for instant navigation
+      />
+
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <Image
@@ -41,13 +53,22 @@ const ProjectCard = memo(function ProjectCard({
           {project.year}
         </span>
       </div>
+
       {/* Body */}
       <div className="p-6 flex flex-col flex-1">
-        <h3 className="text-xl font-bold dark:text-white text-[#1a1830] mb-1 group-hover:text-[--accent] transition-colors leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
+        <h3
+          className="text-xl font-bold dark:text-white text-[#1a1830] mb-1 group-hover:text-[--accent] transition-colors leading-tight"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
           {project.title}
         </h3>
-        <p className="text-sm italic text-[--accent] mb-3" style={{ fontFamily: 'var(--font-italic)' }}>{project.tagline}</p>
-        <p className="text-sm dark:text-white/70 text-[#1a1640] leading-relaxed mb-4 flex-1 line-clamp-2 font-medium">{project.description}</p>
+        <p className="text-sm italic text-[--accent] mb-3" style={{ fontFamily: 'var(--font-italic)' }}>
+          {project.tagline}
+        </p>
+        <p className="text-sm dark:text-white/70 text-[#1a1640] leading-relaxed mb-4 flex-1 line-clamp-2 font-medium">
+          {project.description}
+        </p>
+
         {/* Stats */}
         <div className="grid grid-cols-2 gap-2 mb-4">
           {project.stats.slice(0, 2).map(s => (
@@ -57,10 +78,16 @@ const ProjectCard = memo(function ProjectCard({
             </div>
           ))}
         </div>
+
         {/* Tech pills */}
         <div className="flex flex-wrap gap-1.5 mb-5">
           {project.tech.slice(0, 4).map(t => (
-            <span key={t} className="px-2.5 py-1 rounded-lg dark:bg-[#0f0f1a] bg-[#f0eeff] text-xs font-mono text-[--text-muted] border border-[--border]">{t}</span>
+            <span
+              key={t}
+              className="px-2.5 py-1 rounded-lg dark:bg-[#0f0f1a] bg-[#f0eeff] text-xs font-mono text-[--text-muted] border border-[--border]"
+            >
+              {t}
+            </span>
           ))}
           {project.tech.length > 4 && (
             <span className="px-2.5 py-1 rounded-lg dark:bg-[#0f0f1a] bg-[#f0eeff] text-xs font-mono text-[--text-dim] border border-[--border]">
@@ -68,24 +95,38 @@ const ProjectCard = memo(function ProjectCard({
             </span>
           )}
         </div>
+
         {/* Actions */}
-        <div className="flex items-center gap-3 pt-4 border-t border-[--border]">
-          <Link
-            href={`/projects/${project.id}`}
-            className="flex-1 py-2.5 text-center text-sm font-semibold bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] text-white rounded-xl transition-[transform,box-shadow] duration-200 hover:shadow-lg hover:shadow-[#4f7fff]/25 hover:-translate-y-0.5"
-            prefetch={false}
-          >
+        <div className="relative z-10 flex items-center gap-3 pt-4 border-t border-[--border]">
+          {/* Visual CTA — not a link (the whole card already is) */}
+          <div className="flex-1 py-2.5 text-center text-sm font-semibold bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] text-white rounded-xl group-hover:shadow-lg group-hover:shadow-[#4f7fff]/25 group-hover:-translate-y-0.5 transition-[transform,box-shadow] duration-200 pointer-events-none select-none">
             View Details →
-          </Link>
-          <a href={project.github} target="_blank" rel="noopener noreferrer"
+          </div>
+
+          {/* GitHub — stops click propagating to the card link */}
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label={`${project.title} source code on GitHub`}
-            className="w-10 h-10 glass-card rounded-xl flex items-center justify-center text-[--text-muted] hover:text-white hover:border-[--border] transition-colors">
+            onClick={e => e.stopPropagation()}
+            className="relative z-10 w-10 h-10 glass-card rounded-xl flex items-center justify-center text-[--text-muted] hover:text-white hover:border-[--border] transition-colors"
+          >
             <GitHubIcon />
           </a>
-          <a href={project.live} target="_blank" rel="noopener noreferrer"
+
+          {/* Live demo — stops click propagating to the card link */}
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label={`${project.title} live demo`}
-            className="w-10 h-10 glass-card rounded-xl flex items-center justify-center text-[--text-muted] hover:text-[--accent] transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            onClick={e => e.stopPropagation()}
+            className="relative z-10 w-10 h-10 glass-card rounded-xl flex items-center justify-center text-[--text-muted] hover:text-[--accent] transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
           </a>
         </div>
       </div>
@@ -93,34 +134,87 @@ const ProjectCard = memo(function ProjectCard({
   )
 })
 
+// ─── Grid wrapper ─────────────────────────────────────────────────────────────
+
+function ProjectGrid({ filtered }: { filtered: typeof projects }) {
+  const gridRef = useReveal(0.05)
+  return (
+    <div
+      ref={gridRef as React.RefObject<HTMLDivElement>}
+      className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {filtered.map((p, i) => (
+        <ProjectCard key={p.id} project={p} delay={i % 6} />
+      ))}
+    </div>
+  )
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function Projects() {
-  const [filter, setFilter] = useState('All')
+  const [filter,       setFilter]       = useState('All')
+  const [visible,      setVisible]      = useState(true)
+  const [activeFilter, setActiveFilter] = useState('All')
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const ref = useReveal(0.05)
 
-  const filtered = filter === 'All' ? projects : projects.filter(p => p.category === filter)
+  const handleFilter = useCallback((f: string) => {
+    if (f === filter) return
+    setFilter(f)
+    setVisible(false)
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      setActiveFilter(f)
+      setVisible(true)
+    }, 200)
+  }, [filter])
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
+
+  const filtered = activeFilter === 'All'
+    ? projects
+    : projects.filter(p => p.category === activeFilter)
 
   return (
-    <section id="projects" ref={ref as React.RefObject<HTMLDivElement>} className="py-28 relative overflow-hidden">
+    <section
+      id="projects"
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className="py-28 relative overflow-hidden"
+    >
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-[0.04] bg-[#4f7fff] blur-3xl pointer-events-none" aria-hidden="true" />
+
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
+
         <div className="flex items-center gap-4 mb-6 reveal">
           <span className="font-mono text-sm text-[--accent]">04.</span>
-          <h2 className="text-4xl md:text-5xl font-black dark:text-white text-[#1a1830]" style={{ fontFamily: 'var(--font-display)' }}>
+          <h2
+            className="text-4xl md:text-5xl font-black dark:text-white text-[#1a1830]"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
             Featured <em className="italic text-[--accent]">Projects</em>
           </h2>
           <div className="flex-1 h-px bg-[--border]" />
         </div>
-        <p className="text-lg italic dark:text-white/55 text-[#3b3860] font-semibold mb-10 reveal" style={{ fontFamily: 'var(--font-italic)' }}>
+
+        <p
+          className="text-lg italic dark:text-white/55 text-[#3b3860] font-semibold mb-10 reveal"
+          style={{ fontFamily: 'var(--font-italic)' }}
+        >
           Showcasing innovative solutions built with cutting-edge technologies
         </p>
 
         {/* Filter tabs */}
         <div className="flex flex-wrap gap-2 mb-12 reveal" role="tablist" aria-label="Filter projects by category">
           {FILTERS.map(f => (
-            <button key={f} role="tab" aria-selected={filter === f} onClick={() => setFilter(f)}
-              className={`px-5 py-2.5 rounded-xl text-base font-semibold transition-[background,box-shadow,transform] duration-200 ${
+            <button
+              key={f}
+              role="tab"
+              aria-selected={filter === f}
+              onClick={() => handleFilter(f)}
+              className={`px-5 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 ${
                 filter === f
-                  ? 'bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] text-white shadow-lg shadow-[#4f7fff]/20'
+                  ? 'bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] text-white shadow-lg shadow-[#4f7fff]/20 scale-[1.04]'
                   : 'glass-card glass-card-hover text-[--text-muted] hover:text-[--text]'
               }`}
             >
@@ -129,17 +223,37 @@ export default function Projects() {
           ))}
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((p, i) => <ProjectCard key={p.id} project={p} delay={i % 6} />)}
+        <div
+          style={{
+            opacity:    visible ? 1 : 0,
+            transform:  visible ? 'translateY(0)' : 'translateY(10px)',
+            transition: 'opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1)',
+          }}
+        >
+          <ProjectGrid key={activeFilter} filtered={filtered} />
         </div>
 
-        <div className="text-center mt-14 reveal">
-          <a href="https://github.com/mehedihasan555552" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 glass-card glass-card-hover rounded-2xl text-base font-semibold text-[--text-muted] hover:text-[--text]">
+        <p className="text-center mt-6 text-sm font-mono text-[--text-dim]">
+          Showing{' '}
+          <span className="text-[--accent] font-bold">{filtered.length}</span>{' '}
+          {filtered.length === 1 ? 'project' : 'projects'}
+          {activeFilter !== 'All' && (
+            <> in <span className="text-[--accent] font-bold">{activeFilter}</span></>
+          )}
+        </p>
+
+        <div className="text-center mt-10 reveal">
+          <a
+            href="https://github.com/mehedihasan555552"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-8 py-4 glass-card glass-card-hover rounded-2xl text-base font-semibold text-[--text-muted] hover:text-[--text]"
+          >
             <GitHubIcon />
             View all repositories on GitHub ↗
           </a>
         </div>
+
       </div>
     </section>
   )
