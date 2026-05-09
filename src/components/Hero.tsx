@@ -3,7 +3,7 @@ import { useCallback, memo, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import SocialIcon from './SocialIcon'
 import { useTypewriter } from '@/hooks/useTypewriter'
-import me from '../../images/1.jpg'
+import me from '../../images/professional-mehedi.png'
 
 /* ─── Constants ─────────────────────────────────────────────── */
 const ROLES = [

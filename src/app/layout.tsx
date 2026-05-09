@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       { url: '/favicon.svg',  type: 'image/svg+xml' },
     ],
     apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
-    other: [{ rel: 'mask-icon', url: '/favicon.svg', color: '#4f7fff' }],
+    other: [{ rel: 'mask-icon', url: '/favicon.svg', color: '#6c8fff' }],
   },
   openGraph: {
     type: 'website',
@@ -94,26 +94,22 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: dark)',  color: '#080810' },
-    { media: '(prefers-color-scheme: light)', color: '#f5f4ff' },
-  ],
+  // Always use dark theme color since we default to dark
+  themeColor: '#080810',
   width: 'device-width',
   initialScale: 1,
 }
 
 /**
- * This script runs synchronously before React hydrates.
- * It reads localStorage / system preference and sets the correct
- * class on <html> so the server-rendered markup never mismatches.
- * Because it is inline and blocking it causes zero flash.
+ * Runs synchronously before React hydrates.
+ * Defaults to DARK if no preference is saved — ignores system preference.
+ * Saved preference ('light' or 'dark') is always respected on return visits.
  */
 const themeScript = `
 (function(){
   try {
     var saved = localStorage.getItem('theme');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var theme = saved === 'light' ? 'light' : saved === 'dark' ? 'dark' : prefersDark ? 'dark' : 'light';
+    var theme = saved === 'light' ? 'light' : 'dark';
     if (theme === 'light') {
       document.documentElement.classList.remove('dark');
     } else {
@@ -132,12 +128,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   ].join(' ')
 
   return (
-    /*
-     * suppressHydrationWarning on <html> is intentional:
-     * the inline script above may change the 'class' attribute
-     * between server render and client hydration.
-     * This tells React to ignore that specific attribute mismatch.
-     */
     <html
       lang="en"
       className={`dark scroll-smooth ${fontVars}`}
