@@ -1,37 +1,14 @@
 import type { Metadata, Viewport } from 'next'
-import {
-  Playfair_Display,
-  DM_Sans,
-  Cormorant_Garamond,
-  JetBrains_Mono,
-} from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/context/ThemeContext'
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '900'],
-  style: ['normal', 'italic'],
-  variable: '--font-playfair',
-  display: 'swap',
-})
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-dm-sans',
-  display: 'swap',
-})
-
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-cormorant',
-  display: 'swap',
-})
-
+// Single font family for the whole terminal-mono theme — everything in
+// globals.css (--font-display / --font-body / --font-italic / --font-mono)
+// resolves to this. Previously three more Google Font families (Playfair
+// Display, DM Sans, Cormorant Garamond) were loaded here but never
+// referenced anywhere, so Next.js was preloading ~24 unused font-file
+// variants on every page load.
 const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
@@ -120,17 +97,10 @@ const themeScript = `
 `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const fontVars = [
-    playfair.variable,
-    dmSans.variable,
-    cormorant.variable,
-    jetbrains.variable,
-  ].join(' ')
-
   return (
     <html
       lang="en"
-      className={`dark scroll-smooth ${fontVars}`}
+      className={`dark scroll-smooth ${jetbrains.variable}`}
       suppressHydrationWarning
     >
       <head>

@@ -11,9 +11,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display:  ['var(--font-playfair)', 'Georgia', 'serif'],
-        body:     ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
-        italic:   ['var(--font-cormorant)', 'Georgia', 'serif'],
+        display:  ['var(--font-jetbrains)', 'monospace'],
+        body:     ['var(--font-jetbrains)', 'monospace'],
+        italic:   ['var(--font-jetbrains)', 'monospace'],
         mono:     ['var(--font-jetbrains)', 'monospace'],
       },
     },

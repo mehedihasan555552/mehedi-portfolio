@@ -199,14 +199,6 @@ export default function Skills() {
 
   return (
     <>
-      {/* Shimmer keyframe — injected once */}
-      <style>{`
-        @keyframes shimmer-sweep {
-          0%   { transform: translateX(-100%) }
-          100% { transform: translateX(400%)  }
-        }
-      `}</style>
-
       <section
         id="skills"
         ref={ref as React.RefObject<HTMLDivElement>}

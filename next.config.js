@@ -3,6 +3,9 @@ const nextConfig = {
   // Strict mode catches extra re-renders in dev
   reactStrictMode: true,
 
+  // Don't leak the framework via the X-Powered-By response header
+  poweredByHeader: false,
+
   // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

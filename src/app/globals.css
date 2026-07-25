@@ -6,7 +6,7 @@
 /* ─── CSS Custom Properties ─── */
 :root {
   /* Fonts */
-  --font-display: var(--font-space-mono), 'Space Mono', monospace;
+  --font-display: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --font-body: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --font-italic: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
@@ -249,6 +249,7 @@ body::after {
 @keyframes glowPulse  { 0%,100%{opacity:0.3} 50%{opacity:0.6} }
 @keyframes bounceGentle { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 @keyframes scanline   { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+@keyframes shimmer-sweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(400%)} }
 
 .animate-float       { animation: float 7s ease-in-out infinite; }
 .animate-float-b     { animation: floatB 6s ease-in-out infinite; }
