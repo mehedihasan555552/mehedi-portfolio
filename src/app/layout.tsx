@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
-import Script from 'next/script'
 import './globals.css'
 import { ThemeProvider } from '@/context/ThemeContext'
 
@@ -44,40 +43,13 @@ export const metadata: Metadata = {
 
   icons: {
     icon: [
-      {
-        url: '/favicon.ico',
-        sizes: '48x48',
-        type: 'image/x-icon',
-      },
-      {
-        url: '/icon-32.png',
-        sizes: '32x32',
-        type: 'image/png',
-      },
-      {
-        url: '/icon-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-      {
-        url: '/icon.png',
-        sizes: '512x512',
-        type: 'image/png',
-      },
-      {
-        url: '/favicon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon.png', sizes: '512x512', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
     ],
-
-    apple: [
-      {
-        url: '/apple-icon.png',
-        sizes: '180x180',
-        type: 'image/png',
-      },
-    ],
-
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
     other: [
       {
         rel: 'mask-icon',
@@ -94,7 +66,6 @@ export const metadata: Metadata = {
     title: 'Md Mehedi Hasan | Sr. Full-Stack & LLM Engineer',
     description: 'Building smart solutions with code & AI. Full-Stack · AI/ML · LLM.',
     siteName: 'Mehedi Hasan Portfolio',
-
     images: [
       {
         url: '/icon.png',
@@ -114,7 +85,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-
     googleBot: {
       index: true,
       follow: true,
@@ -136,12 +106,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-/**
- * Runs before React hydrates to avoid a light-theme flash.
- * The website defaults to dark mode unless "light" was saved previously.
- */
 const themeScript = `
-(function () {
+(function(){
   try {
     var saved = localStorage.getItem('theme');
     var theme = saved === 'light' ? 'light' : 'dark';
@@ -151,37 +117,29 @@ const themeScript = `
     } else {
       document.documentElement.classList.add('dark');
     }
-  } catch (e) {}
+  } catch(e){}
 })();
 `
 
-/**
- * Reb2b loader.
- * This dynamically injects:
- * https://ddwl4m2hdecbv.cloudfront.net/b/9NMMZHXX8YNW/9NMMZHXX8YNW.js.gz
- */
 const reb2bScript = `
 !function(key) {
   if (window.reb2b) return;
 
   window.reb2b = { loaded: true };
 
-  var script = document.createElement("script");
-  script.async = true;
-  script.src =
+  var s = document.createElement("script");
+  s.async = true;
+  s.src =
     "https://ddwl4m2hdecbv.cloudfront.net/b/" +
     key +
     "/" +
     key +
     ".js.gz";
 
-  var firstScript = document.getElementsByTagName("script")[0];
-
-  if (firstScript && firstScript.parentNode) {
-    firstScript.parentNode.insertBefore(script, firstScript);
-  } else {
-    document.head.appendChild(script);
-  }
+  document
+    .getElementsByTagName("script")[0]
+    .parentNode
+    .insertBefore(s, document.getElementsByTagName("script")[0]);
 }("9NMMZHXX8YNW");
 `
 
@@ -197,19 +155,15 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Runs immediately before the first browser paint */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+
+        {/* RB2B official tracking script */}
+        <script dangerouslySetInnerHTML={{ __html: reb2bScript }} />
       </head>
 
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
-
-        <Script
-          id="reb2b-loader"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: reb2bScript,
-          }}
-        />
       </body>
     </html>
   )
