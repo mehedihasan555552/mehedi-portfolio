@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/context/ThemeContext'
@@ -100,12 +100,6 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 }
 
-export const viewport: Viewport = {
-  themeColor: '#080810',
-  width: 'device-width',
-  initialScale: 1,
-}
-
 const themeScript = `
 (function(){
   try {
@@ -145,9 +139,9 @@ const reb2bScript = `
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html
       lang="en"
@@ -155,10 +149,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Runs immediately before the first browser paint */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-
-        {/* RB2B official tracking script */}
         <script dangerouslySetInnerHTML={{ __html: reb2bScript }} />
       </head>
 
