@@ -156,11 +156,10 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
 
-        <Script id="reb2b-snippet" strategy="afterInteractive">
+        <Script id="reb2b-snippet" strategy="beforeInteractive">
           {reb2bScript}
         </Script>
       </body>
     </html>
   )
 }
-
