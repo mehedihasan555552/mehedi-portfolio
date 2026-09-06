@@ -1,8 +1,7 @@
 'use client'
 import { useState, memo, useCallback, useEffect, useRef } from 'react'
 import { useReveal } from '@/hooks/useReveal'
-
-// ─── Data ────────────────────────────────────────────────────────────────────
+import SectionHeader from './SectionHeader'
 
 type Experience = {
   id: number
@@ -13,8 +12,8 @@ type Experience = {
   description: string
   highlights: string[]
   stack: string[]
-  color: string
-  colorBg: string
+  /** Index into the harmonised --c-1..--c-6 ramp, so nothing sits outside the palette. */
+  tone: string
   companyUrl?: string
 }
 
@@ -34,8 +33,7 @@ const EXPERIENCES: Experience[] = [
       'Contributing to AI infrastructure powering public policy insight and real-time data intelligence',
     ],
     stack: ['LLMs', 'LangChain', 'LangGraph', 'RAG', 'FastAPI', 'Python', 'Vector DB', 'OpenAI'],
-    color: '#00e5ff',
-    colorBg: 'rgba(0,229,255,0.10)',
+    tone: 'var(--c-1)',
     companyUrl: 'https://www.facebook.com/MYai-Robotics-1058509204012017/',
   },
   {
@@ -53,8 +51,7 @@ const EXPERIENCES: Experience[] = [
       'Managing a cross-functional team across design, development, and marketing',
     ],
     stack: ['React', 'Next.js', 'Django', 'PostgreSQL', 'Tailwind CSS', 'Python', 'Stripe'],
-    color: '#ff6b9d',
-    colorBg: 'rgba(255,107,157,0.10)',
+    tone: 'var(--c-5)',
   },
   {
     id: 1,
@@ -71,8 +68,7 @@ const EXPERIENCES: Experience[] = [
       'Led backend architecture decisions for 5+ client projects from scoping to production',
     ],
     stack: ['Python', 'Django', 'FastAPI', 'TensorFlow', 'Docker', 'PostgreSQL', 'Redis'],
-    color: '#4f7fff',
-    colorBg: 'rgba(79,127,255,0.12)',
+    tone: 'var(--c-3)',
   },
   {
     id: 2,
@@ -89,8 +85,7 @@ const EXPERIENCES: Experience[] = [
       'Optimized complex PostgreSQL queries cutting average response time by 40%',
     ],
     stack: ['Python', 'Django', 'REST API', 'Celery', 'Redis', 'MySQL', 'Nginx'],
-    color: '#9b5de5',
-    colorBg: 'rgba(155,93,229,0.12)',
+    tone: 'var(--c-6)',
   },
   {
     id: 3,
@@ -107,8 +102,7 @@ const EXPERIENCES: Experience[] = [
       'Participated in daily agile standups, sprint planning, and peer code reviews',
     ],
     stack: ['React', 'Python', 'Django', 'HTML5', 'CSS3', 'JavaScript', 'Bootstrap'],
-    color: '#00d4ff',
-    colorBg: 'rgba(0,212,255,0.10)',
+    tone: 'var(--c-2)',
   },
   {
     id: 4,
@@ -125,321 +119,256 @@ const EXPERIENCES: Experience[] = [
       'Created LLM-powered chatbots and RAG systems for enterprise knowledge bases',
     ],
     stack: ['Python', 'TensorFlow', 'PyTorch', 'LangChain', 'NLP', 'OpenCV', 'Scikit-learn'],
-    color: '#f4a261',
-    colorBg: 'rgba(244,162,97,0.12)',
+    tone: 'var(--c-4)',
   },
 ]
 
-// ─── Detail Panel with transition ────────────────────────────────────────────
-
+/* ─── Detail panel ─────────────────────────────────────────────────────── */
 const DetailPanel = memo(function DetailPanel({
-  exp,
-  visible,
-}: {
-  exp: Experience
-  visible: boolean
-}) {
+  exp, visible,
+}: { exp: Experience; visible: boolean }) {
+  const ease = 'cubic-bezier(0.16,1,0.3,1)'
+
   return (
     <article
-      className="rounded-3xl p-7 md:p-8 h-full border"
+      className="glass-card spotlight p-6 md:p-8 h-full"
       style={{
-        background: exp.colorBg,
-        borderColor: `${exp.color}30`,
-        // Fade + slide-up transition
+        borderColor: `color-mix(in srgb, ${exp.tone} 26%, var(--border))`,
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(16px)',
-        transition: 'opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1)',
+        transform: visible ? 'none' : 'translateY(14px) scale(0.99)',
+        transition: `opacity 380ms ${ease}, transform 380ms ${ease}`,
       }}
     >
       {/* Header */}
       <div
-        className="flex flex-wrap items-start justify-between gap-4 mb-5 pb-5 border-b"
-        style={{ borderColor: `${exp.color}20` }}
+        className="flex flex-wrap items-start justify-between gap-4 mb-5 pb-5"
+        style={{ borderBottom: '1px solid var(--border)' }}
       >
-        <div>
+        <div className="min-w-0">
           <h3
-            className="text-2xl md:text-3xl font-black dark:text-white text-[#0e0c1f] leading-tight"
+            className="text-xl md:text-2xl font-bold leading-tight tracking-[-0.02em]"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             {exp.role}
           </h3>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-xl font-bold" style={{ color: exp.color }}>@</span>
+          <div className="flex items-center gap-1.5 mt-2 font-mono text-[15px]">
+            <span style={{ color: exp.tone }}>@</span>
             {exp.companyUrl ? (
               <a
                 href={exp.companyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-lg font-bold dark:text-white text-[#0e0c1f] hover:underline underline-offset-2 transition-colors"
-                style={{ color: exp.color }}
+                className="font-semibold hover:underline underline-offset-4 transition-colors"
+                style={{ color: exp.tone }}
               >
                 {exp.company}
               </a>
             ) : (
-              <span className="text-lg font-bold dark:text-white text-[#0e0c1f]">{exp.company}</span>
+              <span className="font-semibold" style={{ color: exp.tone }}>{exp.company}</span>
             )}
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <span
-            className="px-4 py-1.5 rounded-full text-sm font-bold"
+            className="px-3 py-1 rounded-full text-[11px] font-mono font-semibold uppercase tracking-[0.08em]"
             style={{
-              background: `${exp.color}20`,
-              color: exp.color,
-              border: `1.5px solid ${exp.color}40`,
+              background: `color-mix(in srgb, ${exp.tone} 12%, transparent)`,
+              color: exp.tone,
+              border: `1px solid color-mix(in srgb, ${exp.tone} 32%, transparent)`,
             }}
           >
             {exp.type}
           </span>
-          <span className="text-sm font-mono font-semibold dark:text-white/60 text-[#3b3860]">
-            {exp.period}
-          </span>
+          <span className="text-xs font-mono text-[--text-dim]">{exp.period}</span>
         </div>
       </div>
 
-      {/* Description */}
-      <p className="text-base md:text-lg dark:text-white/80 text-[#1a1640] leading-relaxed mb-6 font-medium">
+      <p className="text-[15px] leading-relaxed text-[--text-muted] mb-7">
         {exp.description}
       </p>
 
-      {/* Highlights — staggered entrance */}
-      <div className="mb-6">
-        <h4
-          className="text-xs font-mono font-bold uppercase tracking-widest mb-4"
-          style={{ color: exp.color }}
-        >
-          ✦ Key Highlights
-        </h4>
-        <ul className="space-y-3">
-          {exp.highlights.map((h, i) => (
-            <li
-              key={i}
-              className="flex items-start gap-3"
-              style={{
-                opacity: visible ? 1 : 0,
-                transform: visible ? 'translateX(0)' : 'translateX(-12px)',
-                transition: `opacity 0.4s cubic-bezier(0.16,1,0.3,1) ${0.1 + i * 0.07}s,
-                             transform 0.4s cubic-bezier(0.16,1,0.3,1) ${0.1 + i * 0.07}s`,
-              }}
-            >
-              <span
-                className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-white shadow-sm"
-                style={{ background: exp.color }}
-                aria-hidden="true"
-              >
-                {i + 1}
-              </span>
-              <span className="text-base dark:text-white/75 text-[#1a1640] font-medium leading-snug">
-                {h}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Stack — staggered entrance */}
-      <div>
-        <h4
-          className="text-xs font-mono font-bold uppercase tracking-widest mb-3"
-          style={{ color: exp.color }}
-        >
-          ✦ Tech Stack
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {exp.stack.map((tech, i) => (
+      {/* Highlights */}
+      <h4 className="text-[10px] font-mono font-semibold uppercase tracking-[0.18em] mb-4" style={{ color: exp.tone }}>
+        Key Highlights
+      </h4>
+      <ul className="space-y-3 mb-7">
+        {exp.highlights.map((h, i) => (
+          <li
+            key={i}
+            className="flex items-start gap-3"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? 'none' : 'translateX(-10px)',
+              transition: `opacity 420ms ${ease} ${120 + i * 70}ms, transform 420ms ${ease} ${120 + i * 70}ms`,
+            }}
+          >
             <span
-              key={tech}
-              className="px-3 py-1.5 rounded-lg text-sm font-mono font-semibold dark:text-white text-[#0e0c1f]"
+              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[10px] font-mono font-bold"
               style={{
-                background: `${exp.color}15`,
-                border: `1px solid ${exp.color}30`,
-                opacity: visible ? 1 : 0,
-                transform: visible ? 'scale(1)' : 'scale(0.85)',
-                transition: `opacity 0.35s cubic-bezier(0.16,1,0.3,1) ${0.25 + i * 0.04}s,
-                             transform 0.35s cubic-bezier(0.16,1,0.3,1) ${0.25 + i * 0.04}s`,
+                background: `color-mix(in srgb, ${exp.tone} 16%, transparent)`,
+                color: exp.tone,
+                border: `1px solid color-mix(in srgb, ${exp.tone} 34%, transparent)`,
               }}
+              aria-hidden="true"
             >
-              {tech}
+              {i + 1}
             </span>
-          ))}
-        </div>
+            <span className="text-[14.5px] leading-relaxed text-[--text-muted]">{h}</span>
+          </li>
+        ))}
+      </ul>
+
+      {/* Stack */}
+      <h4 className="text-[10px] font-mono font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: exp.tone }}>
+        Tech Stack
+      </h4>
+      <div className="flex flex-wrap gap-2">
+        {exp.stack.map((tech, i) => (
+          <span
+            key={tech}
+            className="px-2.5 py-1 text-xs font-mono"
+            style={{
+              borderRadius: 'var(--r-sm)',
+              background: `color-mix(in srgb, ${exp.tone} 9%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${exp.tone} 22%, transparent)`,
+              color: 'var(--text)',
+              opacity: visible ? 1 : 0,
+              transform: visible ? 'none' : 'scale(0.9)',
+              transition: `opacity 340ms ${ease} ${280 + i * 40}ms, transform 340ms ${ease} ${280 + i * 40}ms`,
+            }}
+          >
+            {tech}
+          </span>
+        ))}
       </div>
     </article>
   )
 })
 
-// ─── Main Component ───────────────────────────────────────────────────────────
-
+/* ─── Main ─────────────────────────────────────────────────────────────── */
 export default function Experience() {
-  const [active, setActive]     = useState(0)
-  const [visible, setVisible]   = useState(true)
-  const [displayed, setDisplayed] = useState(0)   // the exp currently rendered
+  const [active, setActive]       = useState(0)
+  const [visible, setVisible]     = useState(true)
+  const [displayed, setDisplayed] = useState(0)
   const ref = useReveal()
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // When active changes: fade out → swap content → fade in
   const handleSelect = useCallback((i: number) => {
     if (i === active) return
+    setActive(i)
     setVisible(false)
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
       setDisplayed(i)
-      setActive(i)
       setVisible(true)
-    }, 220)            // matches fade-out duration
+    }, 220)
   }, [active])
 
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
+
+  const tone = EXPERIENCES[active].tone
 
   return (
     <section
       id="experience"
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="py-28 relative overflow-hidden"
+      className="section"
     >
-      {/* Background glow — smoothly colour-transitions */}
+      {/* Ambient wash that follows the selected role */}
       <div
-        className="absolute top-1/2 right-0 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
-        style={{
-          background: EXPERIENCES[active].color,
-          transition: 'background 0.6s cubic-bezier(0.16,1,0.3,1)',
-        }}
+        className="absolute top-1/3 right-0 w-[380px] aspect-square rounded-full opacity-[0.07] blur-[100px] pointer-events-none"
+        style={{ background: tone, transition: 'background 700ms cubic-bezier(0.16,1,0.3,1)' }}
         aria-hidden="true"
       />
 
-      {/* Second ambient glow on the left for depth */}
-      <div
-        className="absolute bottom-1/4 left-0 w-64 h-64 rounded-full opacity-[0.04] blur-3xl pointer-events-none"
-        style={{
-          background: EXPERIENCES[active].color,
-          transition: 'background 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s',
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        {/* Section header */}
-        <div className="flex items-center gap-4 mb-6 reveal">
-          <span className="font-mono text-sm font-bold" style={{ color: 'var(--accent)' }}>
-            02.
-          </span>
-          <h2
-            className="text-4xl md:text-5xl font-black dark:text-white text-[#0e0c1f]"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            Professional{' '}
-            <em className="italic" style={{ color: 'var(--accent)' }}>
-              Experience
-            </em>
-          </h2>
-          <div className="flex-1 h-px dark:bg-white/10 bg-[#0e0c1f]/15" />
-        </div>
-
-        <p
-          className="text-lg italic dark:text-white/50 text-[#3b3860] mb-14 reveal font-medium"
-          style={{ fontFamily: 'var(--font-italic)' }}
-        >
-          A journey of growth, innovation, and delivering exceptional results
-        </p>
+      <div className="container-x">
+        <SectionHeader
+          index="02 —"
+          title="Professional"
+          emphasis="Experience"
+          standfirst="A journey of growth, innovation, and delivering exceptional results."
+        />
 
         <div className="grid lg:grid-cols-5 gap-8">
 
-          {/* ── Sidebar tabs ── */}
+          {/* ── Timeline rail ── */}
           <div className="lg:col-span-2 reveal-left">
-            <div className="relative">
-              {/* Timeline line — animated fill */}
-              <div
-                className="absolute left-5 top-6 bottom-6 w-0.5 dark:bg-white/10 bg-[#0e0c1f]/12"
+            <div className="relative" role="tablist" aria-label="Roles">
+              {/* Rail */}
+              <span
+                className="absolute left-[13px] top-3 bottom-3 w-px"
+                style={{ background: 'var(--border)' }}
                 aria-hidden="true"
               />
-              {/* Active progress indicator that slides down */}
-              <div
-                className="absolute left-5 w-0.5 rounded-full pointer-events-none"
+              {/* Travelling highlight */}
+              <span
+                className="absolute left-[12px] w-[3px] rounded-full pointer-events-none"
                 style={{
-                  top: `calc(${active / EXPERIENCES.length * 100}% + 24px)`,
-                  height: `${100 / EXPERIENCES.length}%`,
-                  background: EXPERIENCES[active].color,
-                  boxShadow: `0 0 8px ${EXPERIENCES[active].color}80`,
-                  transition: 'top 0.35s cubic-bezier(0.16,1,0.3,1), background 0.35s, box-shadow 0.35s',
+                  top: `calc(${(active / EXPERIENCES.length) * 100}% + 12px)`,
+                  height: `calc(${100 / EXPERIENCES.length}% - 12px)`,
+                  background: tone,
+                  boxShadow: `0 0 12px ${tone}`,
+                  transition: 'top 480ms cubic-bezier(0.16,1,0.3,1), background 480ms ease, box-shadow 480ms ease',
                 }}
                 aria-hidden="true"
               />
 
-              <div className="space-y-3">
-                {EXPERIENCES.map((e, i) => (
-                  <button
-                    key={e.id}
-                    onClick={() => handleSelect(i)}
-                    aria-pressed={active === i}
-                    className={`w-full text-left p-4 pl-14 rounded-2xl border-2 transition-all duration-200 relative group ${
-                      active === i
-                        ? 'shadow-lg dark:shadow-black/30'
-                        : 'border-transparent dark:hover:bg-white/5 hover:bg-[#0e0c1f]/5'
-                    }`}
-                    style={
-                      active === i
-                        ? { background: e.colorBg, borderColor: `${e.color}50` }
-                        : {}
-                    }
-                  >
-                    {/* Timeline dot — pulses when active */}
-                    <div
-                      className={`absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${
-                        active === i ? 'w-6 h-6' : 'w-5 h-5 group-hover:scale-110'
-                      }`}
+              <div className="space-y-2">
+                {EXPERIENCES.map((e, i) => {
+                  const on = active === i
+                  return (
+                    <button
+                      key={e.id}
+                      role="tab"
+                      aria-selected={on}
+                      onClick={() => handleSelect(i)}
+                      className="w-full text-left p-3.5 pl-10 relative group transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
                       style={{
-                        background: e.color,
-                        borderColor: active === i ? 'transparent' : 'var(--bg)',
-                        boxShadow: active === i ? `0 0 14px ${e.color}80` : 'none',
+                        borderRadius: 'var(--r-md)',
+                        background: on ? `color-mix(in srgb, ${e.tone} 8%, transparent)` : 'transparent',
+                        border: `1px solid ${on ? `color-mix(in srgb, ${e.tone} 28%, transparent)` : 'transparent'}`,
+                        transform: on ? 'translateX(4px)' : 'none',
                       }}
-                      aria-hidden="true"
-                    />
-                    {/* Ping ring when active */}
-                    {active === i && (
+                    >
+                      {/* Node */}
                       <span
-                        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full animate-ping opacity-30 pointer-events-none"
-                        style={{ background: e.color }}
+                        className="absolute left-[7px] top-1/2 -translate-y-1/2 rounded-full transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                        style={{
+                          width: on ? 13 : 9,
+                          height: on ? 13 : 9,
+                          background: on ? e.tone : 'var(--border-hi)',
+                          boxShadow: on ? `0 0 0 3px color-mix(in srgb, ${e.tone} 18%, transparent)` : 'none',
+                        }}
                         aria-hidden="true"
                       />
-                    )}
 
-                    {/* Text */}
-                    <div
-                      className={`text-base font-bold transition-colors duration-200 ${
-                        active === i
-                          ? 'dark:text-white text-[#0e0c1f]'
-                          : 'dark:text-white/70 text-[#1a1640]'
-                      }`}
-                    >
-                      {e.role}
-                    </div>
-                    <div
-                      className={`text-sm mt-0.5 font-semibold transition-colors duration-200 ${
-                        active === i
-                          ? 'dark:text-white/70 text-[#3b3860]'
-                          : 'dark:text-white/40 text-[#6b689a]'
-                      }`}
-                    >
-                      @ {e.company}
-                    </div>
-                    <div
-                      className="text-xs font-mono font-bold mt-1.5 transition-colors duration-200"
-                      style={{ color: active === i ? e.color : `${e.color}80` }}
-                    >
-                      {e.period}
-                    </div>
-                  </button>
-                ))}
+                      <span
+                        className="block text-[14.5px] font-semibold leading-snug transition-colors duration-200"
+                        style={{ color: on ? 'var(--text)' : 'var(--text-muted)' }}
+                      >
+                        {e.role}
+                      </span>
+                      <span className="block text-[13px] mt-0.5 text-[--text-dim]">
+                        @ {e.company}
+                      </span>
+                      <span
+                        className="block text-[11px] font-mono mt-1 transition-colors duration-200"
+                        style={{ color: on ? e.tone : 'var(--text-dim)' }}
+                      >
+                        {e.period}
+                      </span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
 
-          {/* ── Detail panel ── */}
+          {/* ── Detail ── */}
           <div className="lg:col-span-3 reveal-right">
             <DetailPanel exp={EXPERIENCES[displayed]} visible={visible} />
           </div>
-
         </div>
       </div>
     </section>

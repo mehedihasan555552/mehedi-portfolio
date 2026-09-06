@@ -1,13 +1,24 @@
 import type { Metadata } from 'next'
-import { JetBrains_Mono } from 'next/font/google'
+import { JetBrains_Mono, Inter } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 import { ThemeProvider } from '@/context/ThemeContext'
+import SiteEffects from '@/components/SiteEffects'
 
+// Mono carries the terminal identity: headlines, labels, code.
 const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-jetbrains',
+  display: 'swap',
+})
+
+// Sans carries body prose. Long paragraphs set in mono are tiring to read,
+// and the contrast makes the mono passages feel deliberate.
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
   display: 'swap',
 })
 
@@ -55,7 +66,7 @@ export const metadata: Metadata = {
       {
         rel: 'mask-icon',
         url: '/favicon.svg',
-        color: '#6c8fff',
+        color: '#3ddc84',
       },
     ],
   },
@@ -146,7 +157,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark scroll-smooth ${jetbrains.variable}`}
+      className={`dark scroll-smooth ${jetbrains.variable} ${inter.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -154,7 +165,10 @@ export default function RootLayout({
       </head>
 
       <body className="antialiased" suppressHydrationWarning>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SiteEffects />
+          {children}
+        </ThemeProvider>
 
         <Script id="reb2b-snippet" strategy="beforeInteractive">
           {reb2bScript}

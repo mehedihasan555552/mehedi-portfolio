@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { projects } from '@/data/projects'
 import { useReveal } from '@/hooks/useReveal'
+import SectionHeader from './SectionHeader'
 
 const FILTERS = ['All', 'AI/ML', 'Full-Stack', 'Backend']
 
@@ -13,120 +14,164 @@ const GitHubIcon = () => (
   </svg>
 )
 
+const ExternalIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+  </svg>
+)
+
+/* ─── Card ─────────────────────────────────────────────────────────────── */
 const ProjectCard = memo(function ProjectCard({
   project,
-  delay,
-}: {
-  project: typeof projects[0]
-  delay: number
-}) {
+}: { project: typeof projects[0] }) {
   return (
     <article
-      className={`reveal group glass-card glass-card-hover rounded-3xl overflow-hidden flex flex-col d${Math.min(delay + 1, 6)} relative`}
+      data-reveal="scale"
+      className="group relative glass-card glass-card-hover spotlight overflow-hidden flex flex-col"
     >
-      {/*
-       * Full-card link — covers the entire card via absolute inset.
-       * GitHub / Live buttons sit above it with relative + z-10.
-       */}
+      {/* Whole-card link; the action buttons sit above it on z-10 */}
       <Link
         href={`/projects/${project.id}`}
-        className="absolute inset-0 z-0 rounded-3xl focus-visible:ring-2 focus-visible:ring-[--accent] focus-visible:outline-none"
+        className="absolute inset-0 z-0 focus-visible:outline-none"
         aria-label={`View details for ${project.title}`}
-        prefetch   // ← prefetch on hover for instant navigation
+        prefetch
       />
 
-      {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      {/* Media */}
+      <div className="relative h-44 overflow-hidden flex-shrink-0">
         <Image
           src={project.image}
           alt={`${project.title} — ${project.tagline}`}
           fill
           loading="lazy"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]"
           sizes="(max-width:768px) 100vw,(max-width:1200px) 50vw,33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" aria-hidden="true" />
-        <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold text-white bg-[#4f7fff]/75 backdrop-blur-sm">
+        <span
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgb(3 8 6 / 0.82), rgb(3 8 6 / 0.15) 55%, transparent)' }}
+          aria-hidden="true"
+        />
+        <span
+          className="absolute top-3.5 left-3.5 px-2.5 py-1 text-[10px] font-mono font-semibold uppercase tracking-[0.1em] backdrop-blur-sm"
+          style={{
+            borderRadius: 'var(--r-sm)',
+            background: 'rgb(2 8 5 / 0.62)',
+            border: '1px solid rgb(var(--accent-rgb) / 0.5)',
+            color: 'var(--accent)',
+          }}
+        >
           {project.category}
         </span>
-        <span className="absolute top-4 right-4 px-2 py-1 rounded-lg text-xs font-mono text-white bg-black/40 backdrop-blur-sm">
+        <span
+          className="absolute top-3.5 right-3.5 px-2 py-1 text-[10px] font-mono backdrop-blur-sm text-white/85"
+          style={{ borderRadius: 'var(--r-sm)', background: 'rgb(0 0 0 / 0.42)' }}
+        >
           {project.year}
         </span>
       </div>
 
       {/* Body */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-5 flex flex-col flex-1">
         <h3
-          className="text-xl font-bold dark:text-white text-[#1a1830] mb-1 group-hover:text-[--accent] transition-colors leading-tight"
+          className="text-[16.5px] font-bold leading-snug tracking-[-0.02em] transition-colors duration-200 group-hover:text-[--accent]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {project.title}
         </h3>
-        <p className="text-sm italic text-[--accent] mb-3" style={{ fontFamily: 'var(--font-italic)' }}>
+        <p className="text-[12.5px] font-mono mt-1 mb-3" style={{ color: 'var(--accent)' }}>
           {project.tagline}
         </p>
-        <p className="text-sm dark:text-white/70 text-[#1a1640] leading-relaxed mb-4 flex-1 line-clamp-2 font-medium">
+        {/* No flex-1 here: growing the box lets every line fit, which stops
+            -webkit-line-clamp from ever kicking in. The actions row uses
+            mt-auto to take up the slack instead. */}
+        <p className="text-[13.5px] leading-relaxed text-[--text-muted] mb-4 line-clamp-2">
           {project.description}
         </p>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-2 mb-4">
           {project.stats.slice(0, 2).map(s => (
-            <div key={s.label} className="text-center p-2 rounded-xl dark:bg-[#0f0f1a] bg-[#f0eeff]">
-              <div className="text-base font-bold text-[--accent]">{s.value}</div>
-              <div className="text-xs text-[--text-muted]">{s.label}</div>
+            <div
+              key={s.label}
+              className="text-center py-2 px-1"
+              style={{
+                borderRadius: 'var(--r-sm)',
+                background: 'var(--bg-2)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <div className="text-[14px] font-mono font-semibold" style={{ color: 'var(--accent)' }}>
+                {s.value}
+              </div>
+              <div className="text-[10px] text-[--text-dim] mt-0.5 truncate">{s.label}</div>
             </div>
           ))}
         </div>
 
-        {/* Tech pills */}
+        {/* Tech */}
         <div className="flex flex-wrap gap-1.5 mb-5">
           {project.tech.slice(0, 4).map(t => (
             <span
               key={t}
-              className="px-2.5 py-1 rounded-lg dark:bg-[#0f0f1a] bg-[#f0eeff] text-xs font-mono text-[--text-muted] border border-[--border]"
+              className="px-2 py-[3px] text-[10.5px] font-mono text-[--text-dim]"
+              style={{
+                borderRadius: 'var(--r-xs)',
+                background: 'var(--bg-2)',
+                border: '1px solid var(--border)',
+              }}
             >
               {t}
             </span>
           ))}
           {project.tech.length > 4 && (
-            <span className="px-2.5 py-1 rounded-lg dark:bg-[#0f0f1a] bg-[#f0eeff] text-xs font-mono text-[--text-dim] border border-[--border]">
+            <span
+              className="px-2 py-[3px] text-[10.5px] font-mono text-[--text-dim]"
+              style={{ borderRadius: 'var(--r-xs)', background: 'var(--bg-2)', border: '1px solid var(--border)' }}
+            >
               +{project.tech.length - 4}
             </span>
           )}
         </div>
 
         {/* Actions */}
-        <div className="relative z-10 flex items-center gap-3 pt-4 border-t border-[--border]">
-          {/* Visual CTA — not a link (the whole card already is) */}
-          <div className="flex-1 py-2.5 text-center text-sm font-semibold bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] text-white rounded-xl group-hover:shadow-lg group-hover:shadow-[#4f7fff]/25 group-hover:-translate-y-0.5 transition-[transform,box-shadow] duration-200 pointer-events-none select-none">
-            View Details →
-          </div>
+        <div
+          className="flex items-center gap-2.5 pt-4 mt-auto"
+          style={{ borderTop: '1px solid var(--border)' }}
+        >
+          <span
+            className="flex-1 py-2 text-center text-[12.5px] font-mono font-semibold pointer-events-none select-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:gap-2"
+            style={{
+              borderRadius: 'var(--r-sm)',
+              background: 'var(--accent-soft)',
+              border: '1px solid var(--accent-line)',
+              color: 'var(--accent)',
+            }}
+          >
+            View Details{' '}
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </span>
 
-          {/* GitHub — stops click propagating to the card link */}
           <a
             href={project.github}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${project.title} source code on GitHub`}
             onClick={e => e.stopPropagation()}
-            className="relative z-10 w-10 h-10 glass-card rounded-xl flex items-center justify-center text-[--text-muted] hover:text-white hover:border-[--border] transition-colors"
+            className="relative z-10 w-9 h-9 rounded-md glass-card grid place-items-center text-[--text-muted] hover:text-[--accent] hover:border-[--accent-line] transition-colors duration-200"
           >
             <GitHubIcon />
           </a>
 
-          {/* Live demo — stops click propagating to the card link */}
           <a
             href={project.live}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${project.title} live demo`}
             onClick={e => e.stopPropagation()}
-            className="relative z-10 w-10 h-10 glass-card rounded-xl flex items-center justify-center text-[--text-muted] hover:text-[--accent] transition-colors"
+            className="relative z-10 w-9 h-9 rounded-md glass-card grid place-items-center text-[--text-muted] hover:text-[--accent] hover:border-[--accent-line] transition-colors duration-200"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
+            <ExternalIcon />
           </a>
         </div>
       </div>
@@ -134,27 +179,25 @@ const ProjectCard = memo(function ProjectCard({
   )
 })
 
-// ─── Grid wrapper ─────────────────────────────────────────────────────────────
-
+/* Remount on filter change so the reveal cascade replays */
 function ProjectGrid({ filtered }: { filtered: typeof projects }) {
-  const gridRef = useReveal(0.05)
+  const gridRef = useReveal(0.05, 65)
   return (
     <div
       ref={gridRef as React.RefObject<HTMLDivElement>}
-      className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
     >
-      {filtered.map((p, i) => (
-        <ProjectCard key={p.id} project={p} delay={i % 6} />
+      {filtered.map(p => (
+        <ProjectCard key={p.id} project={p} />
       ))}
     </div>
   )
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
-
+/* ─── Main ─────────────────────────────────────────────────────────────── */
 export default function Projects() {
-  const [filter,       setFilter]       = useState('All')
-  const [visible,      setVisible]      = useState(true)
+  const [filter, setFilter]             = useState('All')
+  const [visible, setVisible]           = useState(true)
   const [activeFilter, setActiveFilter] = useState('All')
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const ref = useReveal(0.05)
@@ -180,80 +223,79 @@ export default function Projects() {
     <section
       id="projects"
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="py-28 relative overflow-hidden"
+      className="section"
     >
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-[0.04] bg-[#4f7fff] blur-3xl pointer-events-none" aria-hidden="true" />
+      <div
+        data-parallax
+        className="absolute bottom-0 right-0 w-[420px] aspect-square rounded-full opacity-[0.05] blur-[100px] pointer-events-none"
+        style={{ ['--par' as string]: '60px', background: 'var(--accent)' }}
+        aria-hidden="true"
+      />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+      <div className="container-x">
+        <SectionHeader
+          index="04 —"
+          title="Featured"
+          emphasis="Projects"
+          standfirst="Showcasing innovative solutions built with cutting-edge technologies."
+        />
 
-        <div className="flex items-center gap-4 mb-6 reveal">
-          <span className="font-mono text-sm text-[--accent]">04.</span>
-          <h2
-            className="text-4xl md:text-5xl font-black dark:text-white text-[#1a1830]"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            Featured <em className="italic text-[--accent]">Projects</em>
-          </h2>
-          <div className="flex-1 h-px bg-[--border]" />
-        </div>
-
-        <p
-          className="text-lg italic dark:text-white/55 text-[#3b3860] font-semibold mb-10 reveal"
-          style={{ fontFamily: 'var(--font-italic)' }}
-        >
-          Showcasing innovative solutions built with cutting-edge technologies
-        </p>
-
-        {/* Filter tabs */}
-        <div className="flex flex-wrap gap-2 mb-12 reveal" role="tablist" aria-label="Filter projects by category">
-          {FILTERS.map(f => (
-            <button
-              key={f}
-              role="tab"
-              aria-selected={filter === f}
-              onClick={() => handleFilter(f)}
-              className={`px-5 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 ${
-                filter === f
-                  ? 'bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] text-white shadow-lg shadow-[#4f7fff]/20 scale-[1.04]'
-                  : 'glass-card glass-card-hover text-[--text-muted] hover:text-[--text]'
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2 mb-10 reveal" role="tablist" aria-label="Filter projects by category">
+          {FILTERS.map(f => {
+            const on = filter === f
+            return (
+              <button
+                key={f}
+                role="tab"
+                aria-selected={on}
+                onClick={() => handleFilter(f)}
+                className="px-4 py-2 text-[13px] font-mono font-medium transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{
+                  borderRadius: 'var(--r-md)',
+                  background: on ? 'var(--accent)' : 'var(--card)',
+                  color:      on ? 'var(--on-accent)' : 'var(--text-muted)',
+                  border:     `1px solid ${on ? 'var(--accent)' : 'var(--border)'}`,
+                  boxShadow:  on ? '0 6px 18px -6px rgb(var(--accent-rgb) / 0.55)' : 'none',
+                  transform:  on ? 'translateY(-1px)' : 'none',
+                }}
+              >
+                {f}
+              </button>
+            )
+          })}
         </div>
 
         <div
           style={{
-            opacity:    visible ? 1 : 0,
-            transform:  visible ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1)',
+            opacity:   visible ? 1 : 0,
+            transform: visible ? 'none' : 'translateY(10px)',
+            transition: 'opacity 260ms cubic-bezier(0.16,1,0.3,1), transform 260ms cubic-bezier(0.16,1,0.3,1)',
           }}
         >
           <ProjectGrid key={activeFilter} filtered={filtered} />
         </div>
 
-        <p className="text-center mt-6 text-sm font-mono text-[--text-dim]">
-          Showing{' '}
-          <span className="text-[--accent] font-bold">{filtered.length}</span>{' '}
+        <p className="text-center mt-8 text-[12.5px] font-mono text-[--text-dim]">
+          Showing <span style={{ color: 'var(--accent)' }}>{filtered.length}</span>{' '}
           {filtered.length === 1 ? 'project' : 'projects'}
           {activeFilter !== 'All' && (
-            <> in <span className="text-[--accent] font-bold">{activeFilter}</span></>
+            <> in <span style={{ color: 'var(--accent)' }}>{activeFilter}</span></>
           )}
         </p>
 
-        <div className="text-center mt-10 reveal">
+        <div className="text-center mt-9 reveal">
           <a
             href="https://github.com/mehedihasan555552"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 glass-card glass-card-hover rounded-2xl text-base font-semibold text-[--text-muted] hover:text-[--text]"
+            className="btn btn-ghost"
           >
             <GitHubIcon />
-            View all repositories on GitHub ↗
+            View all repositories on GitHub
+            <span aria-hidden="true">↗</span>
           </a>
         </div>
-
       </div>
     </section>
   )

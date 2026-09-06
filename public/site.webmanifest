@@ -4,8 +4,8 @@
   "description": "Sr. Full-Stack & LLM Engineer — Building smart solutions with code & AI",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#080810",
-  "theme_color": "#4f7fff",
+  "background_color": "#050807",
+  "theme_color": "#3ddc84",
   "icons": [
     {
       "src": "/icon-192.png",

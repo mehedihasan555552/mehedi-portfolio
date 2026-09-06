@@ -90,10 +90,10 @@ export default async function ProjectPage(
 
               {/* Badges */}
               <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-3 py-1 rounded-full text-xs font-bold text-white bg-[#4f7fff]/80 backdrop-blur-sm">
+                <span className="px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-[0.1em] backdrop-blur-sm" style={{ borderRadius: 'var(--r-sm)', background: 'rgb(2 8 5 / 0.62)', border: '1px solid rgb(var(--accent-rgb) / 0.5)', color: 'var(--accent)' }}>
                   {project.category}
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-mono text-white/85 bg-black/40 backdrop-blur-sm">
+                <span className="px-3 py-1 text-[11px] font-mono text-white/85 backdrop-blur-sm" style={{ borderRadius: 'var(--r-sm)', background: 'rgb(0 0 0 / 0.42)' }}>
                   {project.year}
                 </span>
               </div>
@@ -126,10 +126,10 @@ export default async function ProjectPage(
               <section aria-labelledby="overview-heading">
                 <h2
                   id="overview-heading"
-                  className="text-2xl font-bold dark:text-white text-[#1a1830] mb-5 flex items-center gap-3"
+                  className="text-2xl font-bold mb-5 flex items-center gap-3"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  <span className="w-1 h-6 rounded-full bg-gradient-to-b from-[#4f7fff] to-[#9b5de5] flex-shrink-0" aria-hidden="true" />
+                  <span className="w-1 h-6 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                   Project Overview
                 </h2>
                 <div className="space-y-4">
@@ -147,11 +147,11 @@ export default async function ProjectPage(
                   {project.stats.map(s => (
                     <div
                       key={s.label}
-                      className="glass-card rounded-2xl p-4 text-center"
+                      className="glass-card glass-card-hover spotlight p-4 text-center"
                     >
                       <dd
-                        className="text-2xl sm:text-3xl font-black gradient-text mb-1"
-                        style={{ fontFamily: 'var(--font-display)' }}
+                        className="text-2xl sm:text-3xl font-bold mb-1"
+                        style={{ fontFamily: 'var(--font-display)', color: 'var(--accent)' }}
                       >
                         {s.value}
                       </dd>
@@ -168,22 +168,22 @@ export default async function ProjectPage(
                 <section aria-labelledby="gallery-heading">
                   <h2
                     id="gallery-heading"
-                    className="text-2xl font-bold dark:text-white text-[#1a1830] mb-5 flex items-center gap-3"
+                    className="text-2xl font-bold mb-5 flex items-center gap-3"
                     style={{ fontFamily: 'var(--font-display)' }}
                   >
-                    <span className="w-1 h-6 rounded-full bg-gradient-to-b from-[#4f7fff] to-[#9b5de5] flex-shrink-0" aria-hidden="true" />
+                    <span className="w-1 h-6 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                     Gallery
                   </h2>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {project.gallery.map((img, i) => (
-                      <div key={i} className="relative h-56 rounded-2xl overflow-hidden group">
+                      <div key={i} className="relative h-56 overflow-hidden group" style={{ borderRadius: 'var(--r-lg)', border: '1px solid var(--border)' }}>
                         <Image
                           src={img}
                           alt={`${project.title} screenshot ${i + 1}`}
                           fill
                           loading="lazy"
                           quality={80}
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
                           sizes="(max-width:640px) 100vw, 50vw"
                         />
                       </div>
@@ -196,22 +196,23 @@ export default async function ProjectPage(
               <section aria-labelledby="features-heading">
                 <h2
                   id="features-heading"
-                  className="text-2xl font-bold dark:text-white text-[#1a1830] mb-5 flex items-center gap-3"
+                  className="text-2xl font-bold mb-5 flex items-center gap-3"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  <span className="w-1 h-6 rounded-full bg-gradient-to-b from-[#4f7fff] to-[#9b5de5] flex-shrink-0" aria-hidden="true" />
+                  <span className="w-1 h-6 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                   Key Features
                 </h2>
                 <ol className="space-y-3">
                   {project.highlights.map((h, i) => (
-                    <li key={i} className="flex items-start gap-4 p-4 glass-card rounded-2xl group hover:border-[#4f7fff]/30 transition-colors border border-transparent">
+                    <li key={i} className="flex items-start gap-4 p-4 glass-card glass-card-hover spotlight group">
                       <div
-                        className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4f7fff] to-[#9b5de5] flex items-center justify-center text-sm font-black text-white flex-shrink-0"
+                        className="w-8 h-8 rounded-md grid place-items-center text-[12px] font-mono font-semibold flex-shrink-0"
+                        style={{ background: 'var(--accent-soft)', border: '1px solid var(--accent-line)', color: 'var(--accent)' }}
                         aria-hidden="true"
                       >
                         {i + 1}
                       </div>
-                      <span className="text-base dark:text-[#e8e6ff] text-[#1a1830] font-medium leading-relaxed pt-0.5">
+                      <span className="text-[15px] leading-relaxed pt-0.5 text-[--text-muted]">
                         {h}
                       </span>
                     </li>
@@ -223,10 +224,10 @@ export default async function ProjectPage(
               <section aria-labelledby="tech-heading">
                 <h2
                   id="tech-heading"
-                  className="text-2xl font-bold dark:text-white text-[#1a1830] mb-5 flex items-center gap-3"
+                  className="text-2xl font-bold mb-5 flex items-center gap-3"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  <span className="w-1 h-6 rounded-full bg-gradient-to-b from-[#4f7fff] to-[#9b5de5] flex-shrink-0" aria-hidden="true" />
+                  <span className="w-1 h-6 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                   Technology Stack
                 </h2>
                 <div className="flex flex-wrap gap-2.5">
@@ -243,12 +244,12 @@ export default async function ProjectPage(
             <aside className="space-y-5 lg:sticky lg:top-28 self-start">
 
               {/* CTA buttons */}
-              <div className="glass-card rounded-3xl p-5 space-y-3">
+              <div className="glass-card p-5 space-y-3">
                 <a
                   href={project.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2.5 w-full py-3 bg-gradient-to-r from-[#4f7fff] to-[#9b5de5] rounded-xl text-white font-bold text-sm hover:shadow-xl hover:shadow-[#4f7fff]/30 hover:-translate-y-0.5 transition-all duration-200"
+                  className="btn btn-primary w-full"
                 >
                   <ExternalIcon />
                   Live Demo
@@ -257,7 +258,7 @@ export default async function ProjectPage(
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2.5 w-full py-3 glass-card rounded-xl dark:text-[#e8e6ff] text-[#1a1830] hover:text-[--accent] font-semibold text-sm transition-colors border border-[--border] hover:border-[#4f7fff]/40"
+                  className="btn btn-ghost w-full"
                 >
                   <SocialIcon name="github" className="w-4 h-4" />
                   View Source Code
@@ -265,12 +266,12 @@ export default async function ProjectPage(
               </div>
 
               {/* Project Meta */}
-              <div className="glass-card rounded-3xl p-5">
+              <div className="glass-card p-5">
                 <h2
-                  className="text-sm font-black dark:text-white text-[#0e0c1f] mb-4 font-mono uppercase tracking-widest flex items-center gap-2"
+                  className="text-[11px] font-semibold mb-4 font-mono uppercase tracking-[0.18em] flex items-center gap-2 text-[--text-muted]"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  <span className="inline-block w-1 h-3.5 rounded-full bg-[--accent]" aria-hidden="true" />
+                  <span className="inline-block w-1 h-3.5 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                   Project Info
                 </h2>
                 <dl className="space-y-3">
@@ -283,7 +284,7 @@ export default async function ProjectPage(
                       <dt className="text-xs font-mono uppercase tracking-wider text-[--text-muted]">
                         {item.label}
                       </dt>
-                      <dd className="text-sm font-bold dark:text-white text-[#1a1830]">
+                      <dd className="text-[13.5px] font-medium" style={{ color: 'var(--text)' }}>
                         {item.value}
                       </dd>
                     </div>
@@ -293,19 +294,19 @@ export default async function ProjectPage(
 
               {/* Stats */}
               {project.stats.length > 0 && (
-                <div className="glass-card rounded-3xl p-5">
+                <div className="glass-card p-5">
                   <h2
-                    className="text-sm font-black dark:text-white text-[#0e0c1f] mb-4 font-mono uppercase tracking-widest flex items-center gap-2"
+                    className="text-[11px] font-semibold mb-4 font-mono uppercase tracking-[0.18em] flex items-center gap-2 text-[--text-muted]"
                   >
-                    <span className="inline-block w-1 h-3.5 rounded-full bg-[--accent]" aria-hidden="true" />
+                    <span className="inline-block w-1 h-3.5 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                     Stats
                   </h2>
                   <dl className="grid grid-cols-2 gap-2.5">
                     {project.stats.map(s => (
-                      <div key={s.label} className="text-center p-3 rounded-xl dark:bg-[#0f0f1a] bg-[#f5f4ff]">
+                      <div key={s.label} className="text-center p-3" style={{ borderRadius: 'var(--r-sm)', background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
                         <dd
-                          className="text-xl font-black gradient-text"
-                          style={{ fontFamily: 'var(--font-display)' }}
+                          className="text-xl font-bold"
+                          style={{ fontFamily: 'var(--font-display)', color: 'var(--accent)' }}
                         >
                           {s.value}
                         </dd>
@@ -326,10 +327,10 @@ export default async function ProjectPage(
               <div className="flex items-center gap-4 mb-8">
                 <h2
                   id="related-heading"
-                  className="text-2xl sm:text-3xl font-bold dark:text-white text-[#1a1830] whitespace-nowrap"
+                  className="text-2xl sm:text-3xl font-bold whitespace-nowrap"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  Related <em className="italic text-[--accent]">Projects</em>
+                  Related <span style={{ color: 'var(--accent)' }}>Projects</span>
                 </h2>
                 <div className="flex-1 h-px bg-[--border]" />
               </div>
@@ -340,7 +341,7 @@ export default async function ProjectPage(
                     key={p.id}
                     href={`/projects/${p.id}`}
                     prefetch      /* prefetch on hover — feels instant */
-                    className="group glass-card glass-card-hover rounded-2xl overflow-hidden flex flex-col"
+                    className="group glass-card glass-card-hover spotlight overflow-hidden flex flex-col"
                   >
                     <div className="relative h-36 overflow-hidden">
                       <Image
@@ -349,7 +350,7 @@ export default async function ProjectPage(
                         fill
                         loading="lazy"
                         quality={75}
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
                         sizes="(max-width:640px) 100vw,(max-width:1024px) 50vw,33vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" aria-hidden="true" />
@@ -359,7 +360,7 @@ export default async function ProjectPage(
                     </div>
                     <div className="p-4">
                       <div
-                        className="font-bold dark:text-white text-[#1a1830] group-hover:text-[--accent] transition-colors text-sm leading-snug mb-1"
+                        className="font-bold group-hover:text-[--accent] transition-colors text-[14px] leading-snug mb-1"
                         style={{ fontFamily: 'var(--font-display)' }}
                       >
                         {p.title}

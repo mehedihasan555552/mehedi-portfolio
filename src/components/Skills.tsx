@@ -1,110 +1,79 @@
 'use client'
 import { useState, useEffect, useRef, memo, useCallback } from 'react'
 import { useReveal } from '@/hooks/useReveal'
+import { useCountUp } from '@/hooks/useCountUp'
+import SectionHeader from './SectionHeader'
 
 const CATEGORIES = [
-  { title: 'AI / ML',    icon: '🤖', color: '#4f7fff', skills: ['TensorFlow','PyTorch','Scikit-learn','Keras','OpenCV','Hugging Face','LangChain','NLTK','SpaCy','Pandas','NumPy'] },
-  { title: 'Backend',   icon: '⚙️', color: '#9b5de5', skills: ['Python','Django','FastAPI','Flask','REST API','GraphQL','Celery','Redis','WebSocket','JWT','OAuth2'] },
-  { title: 'Frontend',  icon: '🎨', color: '#00d4ff', skills: ['React.js','Next.js','TypeScript','JavaScript','HTML5','CSS3','Tailwind CSS','Bootstrap','SASS'] },
-  { title: 'DevOps',    icon: '☁️', color: '#f4a261', skills: ['Docker','CI/CD','GitHub Actions','Nginx','Gunicorn','Ubuntu','AWS EC2','Vercel','Heroku'] },
-  { title: 'Databases', icon: '🗄️', color: '#f72585', skills: ['PostgreSQL','MySQL','SQLite','MongoDB','Redis','Firebase'] },
-  { title: 'Tools',     icon: '🔧', color: '#a8dadc', skills: ['Git','GitHub','VS Code','Figma','Postman','Jupyter','Linux','Bash'] },
+  { title: 'AI / ML',   tone: 'var(--c-1)', skills: ['TensorFlow','PyTorch','Scikit-learn','Keras','OpenCV','Hugging Face','LangChain','NLTK','SpaCy','Pandas','NumPy'] },
+  { title: 'Backend',   tone: 'var(--c-2)', skills: ['Python','Django','FastAPI','Flask','REST API','GraphQL','Celery','Redis','WebSocket','JWT','OAuth2'] },
+  { title: 'Frontend',  tone: 'var(--c-3)', skills: ['React.js','Next.js','TypeScript','JavaScript','HTML5','CSS3','Tailwind CSS','Bootstrap','SASS'] },
+  { title: 'DevOps',    tone: 'var(--c-5)', skills: ['Docker','CI/CD','GitHub Actions','Nginx','Gunicorn','Ubuntu','AWS EC2','Vercel','Heroku'] },
+  { title: 'Databases', tone: 'var(--c-6)', skills: ['PostgreSQL','MySQL','SQLite','MongoDB','Redis','Firebase'] },
+  { title: 'Tools',     tone: 'var(--c-4)', skills: ['Git','GitHub','VS Code','Figma','Postman','Jupyter','Linux','Bash'] },
 ]
 
 const PROFICIENCY = [
-  { name: 'Python',           level: 95, icon: '🐍', delay: 0   },
-  { name: 'Django / DRF',     level: 93, icon: '🦄', delay: 120 },
-  { name: 'Machine Learning', level: 89, icon: '🧠', delay: 240 },
-  { name: 'Deep Learning',    level: 86, icon: '🔬', delay: 360 },
-  { name: 'React / Next.js',  level: 83, icon: '⚛️', delay: 480 },
-  { name: 'Docker & DevOps',  level: 80, icon: '🐳', delay: 600 },
+  { name: 'Python',           level: 95, delay: 0   },
+  { name: 'Django / DRF',     level: 93, delay: 110 },
+  { name: 'Machine Learning', level: 89, delay: 220 },
+  { name: 'Deep Learning',    level: 86, delay: 330 },
+  { name: 'React / Next.js',  level: 83, delay: 440 },
+  { name: 'Docker & DevOps',  level: 80, delay: 550 },
 ]
 
 const SPECIALIZATIONS = [
-  { icon: '🧬', title: 'Machine Learning',  desc: 'Supervised, Unsupervised, RL',       color: '#4f7fff' },
-  { icon: '🧠', title: 'Deep Learning',     desc: 'CNN, RNN, LSTM, Transformers',       color: '#9b5de5' },
-  { icon: '💬', title: 'NLP',               desc: 'Classification, Summarization, QA',  color: '#00d4ff' },
-  { icon: '👁️', title: 'Computer Vision',  desc: 'Detection, Segmentation',            color: '#f72585' },
-  { icon: '🤖', title: 'LLM / RAG',         desc: 'GPT, Claude, Llama, Embeddings',    color: '#f4a261' },
-  { icon: '🏗️', title: 'API Architecture', desc: 'REST, GraphQL, Microservices',        color: '#a8dadc' },
+  { title: 'Machine Learning',  desc: 'Supervised, Unsupervised, RL' },
+  { title: 'Deep Learning',     desc: 'CNN, RNN, LSTM, Transformers' },
+  { title: 'NLP',               desc: 'Classification, Summarization, QA' },
+  { title: 'Computer Vision',   desc: 'Detection, Segmentation' },
+  { title: 'LLM / RAG',         desc: 'GPT, Claude, Llama, Embeddings' },
+  { title: 'API Architecture',  desc: 'REST, GraphQL, Microservices' },
 ]
 
-// ─── Skill Bar ───────────────────────────────────────────────────────────────
-
+/* ─── Proficiency bar ──────────────────────────────────────────────────── */
 const SkillBar = memo(function SkillBar({
-  skill,
-  animated,
-}: {
-  skill: typeof PROFICIENCY[0]
-  animated: boolean
-}) {
+  skill, animated,
+}: { skill: typeof PROFICIENCY[0]; animated: boolean }) {
+  const count = useCountUp(skill.level, animated, 1250)
+
   return (
-    <div className="group">
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex items-center gap-2">
-          <span
-            className="text-lg transition-transform duration-200 group-hover:scale-125"
-            aria-hidden="true"
-          >
-            {skill.icon}
-          </span>
-          <span className="text-base font-bold dark:text-white text-[#0e0c1f]">
-            {skill.name}
-          </span>
-        </div>
+    <div>
+      <div className="flex justify-between items-baseline mb-2">
+        <span className="text-[14px] font-medium" style={{ color: 'var(--text)' }}>
+          {skill.name}
+        </span>
         <span
-          className="text-sm font-mono font-black tabular-nums"
-          style={{
-            color: '#4f7fff',
-            opacity: animated ? 1 : 0,
-            transition: `opacity 0.4s ease ${skill.delay + 400}ms`,
-          }}
+          className="text-[13px] font-mono font-semibold tabular-nums"
+          style={{ color: 'var(--accent)' }}
         >
-          {skill.level}%
+          {count}%
         </span>
       </div>
 
-      {/* Track */}
       <div
-        className="h-2.5 rounded-full overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.07)' }}
+        className="progress-track"
         role="progressbar"
         aria-valuenow={skill.level}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={`${skill.name} proficiency`}
       >
-        {/* Fill */}
         <div
-          className="h-full rounded-full relative overflow-hidden"
+          className="progress-fill"
           style={{
             width: animated ? `${skill.level}%` : '0%',
-            background: 'linear-gradient(90deg, #4f7fff, #9b5de5)',
-            transition: `width 0.9s cubic-bezier(0.16,1,0.3,1) ${skill.delay}ms`,
+            ['--delay' as string]: `${skill.delay}ms`,
           }}
-        >
-          {/* Shimmer sweep */}
-          <span
-            className="absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-            style={{
-              animation: animated ? `shimmer-sweep 2s ease ${skill.delay + 900}ms 1` : 'none',
-            }}
-            aria-hidden="true"
-          />
-        </div>
+        />
       </div>
     </div>
   )
 })
 
-// ─── Category Card ────────────────────────────────────────────────────────────
-
+/* ─── Category card ────────────────────────────────────────────────────── */
 const CategoryCard = memo(function CategoryCard({
-  cat,
-  index,
-  active,
-  onHover,
-  onLeave,
+  cat, index, active, onHover, onLeave,
 }: {
   cat: typeof CATEGORIES[0]
   index: number
@@ -112,58 +81,53 @@ const CategoryCard = memo(function CategoryCard({
   onHover: (i: number) => void
   onLeave: () => void
 }) {
-  const isActive  = active === index
-  const isDimmed  = active !== null && !isActive
+  const on     = active === index
+  const dimmed = active !== null && !on
 
   return (
     <div
-      className="glass-card rounded-3xl p-6 cursor-default transition-all duration-300"
+      data-reveal="scale"
+      className="glass-card spotlight p-5 cursor-default transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
       style={{
-        borderColor:  isActive ? `${cat.color}50` : 'transparent',
-        boxShadow:    isActive ? `0 0 32px ${cat.color}20, 0 8px 24px rgba(0,0,0,0.15)` : undefined,
-        opacity:      isDimmed ? 0.45 : 1,
-        transform:    isActive ? 'translateY(-4px) scale(1.02)' : 'translateY(0) scale(1)',
+        borderColor: on ? `color-mix(in srgb, ${cat.tone} 40%, transparent)` : 'var(--border)',
+        boxShadow:   on ? `0 18px 44px -18px color-mix(in srgb, ${cat.tone} 55%, transparent)` : 'var(--sh-1)',
+        opacity:     dimmed ? 0.42 : 1,
+        transform:   on ? 'translateY(-4px)' : 'none',
       }}
       onMouseEnter={() => onHover(index)}
       onMouseLeave={onLeave}
     >
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-5">
-        <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform duration-300"
-          style={{
-            background:  `${cat.color}18`,
-            transform:   isActive ? 'rotate(-8deg) scale(1.1)' : 'none',
-          }}
-          aria-hidden="true"
+      <div className="flex items-center justify-between mb-4">
+        <h3
+          className="text-[15px] font-bold tracking-[-0.01em] transition-colors duration-300"
+          style={{ fontFamily: 'var(--font-display)', color: on ? cat.tone : 'var(--text)' }}
         >
-          {cat.icon}
-        </div>
-        <div>
-          <h3
-            className="text-lg font-bold dark:text-white text-[#1a1830] transition-colors duration-200"
-            style={{ fontFamily: 'var(--font-display)', color: isActive ? cat.color : undefined }}
-          >
-            {cat.title}
-          </h3>
-          <div className="text-xs font-mono text-[--text-dim] mt-0.5">
-            {cat.skills.length} technologies
-          </div>
-        </div>
+          {cat.title}
+        </h3>
+        <span className="text-[10px] font-mono text-[--text-dim]">
+          {String(cat.skills.length).padStart(2, '0')}
+        </span>
       </div>
 
-      {/* Pills */}
-      <div className="flex flex-wrap gap-2">
+      {/* Accent rule that fills on hover */}
+      <span
+        className="block h-px mb-4 origin-left transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{ background: cat.tone, transform: on ? 'scaleX(1)' : 'scaleX(0.14)' }}
+        aria-hidden="true"
+      />
+
+      <div className="flex flex-wrap gap-1.5">
         {cat.skills.map((skill, si) => (
           <span
             key={skill}
-            className="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold transition-all duration-200"
+            className="px-2 py-[3px] text-[11px] font-mono transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{
-              background:   isActive ? `${cat.color}18` : 'rgba(255,255,255,0.05)',
-              color:        isActive ? cat.color : 'var(--text-muted)',
-              border:       `1px solid ${isActive ? `${cat.color}35` : 'var(--border)'}`,
-              transitionDelay: isActive ? `${si * 18}ms` : '0ms',
-              transform:    isActive ? 'translateY(-1px)' : 'none',
+              borderRadius: 'var(--r-xs)',
+              background: on ? `color-mix(in srgb, ${cat.tone} 12%, transparent)` : 'var(--bg-2)',
+              color:      on ? cat.tone : 'var(--text-dim)',
+              border:     `1px solid ${on ? `color-mix(in srgb, ${cat.tone} 26%, transparent)` : 'var(--border)'}`,
+              transitionDelay: on ? `${si * 22}ms` : '0ms',
+              transform: on ? 'translateY(-1px)' : 'none',
             }}
           >
             {skill}
@@ -174,154 +138,123 @@ const CategoryCard = memo(function CategoryCard({
   )
 })
 
-// ─── Main Component ───────────────────────────────────────────────────────────
-
+/* ─── Main ─────────────────────────────────────────────────────────────── */
 export default function Skills() {
-  const ref                           = useReveal()
-  const barsRef                       = useRef<HTMLDivElement>(null)
-  const [animated, setAnimated]       = useState(false)
-  const [hoveredCat, setHoveredCat]   = useState<number | null>(null)
+  const ref     = useReveal()
+  const barsRef = useRef<HTMLDivElement>(null)
+  const [animated, setAnimated]     = useState(false)
+  const [hoveredCat, setHoveredCat] = useState<number | null>(null)
 
-  const handleHover  = useCallback((i: number) => setHoveredCat(i), [])
-  const handleLeave  = useCallback(() => setHoveredCat(null), [])
+  const handleHover = useCallback((i: number) => setHoveredCat(i), [])
+  const handleLeave = useCallback(() => setHoveredCat(null), [])
 
-  // Trigger bar animation on scroll-into-view
   useEffect(() => {
     const el = barsRef.current
     if (!el) return
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setAnimated(true); obs.disconnect() } },
-      { threshold: 0.3 }
+      { threshold: 0.25 }
     )
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
 
   return (
-    <>
-      <section
-        id="skills"
-        ref={ref as React.RefObject<HTMLDivElement>}
-        className="py-28 relative overflow-hidden"
-      >
-        {/* Ambient glows */}
-        <div className="absolute top-0 left-1/2 w-96 h-96 rounded-full opacity-[0.04] bg-[#00d4ff] blur-3xl pointer-events-none" aria-hidden="true" />
-        <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full opacity-[0.03] bg-[#9b5de5] blur-3xl pointer-events-none" aria-hidden="true" />
+    <section
+      id="skills"
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className="section"
+    >
+      <div
+        data-parallax
+        className="absolute top-0 left-1/3 w-[420px] aspect-square rounded-full opacity-[0.05] blur-[100px] pointer-events-none"
+        style={{ ['--par' as string]: '-60px', background: 'var(--c-2)' }}
+        aria-hidden="true"
+      />
 
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
+      <div className="container-x">
+        <SectionHeader
+          index="03 —"
+          title="Skills &"
+          emphasis="Technologies"
+          standfirst="Constantly learning, constantly building."
+        />
 
-          {/* Section header */}
-          <div className="flex items-center gap-4 mb-6 reveal">
-            <span className="font-mono text-sm text-[--accent]">03.</span>
-            <h2
-              className="text-4xl md:text-5xl font-black dark:text-white text-[#1a1830]"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              Skills &amp; <em className="italic text-[--accent]">Technologies</em>
-            </h2>
-            <div className="flex-1 h-px bg-[--border]" />
-          </div>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
 
-          <p
-            className="text-lg italic dark:text-white/55 text-[#3b3860] font-semibold mb-14 reveal"
-            style={{ fontFamily: 'var(--font-italic)' }}
-          >
-            Constantly learning, constantly building
-          </p>
-
-          {/* ── Top two-col: proficiencies + specializations ── */}
-          <div className="grid lg:grid-cols-2 gap-16 mb-16">
-
-            {/* Skill bars */}
-            <div className="reveal-left" ref={barsRef}>
-              <h3
-                className="text-xl font-bold dark:text-white text-[#1a1830] mb-8 flex items-center gap-2"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                <span
-                  className="inline-block w-1 h-5 rounded-full bg-[--accent]"
-                  aria-hidden="true"
-                />
-                Core Proficiencies
-              </h3>
-              <div className="space-y-6">
-                {PROFICIENCY.map(s => (
-                  <SkillBar key={s.name} skill={s} animated={animated} />
-                ))}
-              </div>
-            </div>
-
-            {/* Specialization cards */}
-            <div className="reveal-right">
-              <h3
-                className="text-xl font-bold dark:text-white text-[#1a1830] mb-8 flex items-center gap-2"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                <span
-                  className="inline-block w-1 h-5 rounded-full bg-[--accent]"
-                  aria-hidden="true"
-                />
-                Specializations
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {SPECIALIZATIONS.map((s, i) => (
-                  <div
-                    key={s.title}
-                    className={`glass-card glass-card-hover rounded-2xl p-4 cursor-default group d${i + 1} transition-all duration-300`}
-                    style={{ borderColor: 'transparent' }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = `${s.color}40`)}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = 'transparent')}
-                  >
-                    <div
-                      className="text-2xl mb-2 transition-transform duration-300 group-hover:scale-125 group-hover:-rotate-6 inline-block"
-                      aria-hidden="true"
-                    >
-                      {s.icon}
-                    </div>
-                    <div
-                      className="text-sm font-black dark:text-white text-[#0e0c1f] transition-colors duration-200 group-hover:text-[var(--accent)]"
-                    >
-                      {s.title}
-                    </div>
-                    <div className="text-xs text-[--text-muted] mt-0.5">{s.desc}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ── Category grid ── */}
-          <div className="reveal">
-            <h3
-              className="text-xl font-bold dark:text-white text-[#1a1830] mb-6 flex items-center gap-2"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              <span
-                className="inline-block w-1 h-5 rounded-full bg-[--accent]"
-                aria-hidden="true"
-              />
-              Full Tech Stack
-              <span className="text-sm font-mono font-normal text-[--text-dim] ml-2">
-                — hover a category to highlight
-              </span>
+          {/* Proficiencies */}
+          <div className="reveal-left" ref={barsRef}>
+            <h3 className="flex items-center gap-2.5 text-[13px] font-mono font-semibold uppercase tracking-[0.16em] mb-7 text-[--text-muted]">
+              <span className="w-1 h-4 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
+              Core Proficiencies
             </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {CATEGORIES.map((cat, i) => (
-                <CategoryCard
-                  key={cat.title}
-                  cat={cat}
-                  index={i}
-                  active={hoveredCat}
-                  onHover={handleHover}
-                  onLeave={handleLeave}
-                />
+            <div className="space-y-5">
+              {PROFICIENCY.map(s => (
+                <SkillBar key={s.name} skill={s} animated={animated} />
               ))}
             </div>
           </div>
 
+          {/* Specializations */}
+          <div className="reveal-right">
+            <h3 className="flex items-center gap-2.5 text-[13px] font-mono font-semibold uppercase tracking-[0.16em] mb-7 text-[--text-muted]">
+              <span className="w-1 h-4 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
+              Specializations
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              {SPECIALIZATIONS.map(s => (
+                <div
+                  key={s.title}
+                  className="glass-card glass-card-hover spotlight p-4 group cursor-default"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <span
+                      className="mt-[7px] w-1.5 h-1.5 rounded-full flex-shrink-0 transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-150"
+                      style={{ background: 'var(--accent)' }}
+                      aria-hidden="true"
+                    />
+                    <div className="min-w-0">
+                      <div
+                        className="text-[13.5px] font-semibold leading-snug transition-colors duration-200 group-hover:text-[--accent]"
+                        style={{ color: 'var(--text)' }}
+                      >
+                        {s.title}
+                      </div>
+                      <div className="text-[11.5px] text-[--text-dim] mt-0.5 leading-snug">
+                        {s.desc}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </section>
-    </>
+
+        {/* Full stack grid */}
+        <div>
+          <h3 className="flex flex-wrap items-center gap-2.5 text-[13px] font-mono font-semibold uppercase tracking-[0.16em] mb-6 text-[--text-muted] reveal">
+            <span className="w-1 h-4 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
+            Full Tech Stack
+            <span className="normal-case tracking-normal font-normal text-[--text-dim] text-[12px]">
+              — hover a category to focus it
+            </span>
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {CATEGORIES.map((cat, i) => (
+              <CategoryCard
+                key={cat.title}
+                cat={cat}
+                index={i}
+                active={hoveredCat}
+                onHover={handleHover}
+                onLeave={handleLeave}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }

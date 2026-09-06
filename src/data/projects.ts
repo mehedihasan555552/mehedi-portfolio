@@ -11,7 +11,7 @@ export const projects = [
     image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
     gallery: [
       'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80',
-      'https://images.unsplash.com/photo-1530026405186-ed1f139313f3?w=800&q=80',
+      'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=800&q=80',
       'https://images.unsplash.com/photo-1518152006812-edab29b069ac?w=800&q=80',
     ],
     github: 'https://github.com/mehedihasan555552',
@@ -171,7 +171,7 @@ export const projects = [
     description: 'Drag-and-drop workflow automation platform with a visual builder, scheduled tasks, webhook triggers, and real-time execution monitoring.',
     longDescription: `A Zapier-like automation platform built for technical teams who need more control. The visual flow builder supports conditional branching, data transformation, and loops. Workflows trigger on webhooks, schedules (cron), or API calls.\n\nThe execution engine is built on Celery with Redis as a broker, handling thousands of scheduled tasks reliably. Each workflow execution is logged with step-by-step detail for debugging.`,
     tech: ['Django', 'Celery', 'Redis', 'WebSocket', 'React', 'Docker', 'PostgreSQL'],
-    image: 'https://images.unsplash.com/photo-1518432031352-d6fc5734595f?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&q=80',
     gallery: [
       'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&q=80',
       'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80',
