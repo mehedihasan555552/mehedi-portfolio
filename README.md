@@ -1,4 +1,4 @@
-# Mehedi Hasan — Portfolio v2.0
+# Mehedi Hasan — Portfolio v2.1
 
 A premium, fully-responsive portfolio built with **Next.js 14** + **Tailwind CSS**.
 
