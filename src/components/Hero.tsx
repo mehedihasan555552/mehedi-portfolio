@@ -7,11 +7,11 @@ import me from '../../images/professional-mehedi.png'
 
 /* ─── Constants ─────────────────────────────────────────────── */
 const ROLES = [
-  'Full-Stack Developer',
-  'AI/ML Engineer',
-  'LLM Architect',
-  'Python Expert',
-  'Backend Craftsman',
+  'Senior AI/LLM Engineer',
+  'Multi-Agent Systems Architect',
+  'Agent Orchestration & RAG Expert',
+  'AI Evals & Guardrails Specialist',
+  'Scalable Python Backend Craftsman',
 ]
 
 const SOCIALS = [
@@ -22,18 +22,15 @@ const SOCIALS = [
 ]
 
 /**
- * Badges sit on the circle inscribed in the orbit wrapper. The wrapper is
- * square and inset negatively from the photo, so `50 ± 50·cos/sin` lands them
- * exactly on a ring outside the portrait — no overlap, no clipping.
- * Angles skip the 60°–120° arc, which is where the name card sits.
+ * Badges sit on the circle inscribed in the orbit wrapper.
  */
 const TECH_STACK = [
-  { label: 'Python',    angle: -38 },
-  { label: 'Django',    angle:  16 },
-  { label: 'FastAPI',   angle: 148 },
-  { label: 'React',     angle: 190 },
-  { label: 'LangChain', angle: 232 },
-  { label: 'OpenAI',    angle: 288 },
+  { label: 'Python',       angle: -38 },
+  { label: 'LangGraph',    angle:  16 },
+  { label: 'FastAPI',      angle: 148 },
+  { label: 'Hybrid RAG',   angle: 190 },
+  { label: 'Multi-Agent',  angle: 232 },
+  { label: 'Claude/GPT-4', angle: 288 },
 ]
 
 const SYN = {
@@ -45,17 +42,17 @@ const SYN = {
 }
 
 const CODE_LINES: { text: string; color: string }[] = [
-  { text: 'class MehediHasan(SoftwareEngineer):',  color: SYN.kw  },
-  { text: '    stack = ["Python", "Django", "AI"]', color: SYN.txt },
-  { text: '    passion = "Building the future"',    color: SYN.txt },
-  { text: '',                                        color: ''      },
-  { text: '    def solve(self, problem) -> Impact:', color: SYN.fn  },
-  { text: '        plan = self.architect(problem)',  color: SYN.txt },
-  { text: '        code = self.craft(plan)',         color: SYN.txt },
-  { text: '        return self.ship(code)',          color: SYN.str },
-  { text: '',                                        color: ''      },
-  { text: '>>> MehediHasan().solve("your_problem")', color: SYN.fn  },
-  { text: '"Impact delivered."',                     color: SYN.kw  },
+  { text: 'class AgenticSystem(Orchestrator):',           color: SYN.kw  },
+  { text: '    stack = ["Python", "LangGraph", "FastAPI"]', color: SYN.txt },
+  { text: '    agents = [Supervisor(), RAG(), Evals()]',   color: SYN.txt },
+  { text: '',                                              color: ''      },
+  { text: '    async def deploy(self, goal) -> System:',   color: SYN.fn  },
+  { text: '        graph = self.compose_agents(goal)',     color: SYN.txt },
+  { text: '        score = await self.evals.audit(graph)', color: SYN.txt },
+  { text: '        return self.ship_with_guardrails()',    color: SYN.str },
+  { text: '',                                              color: ''      },
+  { text: '>>> AgenticSystem().deploy("Enterprise AI")',   color: SYN.fn  },
+  { text: '"Production Ready. 99.4% Verified."',          color: SYN.kw  },
 ]
 
 // Deterministic so server and client markup agree
@@ -343,11 +340,11 @@ export default function Hero() {
               className="text-[15px] sm:text-base leading-relaxed max-w-lg mb-8 text-[--text-muted] animate-fade-in-up"
               style={{ animationDelay: '540ms' }}
             >
-              Full-Stack Python Django Developer &amp; AI/ML Consultant building{' '}
+              Senior AI/LLM Engineer with{' '}
               <strong className="font-semibold" style={{ color: 'var(--text)' }}>
-                intelligent web applications
+                5+ years building production AI systems
               </strong>{' '}
-              and advanced ML/NLP solutions for real-world impact.
+              and scalable Python backends. Specialised in LLM-powered multi-agent systems, RAG pipelines, agent orchestration, and AI evaluation frameworks.
             </p>
 
             <div className="grid grid-cols-3 gap-3 mb-8 max-w-md">
@@ -363,8 +360,11 @@ export default function Hero() {
               <a href="#contact" onClick={handleScroll('contact')} className="btn btn-primary">
                 &gt; Let&apos;s Work Together_
               </a>
-              <a href="#projects" onClick={handleScroll('projects')} className="btn btn-ghost">
-                ./view-projects.sh
+              <a href="#blog" onClick={handleScroll('blog')} className="btn btn-ghost">
+                ./read-insights.sh
+              </a>
+              <a href="#projects" onClick={handleScroll('projects')} className="btn btn-ghost text-xs">
+                ./projects.sh
               </a>
             </div>
 
@@ -461,7 +461,7 @@ export default function Hero() {
                   Md Mehedi Hasan
                 </div>
                 <div className="font-mono text-[9px] sm:text-[10px] mt-0.5" style={{ color: 'var(--accent)' }}>
-                  Sr. Full-Stack &amp; LLM Eng.
+                  Sr. AI/LLM &amp; Systems Architect
                 </div>
               </div>
             </div>

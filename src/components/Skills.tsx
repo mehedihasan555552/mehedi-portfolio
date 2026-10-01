@@ -5,30 +5,30 @@ import { useCountUp } from '@/hooks/useCountUp'
 import SectionHeader from './SectionHeader'
 
 const CATEGORIES = [
-  { title: 'AI / ML',   tone: 'var(--c-1)', skills: ['TensorFlow','PyTorch','Scikit-learn','Keras','OpenCV','Hugging Face','LangChain','NLTK','SpaCy','Pandas','NumPy'] },
-  { title: 'Backend',   tone: 'var(--c-2)', skills: ['Python','Django','FastAPI','Flask','REST API','GraphQL','Celery','Redis','WebSocket','JWT','OAuth2'] },
-  { title: 'Frontend',  tone: 'var(--c-3)', skills: ['React.js','Next.js','TypeScript','JavaScript','HTML5','CSS3','Tailwind CSS','Bootstrap','SASS'] },
-  { title: 'DevOps',    tone: 'var(--c-5)', skills: ['Docker','CI/CD','GitHub Actions','Nginx','Gunicorn','Ubuntu','AWS EC2','Vercel','Heroku'] },
-  { title: 'Databases', tone: 'var(--c-6)', skills: ['PostgreSQL','MySQL','SQLite','MongoDB','Redis','Firebase'] },
-  { title: 'Tools',     tone: 'var(--c-4)', skills: ['Git','GitHub','VS Code','Figma','Postman','Jupyter','Linux','Bash'] },
+  { title: 'Agentic AI',  tone: 'var(--c-1)', skills: ['LangGraph','Multi-Agent DAG','Supervisor Pattern','Tool Calling','Pydantic V2','State Machines','AutoGen'] },
+  { title: 'RAG & Search',tone: 'var(--c-2)', skills: ['Hybrid Retrieval','BM25','Dense Vectors','Cohere Rerank','Qdrant','Pinecone','Parent-Child RAG','Embeddings'] },
+  { title: 'Evals & Security', tone: 'var(--c-5)', skills: ['Ragas','LLM-as-a-Judge','NeMo Guardrails','PII Redaction','Prompt Injection Defense','Langfuse','TruLens'] },
+  { title: 'Backend',     tone: 'var(--c-3)', skills: ['Python','FastAPI','AsyncIO','Django / DRF','Celery','Redis Streams','SSE Streaming','WebSockets'] },
+  { title: 'DevOps & MLOps', tone: 'var(--c-4)', skills: ['Docker','vLLM','GitHub Actions CI/CD','Nginx','AWS EC2','Ubuntu Linux','Uvicorn'] },
+  { title: 'Databases',   tone: 'var(--c-6)', skills: ['PostgreSQL','Qdrant','Redis','Pinecone','MongoDB','MySQL','SQLite'] },
 ]
 
 const PROFICIENCY = [
-  { name: 'Python',           level: 95, delay: 0   },
-  { name: 'Django / DRF',     level: 93, delay: 110 },
-  { name: 'Machine Learning', level: 89, delay: 220 },
-  { name: 'Deep Learning',    level: 86, delay: 330 },
-  { name: 'React / Next.js',  level: 83, delay: 440 },
-  { name: 'Docker & DevOps',  level: 80, delay: 550 },
+  { name: 'Python & Async Backends',    level: 96, delay: 0   },
+  { name: 'Multi-Agent Orchestration',  level: 94, delay: 110 },
+  { name: 'Advanced RAG & Hybrid Search',level: 93, delay: 220 },
+  { name: 'AI Evals & Regression Testing',level: 90, delay: 330 },
+  { name: 'LLM Gateways & Guardrails',   level: 89, delay: 440 },
+  { name: 'Docker, DevOps & CI/CD',     level: 85, delay: 550 },
 ]
 
 const SPECIALIZATIONS = [
-  { title: 'Machine Learning',  desc: 'Supervised, Unsupervised, RL' },
-  { title: 'Deep Learning',     desc: 'CNN, RNN, LSTM, Transformers' },
-  { title: 'NLP',               desc: 'Classification, Summarization, QA' },
-  { title: 'Computer Vision',   desc: 'Detection, Segmentation' },
-  { title: 'LLM / RAG',         desc: 'GPT, Claude, Llama, Embeddings' },
-  { title: 'API Architecture',  desc: 'REST, GraphQL, Microservices' },
+  { title: 'Multi-Agent Systems',   desc: 'Supervisor, Cyclic State Graphs' },
+  { title: 'Advanced Hybrid RAG',   desc: 'BM25 + Dense + Cohere Rerank' },
+  { title: 'Tool-Enabled Agents',   desc: 'Pydantic V2, Self-Healing Loops' },
+  { title: 'Provider-Agnostic Gateways', desc: 'LiteLLM, Resilient Failovers' },
+  { title: 'AI Evals & CI/CD',      desc: 'Ragas, LLM-as-a-Judge, PR Gating' },
+  { title: 'Guardrails & Security', desc: 'Prompt Injection, PII Masking' },
 ]
 
 /* ─── Proficiency bar ──────────────────────────────────────────────────── */

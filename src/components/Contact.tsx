@@ -124,7 +124,7 @@ export default function Contact() {
 
       <div className="container-x">
         <SectionHeader
-          index="06 —"
+          index="07 —"
           title="Get In"
           emphasis="Touch"
           standfirst="Have a project or want to collaborate? Let's build something extraordinary together."

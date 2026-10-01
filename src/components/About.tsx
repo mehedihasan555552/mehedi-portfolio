@@ -4,8 +4,8 @@ import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
 
 const MARQUEE_SKILLS = [
-  'Python','Django','FastAPI','React','Next.js','TensorFlow','PyTorch','Docker','PostgreSQL',
-  'Redis','LangChain','OpenAI','Hugging Face','TypeScript','Celery','Nginx',
+  'Python','LangGraph','Multi-Agent Systems','Hybrid RAG','FastAPI','LiteLLM','Ragas Evals','Guardrails',
+  'Qdrant','Docker','PostgreSQL','Redis','OpenAI','Anthropic Claude','Celery','TypeScript',
 ]
 
 const FACTS = [
@@ -119,23 +119,20 @@ export default function About() {
               className="text-[clamp(1.5rem,3vw,2.1rem)] font-bold leading-[1.15]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              Full-Stack Developer &amp;{' '}
-              <span style={{ color: 'var(--accent)' }}>AI/ML Consultant</span>
+              Senior AI/LLM Engineer &amp;{' '}
+              <span style={{ color: 'var(--accent)' }}>Systems Architect</span>
             </h3>
 
             <p className="text-[15.5px] leading-relaxed text-[--text-muted]">
               Based in{' '}
               <strong className="font-semibold" style={{ color: 'var(--text)' }}>
-                Savar, Dhaka, Bangladesh
+                Dhaka, Bangladesh
               </strong>
-              , I specialize in building intelligent web applications and training advanced
-              models in Machine Learning, Deep Learning, and NLP.
+              , I specialize in building production AI systems and scalable Python backends with over 5+ years of hands-on engineering experience.
             </p>
 
             <p className="text-[15.5px] leading-relaxed text-[--text-muted]">
-              With 5+ years of experience, I combine strong full-stack development with a
-              passion for AI/ML, delivering high-quality data-driven solutions for
-              international clients. Currently engineering advanced LLM-powered agents at{' '}
+              Specialised in <strong className="font-semibold" style={{ color: 'var(--text)' }}>LLM-powered multi-agent systems</strong>, RAG pipelines, agent orchestration, and AI evaluation frameworks. Experienced in designing tool-enabled agents, hybrid retrieval systems, provider-agnostic LLM architectures, guardrails, observability, regression testing, and production deployment. Currently engineering human-AI teammate systems at{' '}
               <a
                 href="https://www.facebook.com/MYai-Robotics-1058509204012017/"
                 target="_blank"
@@ -152,8 +149,7 @@ export default function About() {
               className="pl-5 py-1 text-[16px] leading-relaxed italic"
               style={{ borderLeft: '2px solid var(--accent)', color: 'var(--text)' }}
             >
-              &ldquo;From concept to deployment — I manage the entire software development
-              lifecycle with precision and efficiency.&rdquo;
+              &ldquo;Engineering resilient, non-deterministic AI pipelines into deterministic, high-throughput production realities.&rdquo;
             </blockquote>
 
             <dl className="grid sm:grid-cols-2 gap-3 pt-2">

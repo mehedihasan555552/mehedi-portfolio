@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import SocialIcon from './SocialIcon'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const NAV_ITEMS = [
@@ -9,6 +10,7 @@ const NAV_ITEMS = [
   { label: 'Experience', id: 'experience' },
   { label: 'Skills', id: 'skills' },
   { label: 'Projects', id: 'projects' },
+  { label: 'Blog', id: 'blog', path: '/blog' },
   { label: 'Education', id: 'education' },
   { label: 'Contact', id: 'contact' },
 ]
@@ -108,12 +110,25 @@ export default function Navbar() {
     left: 0, width: 0, on: false,
   })
   const { theme, toggle } = useTheme()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const listRef = useRef<HTMLDivElement>(null)
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
 
   // Scroll state + scrollspy, rAF-throttled
   useEffect(() => {
+    if (pathname.startsWith('/blog')) {
+      setActive('blog')
+      setScrolled(true)
+      return
+    }
+    if (pathname.startsWith('/projects')) {
+      setActive('projects')
+      setScrolled(true)
+      return
+    }
+
     let ticking = false
     const onScroll = () => {
       if (ticking) return
@@ -135,7 +150,7 @@ export default function Navbar() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [pathname])
 
   // Slide the indicator pill to whichever link is active or hovered
   const movePill = useCallback((id: string | null) => {
@@ -175,10 +190,21 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', onKey)
   }, [menuOpen])
 
-  const navTo = useCallback((id: string) => {
+  const navTo = useCallback((id: string, path?: string) => {
     setMenuOpen(false)
-    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 90)
-  }, [])
+    if (pathname === '/') {
+      const el = document.getElementById(id)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+        return
+      }
+    }
+    if (path && (pathname.startsWith('/blog') || pathname.startsWith('/projects'))) {
+      router.push(path)
+    } else {
+      router.push(`/#${id}`)
+    }
+  }, [pathname, router])
 
   return (
     <>
@@ -244,8 +270,8 @@ export default function Navbar() {
                 <a
                   key={item.id}
                   ref={el => { linkRefs.current[item.id] = el }}
-                  href={`#${item.id}`}
-                  onClick={e => { e.preventDefault(); navTo(item.id) }}
+                  href={pathname === '/' ? `#${item.id}` : (item.path || `/#${item.id}`)}
+                  onClick={e => { e.preventDefault(); navTo(item.id, item.path) }}
                   onMouseEnter={() => movePill(item.id)}
                   onFocus={() => movePill(item.id)}
                   aria-current={isActive ? 'page' : undefined}
@@ -329,8 +355,8 @@ export default function Navbar() {
           {NAV_ITEMS.map((item, i) => (
             <a
               key={item.id}
-              href={`#${item.id}`}
-              onClick={e => { e.preventDefault(); navTo(item.id) }}
+              href={pathname === '/' ? `#${item.id}` : (item.path || `/#${item.id}`)}
+              onClick={e => { e.preventDefault(); navTo(item.id, item.path) }}
               className="relative py-2.5 text-[34px] font-bold tracking-tight"
               style={{
                 fontFamily: 'var(--font-display)',

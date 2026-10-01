@@ -26,22 +26,29 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://mehediswpu.vercel.app'),
 
   title: {
-    default: 'Md Mehedi Hasan | Sr. Full-Stack & LLM Engineer',
+    default: 'Md Mehedi Hasan | Senior AI/LLM Engineer & Multi-Agent Systems Architect',
     template: '%s | Mehedi Hasan',
   },
 
   description:
-    'Full-Stack Python Django Developer & AI/ML Engineer based in Dhaka, Bangladesh. Expert in Machine Learning, Deep Learning, NLP, and intelligent web applications.',
+    'Senior AI/LLM Engineer with 5+ years building production AI systems and scalable Python backends. Specialised in LLM-powered multi-agent systems, RAG pipelines, agent orchestration, and AI evaluation frameworks.',
 
   keywords: [
     'Mehedi Hasan',
-    'Full-Stack Developer',
-    'Python Django',
-    'AI ML Engineer',
-    'LLM Engineer',
-    'Bangladesh Developer',
-    'Machine Learning',
-    'React Next.js',
+    'Senior AI Engineer',
+    'Senior LLM Engineer',
+    'Multi-Agent Systems',
+    'Agentic AI',
+    'LangGraph',
+    'RAG Pipelines',
+    'Hybrid Retrieval',
+    'AI Evaluation Frameworks',
+    'Ragas',
+    'Guardrails',
+    'LLM Observability',
+    'Python Backends',
+    'FastAPI',
+    'Production AI',
   ],
 
   authors: [

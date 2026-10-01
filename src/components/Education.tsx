@@ -70,7 +70,7 @@ export default function Education() {
 
       <div className="container-x">
         <SectionHeader
-          index="05 —"
+          index="06 —"
           title="Education"
           emphasis="Journey"
           standfirst="Building knowledge through continuous learning and academic excellence."

@@ -1,7 +1,15 @@
 import FooterSocials from '@/components/FooterSocials'
 
 const YEAR = 2026
-const QUICK_LINKS = ['About', 'Experience', 'Skills', 'Projects', 'Education', 'Contact']
+const QUICK_LINKS = [
+  { label: 'About', href: '/#about' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Skills', href: '/#skills' },
+  { label: 'Projects', href: '/#projects' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Education', href: '/#education' },
+  { label: 'Contact', href: '/#contact' },
+]
 
 const CONTACT = [
   { value: 'mehediswpu@gmail.com',    href: 'mailto:mehediswpu@gmail.com' },
@@ -70,8 +78,8 @@ export default function Footer() {
             <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
               {QUICK_LINKS.map(l => (
                 <a
-                  key={l}
-                  href={`#${l.toLowerCase()}`}
+                  key={l.label}
+                  href={l.href}
                   className="group inline-flex items-center gap-2 text-[13.5px] text-[--text-muted] hover:text-[--accent] transition-colors duration-200"
                 >
                   <span
@@ -79,7 +87,7 @@ export default function Footer() {
                     style={{ background: 'currentColor', opacity: 0.5 }}
                     aria-hidden="true"
                   />
-                  {l}
+                  {l.label}
                 </a>
               ))}
             </div>
