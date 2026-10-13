@@ -2,6 +2,7 @@
 import { useState, useMemo, memo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import { blogs, BLOG_CATEGORIES } from '@/data/blogs'
 import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
@@ -23,10 +24,17 @@ const BlogCard = memo(function BlogCard({
   priority?: boolean
 }) {
   return (
-    <article
-      data-reveal="scale"
-      className="group relative glass-card glass-card-hover spotlight overflow-hidden flex flex-col h-full"
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.94 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -6 }}
+      className="group relative glass-card glass-card-hover spotlight overflow-hidden flex flex-col h-full tilt-3d"
     >
+      <div className="tilt-glare" />
+
       <Link
         href={`/blog/${blog.slug}`}
         className="absolute inset-0 z-0 focus-visible:outline-none"
@@ -53,7 +61,7 @@ const BlogCard = memo(function BlogCard({
 
         {/* Category tag */}
         <span
-          className="absolute top-3.5 left-3.5 px-2.5 py-1 text-[10px] font-mono font-semibold uppercase tracking-[0.08em] backdrop-blur-md"
+          className="blog-category-badge absolute top-3.5 left-3.5 px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-[0.08em] backdrop-blur-md"
           style={{
             borderRadius: 'var(--r-sm)',
             background: 'rgb(2 8 5 / 0.72)',
@@ -66,7 +74,7 @@ const BlogCard = memo(function BlogCard({
 
         {/* Date & read time */}
         <span
-          className="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-white/85"
+          className="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-[12px] font-mono text-white/85"
         >
           <span>{blog.publishedAt}</span>
           <span className="flex items-center">
@@ -77,12 +85,12 @@ const BlogCard = memo(function BlogCard({
       </div>
 
       {/* Card body */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
         <div className="flex flex-wrap gap-1.5 mb-2.5">
           {blog.tags.slice(0, 3).map(tag => (
             <span
               key={tag}
-              className="px-2 py-[2px] text-[10px] font-mono text-[--text-dim]"
+              className="px-2.5 py-[3px] text-[11.5px] font-mono font-semibold text-[--text-dim]"
               style={{
                 borderRadius: 'var(--r-xs)',
                 background: 'var(--bg-2)',
@@ -95,13 +103,13 @@ const BlogCard = memo(function BlogCard({
         </div>
 
         <h3
-          className="text-[17px] font-bold leading-snug tracking-[-0.02em] transition-colors duration-200 group-hover:text-[--accent] line-clamp-2 mb-2"
+          className="text-[19px] sm:text-[21.5px] font-extrabold leading-snug tracking-[-0.015em] transition-colors duration-200 group-hover:text-[--accent] line-clamp-2 mb-2"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {blog.title}
         </h3>
 
-        <p className="text-[13px] leading-relaxed text-[--text-muted] line-clamp-2 mb-4">
+        <p className="text-[15px] sm:text-[15.5px] font-medium leading-relaxed text-[--text-muted] line-clamp-2 mb-4">
           {blog.excerpt}
         </p>
 
@@ -118,10 +126,10 @@ const BlogCard = memo(function BlogCard({
                   border: '1px solid var(--border)',
                 }}
               >
-                <div className="text-[13px] font-mono font-semibold" style={{ color: 'var(--accent)' }}>
+                <div className="text-[15px] font-mono font-bold" style={{ color: 'var(--accent)' }}>
                   {m.value}
                 </div>
-                <div className="text-[9.5px] text-[--text-dim] truncate font-mono uppercase tracking-wider">{m.label}</div>
+                <div className="text-[11px] font-bold text-[--text-dim] truncate font-mono uppercase tracking-wider">{m.label}</div>
               </div>
             ))}
           </div>
@@ -129,22 +137,22 @@ const BlogCard = memo(function BlogCard({
 
         {/* Card action footer */}
         <div
-          className="pt-3.5 mt-auto flex items-center justify-between"
+          className="pt-4 mt-auto flex items-center justify-between"
           style={{ borderTop: '1px solid var(--border)' }}
         >
           <span
-            className="text-[12.5px] font-mono font-semibold transition-colors duration-200 flex items-center gap-1.5"
+            className="text-[14px] font-bold transition-colors duration-200 flex items-center gap-1.5"
             style={{ color: 'var(--accent)' }}
           >
             Read Article
             <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
           </span>
-          <span className="text-[11px] font-mono text-[--text-dim]">
+          <span className="text-[12px] font-mono text-[--text-dim]">
             {blog.keyTakeaways.length} Key Takeaways
           </span>
         </div>
       </div>
-    </article>
+    </motion.article>
   )
 })
 
@@ -180,6 +188,15 @@ export default function BlogSection() {
         aria-hidden="true"
       />
 
+      {/* Floating 3D ambient accent */}
+      <div
+        className="floating-3d-geom hidden lg:block absolute top-16 left-6 w-20 h-20 pointer-events-none opacity-30"
+        style={{ animationDuration: '22s' }}
+        aria-hidden="true"
+      >
+        <div className="w-full h-full border-2 border-dashed border-[--accent] rounded-full transform rotate-12" />
+      </div>
+
       <div className="container-x">
         <SectionHeader
           index="05 —"
@@ -192,40 +209,55 @@ export default function BlogSection() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-9 reveal">
           {/* Category tabs */}
           <div
-            className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none"
+            className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none"
             role="tablist"
             aria-label="Filter blog posts by category"
           >
             {BLOG_CATEGORIES.slice(0, 6).map(cat => {
               const on = selectedCategory === cat
               return (
-                <button
+                <motion.button
                   key={cat}
                   role="tab"
                   aria-selected={on}
                   onClick={() => setSelectedCategory(cat)}
-                  className="px-3.5 py-1.5 text-[12px] font-mono font-medium rounded-md whitespace-nowrap transition-all duration-200"
+                  whileHover={{ y: -1 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="relative px-4 py-2 text-[13px] font-mono font-medium rounded-md whitespace-nowrap transition-colors duration-200"
                   style={{
-                    background: on ? 'var(--accent)' : 'var(--card)',
                     color: on ? 'var(--on-accent)' : 'var(--text-muted)',
-                    border: `1px solid ${on ? 'var(--accent)' : 'var(--border)'}`,
-                    boxShadow: on ? '0 4px 14px -4px rgb(var(--accent-rgb) / 0.55)' : 'none',
                   }}
                 >
-                  {cat}
-                </button>
+                  {on && (
+                    <motion.span
+                      layoutId="active-blog-pill"
+                      className="absolute inset-0 rounded-md -z-10"
+                      style={{
+                        background: 'var(--accent)',
+                        boxShadow: '0 4px 14px -4px rgb(var(--accent-rgb) / 0.55)',
+                      }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  {!on && (
+                    <span
+                      className="absolute inset-0 rounded-md -z-10 border border-[--border] bg-[--card]"
+                    />
+                  )}
+                  <span className="relative z-10">{cat}</span>
+                </motion.button>
               )
             })}
           </div>
 
           {/* Search bar */}
-          <div className="relative min-w-[240px] md:w-72">
+          <div className="relative min-w-[240px] md:w-80">
             <input
               type="text"
               placeholder="Search concepts (RAG, LangGraph)..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full px-3.5 py-2 pl-9 text-[13px] font-mono rounded-md outline-none transition-all duration-200"
+              className="w-full px-4 py-2.5 pl-10 text-[14px] font-mono rounded-md outline-none transition-all duration-200"
               style={{
                 background: 'var(--bg-2)',
                 border: '1px solid var(--border)',
@@ -233,7 +265,7 @@ export default function BlogSection() {
               }}
             />
             <svg
-              className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-[--text-dim]"
+              className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[--text-dim]"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -246,7 +278,7 @@ export default function BlogSection() {
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-[--text-dim] hover:text-[--text]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-[--text-dim] hover:text-[--text]"
                 aria-label="Clear search"
               >
                 ✕
@@ -257,11 +289,13 @@ export default function BlogSection() {
 
         {/* Cards Grid */}
         {filteredBlogs.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBlogs.slice(0, 6).map((blog, idx) => (
-              <BlogCard key={blog.slug} blog={blog} priority={idx < 2} />
-            ))}
-          </div>
+          <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence mode="popLayout">
+              {filteredBlogs.slice(0, 6).map((blog, idx) => (
+                <BlogCard key={blog.slug} blog={blog} priority={idx < 2} />
+              ))}
+            </AnimatePresence>
+          </motion.div>
         ) : (
           <div className="text-center py-16 glass-card p-8">
             <p className="text-[15px] text-[--text-muted] mb-3">
@@ -278,17 +312,22 @@ export default function BlogSection() {
 
         {/* View All / Explore More CTA */}
         <div className="text-center mt-12 reveal flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/blog" className="btn btn-primary text-[13.5px]">
-            &gt; Explore All 10 Technical Articles_
-          </Link>
-          <a
+          <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', stiffness: 450, damping: 25 }}>
+            <Link href="/blog" className="btn btn-primary text-[13.5px]">
+              &gt; Explore All 10 Technical Articles_
+            </Link>
+          </motion.div>
+          <motion.a
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
             href="https://github.com/mehedihasan555552"
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-ghost text-[13px]"
           >
             Review AI System Code on GitHub ↗
-          </a>
+          </motion.a>
         </div>
       </div>
     </section>

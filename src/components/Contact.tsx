@@ -1,5 +1,6 @@
 'use client'
 import { useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
 
@@ -41,7 +42,7 @@ function Field({
   const shared = {
     id, name, value, placeholder, required,
     onChange, onFocus, onBlur,
-    className: 'w-full px-3.5 py-3 text-[14px] bg-transparent outline-none placeholder:text-[--text-dim] resize-none',
+    className: 'w-full px-4 py-3.5 text-[15px] sm:text-[16px] font-medium bg-transparent outline-none placeholder:text-[--text-dim] resize-none',
     style: { color: 'var(--text)' },
   }
 
@@ -49,7 +50,7 @@ function Field({
     <div className="space-y-2">
       <label
         htmlFor={id}
-        className="flex items-center justify-between text-[10px] font-mono font-semibold uppercase tracking-[0.16em] text-[--text-dim]"
+        className="flex items-center justify-between text-[12px] font-mono font-bold uppercase tracking-[0.16em] text-[--text-dim]"
       >
         <span className="flex items-center gap-1.5">
           <span
@@ -65,7 +66,7 @@ function Field({
         {trailing}
       </label>
       <div
-        className="transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        className="input-box transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
         style={{
           borderRadius: 'var(--r-md)',
           background: 'var(--bg-2)',
@@ -130,15 +131,27 @@ export default function Contact() {
           standfirst="Have a project or want to collaborate? Let's build something extraordinary together."
         />
 
+        {/* Ambient 3D floating accent */}
+        <div
+          className="floating-3d-geom hidden lg:block absolute bottom-8 left-8 w-20 h-20 pointer-events-none opacity-25"
+          style={{ animationDuration: '24s' }}
+          aria-hidden="true"
+        >
+          <div className="w-full h-full border border-dashed border-[--accent] rounded-2xl transform rotate-45" />
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-12">
 
           {/* ── Details ── */}
-          <div className="space-y-2.5 reveal-left">
+          <div className="space-y-3 reveal-left">
             {CONTACT_ITEMS.map(item => {
-              const Tag = item.href ? 'a' : 'div'
+              const MotionTag = item.href ? motion.a : motion.div
               return (
-                <Tag
+                <MotionTag
                   key={item.label}
+                  whileHover={{ x: 5, scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                   {...(item.href
                     ? {
                         href: item.href,
@@ -147,19 +160,20 @@ export default function Contact() {
                         'aria-label': `${item.label}: ${item.value}`,
                       }
                     : {})}
-                  className="group flex items-center gap-4 glass-card glass-card-hover spotlight px-4 py-3.5"
+                  className="group flex items-center gap-4 glass-card glass-card-hover spotlight px-4.5 py-4 tilt-3d cursor-pointer"
                 >
+                  <div className="tilt-glare" />
                   <span
                     className="w-1 self-stretch rounded-full flex-shrink-0 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
                     style={{ background: 'var(--border-hi)' }}
                     aria-hidden="true"
                   />
                   <span className="flex-1 min-w-0">
-                    <span className="block text-[10px] font-mono uppercase tracking-[0.16em] text-[--text-dim] mb-0.5">
+                    <span className="block text-[11px] font-mono font-bold uppercase tracking-[0.16em] text-[--text-dim] mb-0.5">
                       {item.label}
                     </span>
                     <span
-                      className="block text-[13.5px] font-medium break-words transition-colors duration-200 group-hover:text-[--accent]"
+                      className="block text-[15px] sm:text-[15.5px] font-semibold break-words transition-colors duration-200 group-hover:text-[--accent]"
                       style={{ color: 'var(--text)' }}
                     >
                       {item.value}
@@ -173,52 +187,56 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                   )}
-                </Tag>
+                </MotionTag>
               )
             })}
 
             {/* Socials */}
             <div className="pt-5">
-              <h3 className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-[--text-dim] mb-4">
+              <h3 className="flex items-center gap-3 text-[11.5px] font-mono font-bold uppercase tracking-[0.2em] text-[--text-dim] mb-4">
                 <span className="flex-1 h-px" style={{ background: 'var(--border)' }} aria-hidden="true" />
                 Social Profiles
                 <span className="flex-1 h-px" style={{ background: 'var(--border)' }} aria-hidden="true" />
               </h3>
               <div className="grid grid-cols-2 gap-2.5">
                 {SOCIALS.map(s => (
-                  <a
+                  <motion.a
                     key={s.name}
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3 glass-card glass-card-hover spotlight px-4 py-3"
+                    whileHover={{ y: -3, scale: 1.025 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                    className="group flex items-center gap-3 glass-card glass-card-hover spotlight px-4 py-3.5 tilt-3d"
                   >
+                    <div className="tilt-glare" />
                     <span
-                      className="w-7 h-7 rounded-md grid place-items-center flex-shrink-0 transition-all duration-300 text-[--text-muted] group-hover:text-[--accent]"
+                      className="w-8 h-8 rounded-md grid place-items-center flex-shrink-0 transition-all duration-300 text-[--text-muted] group-hover:text-[--accent]"
                       style={{ background: 'var(--bg-2)', border: '1px solid var(--border)' }}
                     >
                       {s.icon}
                     </span>
                     <span
-                      className="text-[13px] font-medium transition-colors duration-200"
+                      className="text-[13.5px] sm:text-[14px] font-semibold transition-colors duration-200"
                       style={{ color: 'var(--text-muted)' }}
                     >
                       {s.name}
                     </span>
                     <svg
-                      className="w-3 h-3 ml-auto text-[--text-dim] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="w-3.5 h-3.5 ml-auto text-[--text-dim] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                  </a>
+                  </motion.a>
                 ))}
               </div>
             </div>
           </div>
 
           {/* ── Form ── */}
-          <div className="glass-card spotlight p-6 sm:p-8 reveal-right relative overflow-hidden">
+          <div className="glass-card spotlight p-6 sm:p-8 md:p-9 reveal-right relative overflow-hidden">
             <div
               className="absolute -top-20 -right-20 w-48 h-48 rounded-full opacity-[0.07] blur-3xl pointer-events-none"
               style={{ background: 'var(--accent)' }}
@@ -226,13 +244,13 @@ export default function Contact() {
             />
 
             <h3
-              className="flex items-center gap-2.5 text-xl font-bold mb-1.5"
+              className="flex items-center gap-2.5 text-2xl sm:text-[26px] font-extrabold tracking-[-0.015em] mb-1.5"
               style={{ fontFamily: 'var(--font-display)' }}
             >
-              <span className="w-1 h-5 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
+              <span className="w-1.5 h-6 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
               Send a Message
             </h3>
-            <p className="text-[13px] text-[--text-dim] mb-7 pl-3.5">
+            <p className="text-[14.5px] sm:text-[15px] font-medium text-[--text-dim] mb-7 pl-4">
               I typically reply within 24 hours.
             </p>
 
@@ -266,7 +284,7 @@ export default function Contact() {
                 onFocus={() => setFocused('message')} onBlur={() => setFocused(null)}
                 trailing={
                   <span
-                    className="font-mono normal-case tracking-normal transition-colors duration-200"
+                    className="font-mono font-semibold normal-case tracking-normal transition-colors duration-200"
                     style={{ color: form.message.length ? 'var(--accent)' : undefined }}
                   >
                     {form.message.length} chars
@@ -274,11 +292,14 @@ export default function Contact() {
                 }
               />
 
-              <button
+              <motion.button
                 type="submit"
                 disabled={status !== 'idle'}
                 aria-busy={status === 'sending'}
-                className="btn btn-primary w-full py-3.5 text-[14px] disabled:cursor-not-allowed"
+                whileHover={{ scale: status === 'idle' ? 1.015 : 1 }}
+                whileTap={{ scale: status === 'idle' ? 0.985 : 1 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                className="btn btn-primary w-full py-4 text-[15.5px] sm:text-[16px] font-bold tracking-tight disabled:cursor-not-allowed"
                 style={btnStyle}
               >
                 {status === 'sending' && (
@@ -291,7 +312,7 @@ export default function Contact() {
                   : status === 'sent'  ? 'Message Sent ✓'
                   : status === 'error' ? 'Try Again'
                   : <>Send Message <span aria-hidden="true">→</span></>}
-              </button>
+              </motion.button>
             </form>
           </div>
         </div>

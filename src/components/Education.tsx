@@ -1,5 +1,6 @@
 'use client'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
 import swpu from '../../images/swpu.png'
@@ -105,24 +106,27 @@ export default function Education() {
                       aria-hidden="true"
                     />
 
-                    <div
-                      className="glass-card glass-card-hover spotlight p-5"
+                    <motion.div
+                      whileHover={{ y: -4, scale: 1.015 }}
+                      transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                      className="glass-card glass-card-hover spotlight p-5 sm:p-6 tilt-3d"
                       style={{ borderColor: `color-mix(in srgb, ${edu.tone} 16%, var(--border))` }}
                     >
+                      <div className="tilt-glare" />
                       <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
                         <div className="min-w-0">
                           <h3
-                            className="text-[15.5px] font-bold leading-snug tracking-[-0.015em]"
+                            className="text-[18px] sm:text-[19.5px] font-extrabold leading-snug tracking-[-0.015em]"
                             style={{ fontFamily: 'var(--font-display)' }}
                           >
                             {edu.degree}
                           </h3>
-                          <div className="text-[13px] font-medium mt-0.5" style={{ color: edu.tone }}>
+                          <div className="text-[14.5px] sm:text-[15px] font-semibold mt-0.5" style={{ color: edu.tone }}>
                             {edu.field}
                           </div>
                         </div>
                         <span
-                          className="px-2.5 py-1 text-[11px] font-mono flex-shrink-0"
+                          className="px-3 py-1 text-[12px] font-mono font-bold flex-shrink-0"
                           style={{
                             borderRadius: 'var(--r-sm)',
                             background: `color-mix(in srgb, ${edu.tone} 11%, transparent)`,
@@ -134,14 +138,14 @@ export default function Education() {
                         </span>
                       </div>
 
-                      <div className="text-[12.5px] font-mono text-[--text-dim] mb-2.5">
+                      <div className="text-[14px] font-mono font-bold text-[--text-dim] mb-2.5">
                         {edu.institution}
                       </div>
 
-                      <p className="text-[13.5px] leading-relaxed text-[--text-muted]">
+                      <p className="text-[15px] sm:text-[15.5px] font-medium leading-relaxed text-[--text-muted]">
                         {edu.desc}
                       </p>
-                    </div>
+                    </motion.div>
                   </div>
                 ))}
               </div>
@@ -152,14 +156,17 @@ export default function Education() {
           <div className="reveal-right space-y-6">
 
             {/* Campus */}
-            <div
-              className="relative h-52 overflow-hidden group"
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+              className="relative h-56 overflow-hidden group tilt-3d"
               style={{
                 borderRadius: 'var(--r-xl)',
                 border: '1px solid var(--border)',
                 boxShadow: 'var(--sh-3)',
               }}
             >
+              <div className="tilt-glare" />
               <Image
                 src={swpu}
                 alt="Southwest Petroleum University campus"
@@ -174,7 +181,7 @@ export default function Education() {
                 aria-hidden="true"
               />
               <span
-                className="absolute top-4 left-4 px-2.5 py-1 text-[11px] font-mono backdrop-blur-sm"
+                className="absolute top-4 left-4 px-3 py-1 text-[12px] font-mono backdrop-blur-sm"
                 style={{
                   borderRadius: 'var(--r-sm)',
                   background: 'rgb(2 8 5 / 0.62)',
@@ -185,43 +192,54 @@ export default function Education() {
                 Chengdu, China
               </span>
               <blockquote className="absolute bottom-5 left-5 right-5">
-                <p className="text-[15px] italic text-white/92 leading-snug">
+                <p className="text-[16px] sm:text-[17px] italic text-white/92 leading-snug">
                   &ldquo;Learning never exhausts the mind.&rdquo;
                 </p>
               </blockquote>
-            </div>
+            </motion.div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3">
               {STATS.map(stat => (
-                <div key={stat.label} className="glass-card glass-card-hover spotlight p-4 text-center">
+                <motion.div
+                  key={stat.label}
+                  whileHover={{ y: -4, scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                  className="glass-card glass-card-hover spotlight p-4 text-center tilt-3d cursor-default"
+                >
+                  <div className="tilt-glare" />
                   <div
-                    className="text-2xl font-bold"
+                    className="text-[26px] sm:text-[28px] font-bold"
                     style={{ color: 'var(--accent)', fontFamily: 'var(--font-display)' }}
                   >
                     {stat.value}
                   </div>
-                  <div className="text-[10.5px] font-mono uppercase tracking-[0.1em] text-[--text-dim] mt-1">
+                  <div className="text-[11.5px] sm:text-[12px] font-mono uppercase tracking-[0.1em] text-[--text-dim] mt-1">
                     {stat.label}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             {/* Certifications */}
             <div>
-              <h3 className="flex items-center gap-2.5 text-[13px] font-mono font-semibold uppercase tracking-[0.16em] mb-4 text-[--text-muted]">
+              <h3 className="flex items-center gap-2.5 text-[14px] sm:text-[14.5px] font-mono font-semibold uppercase tracking-[0.16em] mb-4 text-[--text-muted]">
                 <span className="w-1 h-4 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
                 Certifications
               </h3>
               <div className="space-y-2.5">
                 {CERTS.map((cert, i) => (
-                  <div
+                  <motion.div
                     key={i}
-                    className="flex items-center gap-3.5 glass-card glass-card-hover spotlight px-4 py-3 group"
+                    whileHover={{ x: 5, scale: 1.015 }}
+                    whileTap={{ scale: 0.985 }}
+                    transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                    className="flex items-center gap-3.5 glass-card glass-card-hover spotlight px-4 py-3 group tilt-3d cursor-default"
                   >
+                    <div className="tilt-glare" />
                     <span
-                      className="w-8 h-8 rounded-md grid place-items-center flex-shrink-0 font-mono text-[11px] font-semibold transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-110"
+                      className="w-9 h-9 rounded-md grid place-items-center flex-shrink-0 font-mono text-[12px] font-semibold transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-110"
                       style={{
                         background: 'var(--accent-soft)',
                         border: '1px solid var(--accent-line)',
@@ -232,15 +250,15 @@ export default function Education() {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[13.5px] font-medium truncate" style={{ color: 'var(--text)' }}>
+                      <div className="text-[14.5px] sm:text-[15px] font-medium truncate" style={{ color: 'var(--text)' }}>
                         {cert.name}
                       </div>
-                      <div className="text-[11.5px] text-[--text-dim] mt-0.5">{cert.issuer}</div>
+                      <div className="text-[12.5px] text-[--text-dim] mt-0.5">{cert.issuer}</div>
                     </div>
-                    <span className="text-[11.5px] font-mono flex-shrink-0 text-[--text-dim]">
+                    <span className="text-[12.5px] font-mono flex-shrink-0 text-[--text-dim]">
                       {cert.year}
                     </span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>

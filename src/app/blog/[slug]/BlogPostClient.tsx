@@ -186,14 +186,14 @@ function MarkdownRenderer({ content }: { content: string }) {
   }, [content])
 
   return (
-    <div className="space-y-6 text-[15.5px] leading-relaxed text-[--text-muted]">
+    <div className="space-y-7 text-[17px] sm:text-[18px] font-medium leading-[1.8] text-[--text-muted]">
       {blocks.map((block, idx) => {
         if (block.type === 'h2') {
           return (
             <h2
               key={idx}
               id={block.id}
-              className="text-2xl sm:text-3xl font-bold tracking-tight text-[--text] mt-12 mb-4 scroll-mt-28 flex items-center gap-3"
+              className="text-2xl sm:text-3xl lg:text-[32px] font-extrabold tracking-tight text-[--text] mt-12 mb-4 scroll-mt-28 flex items-center gap-3"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               <span className="w-1.5 h-6 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} aria-hidden="true" />
@@ -207,7 +207,7 @@ function MarkdownRenderer({ content }: { content: string }) {
             <h3
               key={idx}
               id={block.id}
-              className="text-xl font-bold tracking-tight text-[--text] mt-8 mb-3 scroll-mt-28"
+              className="text-xl sm:text-2xl font-extrabold tracking-tight text-[--text] mt-9 mb-3.5 scroll-mt-28"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {block.text}
@@ -227,10 +227,10 @@ function MarkdownRenderer({ content }: { content: string }) {
 
         if (block.type === 'list') {
           return (
-            <ul key={idx} className="space-y-2.5 my-4 pl-2">
+            <ul key={idx} className="space-y-3 my-5 pl-2 text-[16.5px] sm:text-[17.5px] font-medium">
               {block.items.map((item, liIdx) => (
-                <li key={liIdx} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0" style={{ background: 'var(--accent)' }} />
+                <li key={liIdx} className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 rounded-full mt-3 flex-shrink-0" style={{ background: 'var(--accent)' }} />
                   <span className="flex-1" dangerouslySetInnerHTML={{ __html: formatInline(item) }} />
                 </li>
               ))}
@@ -242,10 +242,10 @@ function MarkdownRenderer({ content }: { content: string }) {
           return (
             <blockquote
               key={idx}
-              className="my-6 pl-5 py-2 italic glass-card border-l-4"
+              className="my-7 pl-6 py-3.5 italic glass-card border-l-4"
               style={{ borderLeftColor: 'var(--accent)' }}
             >
-              <p className="text-[16px] text-[--text] leading-relaxed">&ldquo;{block.text}&rdquo;</p>
+              <p className="text-[17.5px] sm:text-[19px] font-semibold text-[--text] leading-relaxed">&ldquo;{block.text}&rdquo;</p>
             </blockquote>
           )
         }
@@ -254,19 +254,19 @@ function MarkdownRenderer({ content }: { content: string }) {
           return (
             <div
               key={idx}
-              className="my-6 rounded-lg overflow-hidden glass-card"
+              className="my-7 rounded-lg overflow-hidden glass-card"
               style={{ border: '1px solid var(--border)', boxShadow: 'var(--sh-2)' }}
             >
               {/* Header bar */}
               <div
-                className="flex items-center justify-between px-4 py-2 text-xs font-mono border-b"
+                className="flex items-center justify-between px-4 py-2.5 text-xs font-mono border-b"
                 style={{ background: 'var(--bg-2)', borderColor: 'var(--border)' }}
               >
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block" />
-                  <span className="ml-2 uppercase tracking-wider text-[--text-dim] text-[10.5px]">
+                  <span className="ml-2 uppercase tracking-wider text-[--text-dim] text-[11px]">
                     {block.lang}
                   </span>
                 </div>
@@ -275,7 +275,7 @@ function MarkdownRenderer({ content }: { content: string }) {
 
               {/* Code block */}
               <div
-                className="p-4 sm:p-5 overflow-x-auto text-xs sm:text-[13px] font-mono leading-relaxed"
+                className="p-4 sm:p-5 overflow-x-auto text-[13px] sm:text-[14px] font-mono leading-relaxed"
                 style={{ background: 'var(--bg)' }}
               >
                 <pre style={{ margin: 0 }}>
@@ -290,7 +290,7 @@ function MarkdownRenderer({ content }: { content: string }) {
         return (
           <p
             key={idx}
-            className="text-[15.5px] leading-relaxed text-[--text-muted]"
+            className="text-[16.5px] sm:text-[17.5px] leading-[1.8] text-[--text-muted]"
             dangerouslySetInnerHTML={{ __html: formatInline(block.text) }}
           />
         )
@@ -302,8 +302,8 @@ function MarkdownRenderer({ content }: { content: string }) {
 /* Format bold, inline code, and links in markdown text */
 function formatInline(text: string): string {
   return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-[--text]">$1</strong>')
-    .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded text-[12px] font-mono bg-[var(--bg-2)] text-[var(--accent)] border border-[var(--border)]">$1</code>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-[--text]">$1</strong>')
+    .replace(/`([^`]+)`/g, '<code class="px-2 py-0.5 rounded text-[13.5px] font-mono bg-[var(--bg-2)] text-[var(--accent)] border border-[var(--border)]">$1</code>')
 }
 
 /* ─── Main Client Component ─── */
@@ -356,7 +356,7 @@ export default memo(function BlogPostClient({
       <header className="relative w-full pt-6 pb-12 overflow-hidden border-b border-[--border]">
         <div className="container-x">
           {/* Breadcrumb navigation */}
-          <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-xs font-mono text-[--text-dim] mb-6">
+          <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-xs font-mono font-bold text-[--text-dim] mb-6">
             <Link href="/" className="hover:text-[--text] transition-colors">Home</Link>
             <span>/</span>
             <Link href="/blog" className="hover:text-[--text] transition-colors">Blog</Link>
@@ -368,7 +368,7 @@ export default memo(function BlogPostClient({
             <div className="lg:col-span-8">
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span
-                  className="px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-wider"
+                  className="px-3 py-1 text-[11px] font-mono font-bold uppercase tracking-wider"
                   style={{
                     borderRadius: 'var(--r-sm)',
                     background: 'var(--accent-soft)',
@@ -378,24 +378,24 @@ export default memo(function BlogPostClient({
                 >
                   {blog.category}
                 </span>
-                <span className="text-xs font-mono text-[--text-dim]">
+                <span className="text-xs font-mono font-medium text-[--text-dim]">
                   Published {blog.publishedAt}
                 </span>
                 <span className="text-xs font-mono text-[--text-dim]">•</span>
-                <span className="text-xs font-mono text-[--text-dim]">
+                <span className="text-xs font-mono font-medium text-[--text-dim]">
                   {blog.readingTime}
                 </span>
               </div>
 
               <h1
-                className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.12] mb-4 text-[--text]"
+                className="text-3xl sm:text-4xl md:text-5xl font-black tracking-[-0.025em] leading-[1.12] mb-4 text-[--text]"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {blog.title}
               </h1>
 
               <p
-                className="text-lg sm:text-xl italic text-[--text-muted] leading-relaxed mb-6"
+                className="text-lg sm:text-xl font-medium italic text-[--text-muted] leading-relaxed mb-6"
                 style={{ fontFamily: 'var(--font-italic)' }}
               >
                 {blog.tagline}
@@ -414,8 +414,8 @@ export default memo(function BlogPostClient({
                     />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-[--text]">Md Mehedi Hasan</div>
-                    <div className="text-[11px] font-mono text-[--text-dim]">
+                    <div className="text-sm font-bold text-[--text]">Md Mehedi Hasan</div>
+                    <div className="text-[11.5px] font-mono font-medium text-[--text-dim]">
                       Senior AI/LLM Engineer · 5+ Yrs Exp
                     </div>
                   </div>
@@ -452,14 +452,15 @@ export default memo(function BlogPostClient({
           {/* ══ Sticky Sidebar (TOC + Scorecard) ══ */}
           <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6 order-2 lg:order-1">
             {/* Executive Key Takeaways */}
-            <div className="glass-card spotlight p-5 rounded-lg border border-[--border]">
-              <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[--accent] mb-3 flex items-center gap-2">
+            <div className="glass-card spotlight p-5 sm:p-6 rounded-lg border border-[--border] tilt-3d">
+              <div className="tilt-glare" />
+              <h3 className="text-[12.5px] font-mono font-bold uppercase tracking-wider text-[--accent] mb-3.5 flex items-center gap-2">
                 <span className="w-1.5 h-3.5 rounded-full bg-[--accent]" />
                 Executive Takeaways
               </h3>
               <ul className="space-y-2.5">
                 {blog.keyTakeaways.map((takeaway, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-xs text-[--text-muted] leading-relaxed">
+                  <li key={i} className="flex items-start gap-2.5 text-[14px] font-medium text-[--text-muted] leading-relaxed">
                     <span className="text-[--accent] font-mono font-bold mt-0.5">0{i + 1}</span>
                     <span>{takeaway}</span>
                   </li>
@@ -469,8 +470,9 @@ export default memo(function BlogPostClient({
 
             {/* Performance Metrics Scorecard */}
             {blog.metrics && blog.metrics.length > 0 && (
-              <div className="glass-card spotlight p-5 rounded-lg border border-[--border]">
-                <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[--text-dim] mb-3">
+              <div className="glass-card spotlight p-5 sm:p-6 rounded-lg border border-[--border] tilt-3d">
+                <div className="tilt-glare" />
+                <h3 className="text-[12px] font-mono font-bold uppercase tracking-wider text-[--text-dim] mb-3.5">
                   // Production Benchmarks
                 </h3>
                 <div className="grid grid-cols-2 gap-2.5">
@@ -480,10 +482,10 @@ export default memo(function BlogPostClient({
                       className="p-3 text-center rounded-md"
                       style={{ background: 'var(--bg-2)', border: '1px solid var(--border)' }}
                     >
-                      <div className="text-lg font-mono font-bold" style={{ color: 'var(--accent)' }}>
+                      <div className="text-[22px] font-mono font-bold" style={{ color: 'var(--accent)' }}>
                         {metric.value}
                       </div>
-                      <div className="text-[10px] text-[--text-dim] uppercase tracking-wider font-mono mt-0.5">
+                      <div className="text-[10.5px] text-[--text-dim] uppercase tracking-wider font-mono font-bold mt-0.5">
                         {metric.label}
                       </div>
                     </div>
@@ -495,17 +497,17 @@ export default memo(function BlogPostClient({
             {/* Table of Contents */}
             {blog.tableOfContents.length > 0 && (
               <nav aria-label="Table of contents" className="glass-card p-5 rounded-lg border border-[--border]">
-                <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[--text-dim] mb-3">
+                <h3 className="text-[12px] font-mono font-bold uppercase tracking-wider text-[--text-dim] mb-3">
                   Table of Contents
                 </h3>
-                <ul className="space-y-2 text-xs font-mono">
+                <ul className="space-y-2 text-[13.5px] font-mono font-semibold">
                   {blog.tableOfContents.map(toc => {
                     const isActive = activeSection === toc.id
                     return (
                       <li key={toc.id}>
                         <a
                           href={`#${toc.id}`}
-                          className="block py-1 px-2 rounded transition-colors duration-150"
+                          className="block py-1.5 px-2 rounded transition-colors duration-150"
                           style={{
                             color: isActive ? 'var(--accent)' : 'var(--text-muted)',
                             background: isActive ? 'var(--accent-soft)' : 'transparent',
@@ -522,13 +524,14 @@ export default memo(function BlogPostClient({
             )}
 
             {/* Author Profile Card */}
-            <div className="glass-card spotlight p-5 rounded-lg border border-[--border] text-center">
+            <div className="glass-card spotlight p-6 rounded-lg border border-[--border] text-center tilt-3d">
+              <div className="tilt-glare" />
               <div className="relative w-16 h-16 mx-auto rounded-full overflow-hidden mb-3 border-2 border-[--accent]">
                 <Image src={me} alt="Mehedi Hasan" fill className="object-cover" sizes="64px" />
               </div>
-              <div className="font-bold text-sm text-[--text]">Md Mehedi Hasan</div>
-              <div className="text-xs font-mono text-[--accent] mt-0.5">Sr. AI/LLM Engineer</div>
-              <p className="text-xs text-[--text-muted] mt-2 leading-relaxed">
+              <div className="font-extrabold text-[16px] text-[--text]">Md Mehedi Hasan</div>
+              <div className="text-[12.5px] font-mono font-bold text-[--accent] mt-0.5">Sr. AI/LLM Engineer</div>
+              <p className="text-[13.5px] font-medium text-[--text-muted] mt-2 leading-relaxed">
                 Specialized in multi-agent systems, RAG pipelines, agent orchestration, and scalable Python backends.
               </p>
               <div className="mt-4 flex justify-center gap-2">
@@ -536,13 +539,13 @@ export default memo(function BlogPostClient({
                   href="https://www.linkedin.com/in/mehedihasan555552/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-ghost text-xs py-1.5 px-3"
+                  className="btn btn-ghost text-xs font-bold py-1.5 px-3"
                 >
                   LinkedIn
                 </a>
                 <a
                   href="/#contact"
-                  className="btn btn-primary text-xs py-1.5 px-3"
+                  className="btn btn-primary text-xs font-bold py-1.5 px-3"
                 >
                   Hire Me
                 </a>
@@ -556,11 +559,11 @@ export default memo(function BlogPostClient({
 
             {/* Tags row */}
             <div className="mt-12 pt-6 border-t border-[--border] flex flex-wrap items-center gap-2">
-              <span className="text-xs font-mono text-[--text-dim]">Tags:</span>
+              <span className="text-[12px] font-mono font-bold text-[--text-dim]">Tags:</span>
               {blog.tags.map(t => (
                 <span
                   key={t}
-                  className="px-2.5 py-1 text-xs font-mono rounded"
+                  className="px-3 py-1 text-[12px] font-mono font-semibold rounded"
                   style={{ background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
                 >
                   #{t}
@@ -571,10 +574,10 @@ export default memo(function BlogPostClient({
             {/* Back to Blog CTA */}
             <div className="mt-8 p-6 glass-card rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <h4 className="font-bold text-base text-[--text]">Enjoyed this engineering playbook?</h4>
-                <p className="text-xs text-[--text-muted] mt-0.5">Explore our other in-depth articles on production AI.</p>
+                <h4 className="font-extrabold text-[17px] text-[--text]">Enjoyed this engineering playbook?</h4>
+                <p className="text-[13.5px] font-medium text-[--text-muted] mt-0.5">Explore our other in-depth articles on production AI.</p>
               </div>
-              <Link href="/blog" className="btn btn-primary text-xs">
+              <Link href="/blog" className="btn btn-primary text-[13.5px] font-bold">
                 View All 10 Playbooks →
               </Link>
             </div>
@@ -587,12 +590,12 @@ export default memo(function BlogPostClient({
             <div className="flex items-center justify-between mb-8">
               <h2
                 id="related-heading"
-                className="text-2xl font-bold tracking-tight"
+                className="text-2xl font-extrabold tracking-[-0.015em]"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 Related <span style={{ color: 'var(--accent)' }}>Articles</span>
               </h2>
-              <Link href="/blog" className="text-xs font-mono text-[--accent] hover:underline">
+              <Link href="/blog" className="text-xs font-mono font-bold text-[--accent] hover:underline">
                 View All →
               </Link>
             </div>
@@ -603,9 +606,10 @@ export default memo(function BlogPostClient({
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
                   prefetch
-                  className="group glass-card glass-card-hover spotlight rounded-lg overflow-hidden flex flex-col"
+                  className="group glass-card glass-card-hover spotlight rounded-lg overflow-hidden flex flex-col tilt-3d"
                 >
-                  <div className="relative h-36 overflow-hidden">
+                  <div className="tilt-glare" />
+                  <div className="relative h-40 overflow-hidden">
                     <Image
                       src={rel.image}
                       alt={rel.imageAlt}
@@ -614,18 +618,18 @@ export default memo(function BlogPostClient({
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width:768px) 100vw, 33vw"
                     />
-                    <span className="absolute bottom-2 left-2 text-[10px] font-mono px-2 py-0.5 rounded bg-black/70 text-white">
+                    <span className="absolute bottom-2 left-2 text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-black/70 text-white">
                       {rel.category}
                     </span>
                   </div>
-                  <div className="p-4 flex flex-col flex-1">
+                  <div className="p-4 sm:p-5 flex flex-col flex-1">
                     <h3
-                      className="font-bold text-sm leading-snug group-hover:text-[--accent] transition-colors line-clamp-2 mb-2"
+                      className="font-extrabold text-[16px] leading-snug group-hover:text-[--accent] transition-colors line-clamp-2 mb-2"
                       style={{ fontFamily: 'var(--font-display)' }}
                     >
                       {rel.title}
                     </h3>
-                    <p className="text-xs text-[--text-muted] line-clamp-2 mt-auto">
+                    <p className="text-[13.5px] sm:text-[14px] font-medium text-[--text-muted] line-clamp-2 mt-auto">
                       {rel.excerpt}
                     </p>
                   </div>

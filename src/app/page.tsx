@@ -1,16 +1,13 @@
-import dynamic from 'next/dynamic'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import About from '@/components/About'
+import Experience from '@/components/Experience'
+import Skills from '@/components/Skills'
+import Projects from '@/components/Projects'
+import BlogSection from '@/components/BlogSection'
+import Education from '@/components/Education'
+import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
-
-// Below-the-fold sections: dynamically import so they don't block the initial render
-const About      = dynamic(() => import('@/components/About'))
-const Experience = dynamic(() => import('@/components/Experience'))
-const Skills     = dynamic(() => import('@/components/Skills'))
-const Projects   = dynamic(() => import('@/components/Projects'))
-const BlogSection = dynamic(() => import('@/components/BlogSection'))
-const Education  = dynamic(() => import('@/components/Education'))
-const Contact    = dynamic(() => import('@/components/Contact'))
 
 export default function Home() {
   return (

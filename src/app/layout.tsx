@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { JetBrains_Mono, Inter } from 'next/font/google'
+import { JetBrains_Mono, Inter, Fredoka, Plus_Jakarta_Sans } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 import { ThemeProvider } from '@/context/ThemeContext'
 import SiteEffects from '@/components/SiteEffects'
+import LiveBackground from '@/components/LiveBackground'
 
 // Mono carries the terminal identity: headlines, labels, code.
 const jetbrains = JetBrains_Mono({
@@ -13,12 +14,27 @@ const jetbrains = JetBrains_Mono({
   display: 'swap',
 })
 
-// Sans carries body prose. Long paragraphs set in mono are tiring to read,
-// and the contrast makes the mono passages feel deliberate.
+// Sans carries body prose.
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-inter',
+  display: 'swap',
+})
+
+// Display font for playful neo-brutalist light mode
+const fredoka = Fredoka({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-fredoka',
+  display: 'swap',
+})
+
+// UI font for clean modern light mode
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-jakarta',
   display: 'swap',
 })
 
@@ -164,7 +180,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark scroll-smooth ${jetbrains.variable} ${inter.variable}`}
+      data-scroll-behavior="smooth"
+      className={`dark scroll-smooth ${jetbrains.variable} ${inter.variable} ${fredoka.variable} ${jakarta.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -173,6 +190,7 @@ export default function RootLayout({
 
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
+          <LiveBackground />
           <SiteEffects />
           {children}
         </ThemeProvider>
