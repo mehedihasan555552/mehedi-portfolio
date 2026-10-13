@@ -23,6 +23,7 @@ const nextConfig = {
     // Limit to sizes we actually use
     deviceSizes: [375, 640, 768, 1024, 1280, 1536],
     imageSizes: [96, 256, 320, 384, 480, 700, 800],
+    qualities: [75, 80, 85, 90],
   },
 
   // HTTP headers for performance
@@ -35,13 +36,6 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        ],
-      },
-      {
-        // Long-lived cache for static assets
-        source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
       {

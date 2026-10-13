@@ -1,6 +1,7 @@
 'use client'
 import { useCallback, memo, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import SocialIcon from './SocialIcon'
 import { useTypewriter } from '@/hooks/useTypewriter'
 import me from '../../images/professional-mehedi.png'
@@ -34,12 +35,13 @@ const TECH_STACK = [
 ]
 
 const SYN = {
-  kw:   'var(--accent)',
-  fn:   '#7cc4f5',
-  str:  'var(--signal)',
+  kw:   'var(--syn-kw, var(--accent))',
+  fn:   'var(--syn-fn, #7cc4f5)',
+  str:  'var(--syn-str, var(--signal))',
   dim:  'var(--text-dim)',
   txt:  'var(--text-muted)',
 }
+
 
 const CODE_LINES: { text: string; color: string }[] = [
   { text: 'class AgenticSystem(Orchestrator):',           color: SYN.kw  },
@@ -112,31 +114,36 @@ function TerminalWindow() {
   }, [])
 
   return (
-    <div
-      className="w-full overflow-hidden glass-card relative"
-      style={{ borderRadius: 'var(--r-lg)', boxShadow: 'var(--sh-3)' }}
+    <motion.div
+      initial={{ opacity: 0, y: 26, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.7, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -4, transition: { type: 'spring', stiffness: 350, damping: 25 } }}
+      className="w-full overflow-hidden glass-card terminal-window tilt-3d relative"
+      style={{ borderRadius: 'var(--r-lg)', boxShadow: 'var(--sh-3)', transformStyle: 'preserve-3d' }}
     >
+      <div className="tilt-glare" />
       {/* Title bar */}
       <div
-        className="flex items-center gap-1.5 px-3.5 py-2.5 border-b"
-        style={{ background: 'var(--bg-2)', borderColor: 'var(--border)' }}
+        className="flex items-center gap-1.5 px-3.5 py-2.5 border-b terminal-titlebar"
+        style={{ background: 'var(--bg-2)', borderColor: 'var(--border)', transform: 'translateZ(12px)' }}
       >
         <span className="w-[10px] h-[10px] rounded-full flex-shrink-0" style={{ background: '#ff5f57' }} />
         <span className="w-[10px] h-[10px] rounded-full flex-shrink-0" style={{ background: '#febc2e' }} />
         <span className="w-[10px] h-[10px] rounded-full flex-shrink-0" style={{ background: '#28c840' }} />
-        <span className="ml-2.5 font-mono text-[10px] sm:text-[11px] truncate text-[--text-dim]">
+        <span className="ml-2.5 font-mono text-[11px] sm:text-[12px] truncate text-[--text-dim] font-medium">
           mehedi@dev ~/portfolio/engineer.py
         </span>
       </div>
 
       {/* Code */}
       <div
-        className="relative p-4 font-mono text-[10.5px] sm:text-[11.5px] leading-[1.75] min-h-[210px] overflow-hidden"
-        style={{ background: 'var(--bg-2)' }}
+        className="relative p-4 sm:p-5 font-mono text-[11.5px] sm:text-[13px] leading-[1.8] min-h-[225px] overflow-hidden terminal-body"
+        style={{ background: 'var(--bg-2)', transform: 'translateZ(18px)' }}
       >
         {/* Slow scanline for CRT feel */}
         <span
-          className="pointer-events-none absolute inset-x-0 top-0 h-16 opacity-[0.35]"
+          className="pointer-events-none absolute inset-x-0 top-0 h-16 opacity-[0.35] terminal-scanline"
           style={{
             background: 'linear-gradient(180deg, transparent, rgb(var(--accent-rgb) / 0.055), transparent)',
             animation: 'scanline 7s linear infinite',
@@ -166,7 +173,7 @@ function TerminalWindow() {
           )
         })}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -184,13 +191,12 @@ function TechBadge({
       style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
     >
       <span
-        className="skill-pill block text-[9px] sm:text-[10px] px-2 py-1 animate-float"
+        className={`skill-pill orbit-pill orbit-pill-${index} block text-[9.5px] sm:text-[11px] px-3 py-1 animate-float`}
         style={{
           animationDelay:    `${index * 0.55}s`,
           animationDuration: `${6.5 + index * 0.4}s`,
-          background:        'color-mix(in srgb, var(--card) 88%, transparent)',
-          backdropFilter:    'blur(6px)',
-          WebkitBackdropFilter: 'blur(6px)',
+          backdropFilter:    'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
         }}
       >
         {label}
@@ -202,33 +208,37 @@ function TechBadge({
 /* ─── Stat ──────────────────────────────────────────────────── */
 function StatCard({ value, label, delay }: { value: string; label: string; delay: number }) {
   return (
-    <div
-      className="glass-card glass-card-hover spotlight px-3 py-3.5 text-center animate-fade-in-up"
-      style={{ animationDelay: `${delay}ms` }}
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, delay: delay / 1000, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -5, scale: 1.04, transition: { type: 'spring', stiffness: 450, damping: 25 } }}
+      className="glass-card glass-card-hover spotlight tilt-3d px-3.5 py-4 text-center cursor-default"
     >
+      <div className="tilt-glare" />
       <div
-        className="text-xl sm:text-2xl font-bold"
+        className="text-2xl sm:text-3xl font-extrabold"
         style={{ color: 'var(--accent)', fontFamily: 'var(--font-display)' }}
       >
         {value}
       </div>
-      <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.14em] text-[--text-dim] mt-1">
+      <div className="text-[11px] sm:text-[12px] font-mono uppercase tracking-[0.14em] text-[--text-dim] mt-1 font-bold">
         {label}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
 const TypedRole = memo(function TypedRole({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-3 mb-7 min-h-[2.25rem] sm:min-h-[2.75rem]">
+    <div className="flex items-center gap-3.5 mb-7 min-h-[2.4rem] sm:min-h-[3rem]">
       <span
-        className="w-[3px] h-6 sm:h-8 rounded-full flex-shrink-0"
-        style={{ background: 'var(--accent)', boxShadow: '0 0 12px var(--glow)' }}
+        className="w-[3.5px] h-7 sm:h-9 rounded-full flex-shrink-0"
+        style={{ background: 'var(--accent)', boxShadow: '0 0 14px var(--glow)' }}
         aria-hidden="true"
       />
       <span
-        className="text-base sm:text-xl md:text-2xl font-mono font-semibold type-cursor"
+        className="text-lg sm:text-2xl md:text-[26px] font-mono font-extrabold type-cursor leading-tight"
         style={{ color: 'var(--accent)' }}
         aria-live="polite"
         aria-label={`Current role: ${text}`}
@@ -279,6 +289,24 @@ export default function Hero() {
           className="absolute bottom-[16%] right-[12%] w-[220px] lg:w-[340px] aspect-square rounded-full animate-morph opacity-[0.04] blur-[80px]"
           style={{ background: 'var(--signal)', animationDelay: '5s' }}
         />
+
+        {/* ── 3D Floating Ambient Geometries ── */}
+        <div
+          className="floating-3d-geom hidden md:block top-[20%] right-[6%] w-24 h-24 opacity-35 border-2 rounded-2xl pointer-events-none"
+          style={{ borderColor: 'var(--accent)', animationDelay: '1s' }}
+          aria-hidden="true"
+        />
+        <div
+          className="floating-3d-geom hidden lg:block bottom-[22%] left-[4%] w-32 h-32 opacity-25 border-2 border-dashed rounded-full pointer-events-none"
+          style={{ borderColor: 'var(--signal)', animationDelay: '4s' }}
+          aria-hidden="true"
+        />
+        <div
+          className="floating-3d-geom hidden sm:block top-[68%] right-[18%] w-16 h-16 opacity-30 border-2 rounded-lg rotate-45 pointer-events-none"
+          style={{ borderColor: 'var(--c-2)', animationDelay: '2.5s' }}
+          aria-hidden="true"
+        />
+
         {PARTICLES.map((p, i) => (
           <span
             key={i}
@@ -304,20 +332,20 @@ export default function Hero() {
           {/* ══ LEFT ══ */}
           <div className="order-1">
 
-            <div className="announce-badge animate-fade-in-up mb-6" style={{ animationDelay: '40ms' }}>
+            <div className="announce-badge animate-fade-in-up mb-6 text-xs sm:text-[13px] py-1.5 px-4 font-bold" style={{ animationDelay: '40ms' }}>
               <span className="status-dot" aria-hidden="true" />
               Available for new projects · Dhaka, BD
             </div>
 
             <p
-              className="font-mono text-xs sm:text-sm text-[--text-dim] mb-2 animate-fade-in-up"
+              className="font-mono text-sm sm:text-[15.5px] text-[--text-dim] mb-2.5 animate-fade-in-up font-bold"
               style={{ animationDelay: '110ms' }}
             >
               // Hello, I&apos;m
             </p>
 
             <h1
-              className="word-rise text-[clamp(2.75rem,8vw,4.75rem)] font-bold leading-[1.02] tracking-[-0.04em] mb-3"
+              className="word-rise text-[clamp(3.1rem,8.8vw,5.35rem)] font-extrabold leading-[1.03] tracking-[-0.02em] mb-4"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               <span style={{ ['--wd' as string]: '160ms' }}>Mehedi</span>
@@ -326,7 +354,7 @@ export default function Hero() {
             </h1>
 
             <p
-              className="font-mono text-[11px] sm:text-xs text-[--text-dim] mb-7 animate-fade-in-up"
+              className="font-mono text-xs sm:text-[14px] text-[--text-dim] mb-7 animate-fade-in-up font-semibold"
               style={{ animationDelay: '400ms' }}
             >
               — crafting the future with code &amp; AI
@@ -337,56 +365,80 @@ export default function Hero() {
             </div>
 
             <p
-              className="text-[15px] sm:text-base leading-relaxed max-w-lg mb-8 text-[--text-muted] animate-fade-in-up"
+              className="text-[17px] sm:text-[18.5px] font-medium leading-[1.8] max-w-xl mb-8 text-[--text-muted] animate-fade-in-up"
               style={{ animationDelay: '540ms' }}
             >
               Senior AI/LLM Engineer with{' '}
-              <strong className="font-semibold" style={{ color: 'var(--text)' }}>
+              <strong className="font-bold" style={{ color: 'var(--text)' }}>
                 5+ years building production AI systems
               </strong>{' '}
               and scalable Python backends. Specialised in LLM-powered multi-agent systems, RAG pipelines, agent orchestration, and AI evaluation frameworks.
             </p>
 
-            <div className="grid grid-cols-3 gap-3 mb-8 max-w-md">
+            <div className="grid grid-cols-3 gap-3.5 mb-8 max-w-md">
               <StatCard value="5+"  label="Yrs Exp"    delay={600} />
               <StatCard value="40+" label="Projects"   delay={670} />
               <StatCard value="99%" label="Client Sat" delay={740} />
             </div>
 
             <div
-              className="flex flex-wrap gap-3 mb-9 animate-fade-in-up"
+              className="flex flex-wrap gap-3.5 mb-9 animate-fade-in-up items-center"
               style={{ animationDelay: '810ms' }}
             >
-              <a href="#contact" onClick={handleScroll('contact')} className="btn btn-primary">
+              <motion.a
+                href="#contact"
+                onClick={handleScroll('contact')}
+                whileHover={{ scale: 1.035, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                className="btn btn-primary text-[15px] sm:text-[16px] font-bold py-3.5 px-6"
+              >
                 &gt; Let&apos;s Work Together_
-              </a>
-              <a href="#blog" onClick={handleScroll('blog')} className="btn btn-ghost">
+              </motion.a>
+              <motion.a
+                href="#blog"
+                onClick={handleScroll('blog')}
+                whileHover={{ scale: 1.035, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                className="btn btn-ghost text-[14.5px] sm:text-[15.5px] font-bold py-3.5 px-5"
+              >
                 ./read-insights.sh
-              </a>
-              <a href="#projects" onClick={handleScroll('projects')} className="btn btn-ghost text-xs">
+              </motion.a>
+              <motion.a
+                href="#projects"
+                onClick={handleScroll('projects')}
+                whileHover={{ scale: 1.035, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                className="btn btn-ghost text-[13.5px] sm:text-[14.5px] font-bold py-3.5 px-4.5"
+              >
                 ./projects.sh
-              </a>
+              </motion.a>
             </div>
 
             <div
               className="flex items-center gap-3 animate-fade-in-up"
               style={{ animationDelay: '880ms' }}
             >
-              <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-[--text-dim] flex-shrink-0">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-[--text-dim] flex-shrink-0">
                 Connect
               </span>
               <span className="flex-1 h-px" style={{ background: 'var(--border)' }} />
               {SOCIALS.map(s => (
-                <a
+                <motion.a
                   key={s.name}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
+                  whileHover={{ scale: 1.12, y: -3 }}
+                  whileTap={{ scale: 0.92 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                   className="w-9 h-9 rounded-md glass-card glass-card-hover grid place-items-center text-[--text-muted] hover:text-[--accent]"
                 >
                   <SocialIcon name={s.name} />
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>
@@ -421,7 +473,7 @@ export default function Hero() {
 
                 {/* Photo */}
                 <div
-                  className="relative w-full h-full rounded-full overflow-hidden"
+                  className="relative w-full h-full rounded-full overflow-hidden hero-photo-ring"
                   style={{
                     border: '1px solid var(--border-hi)',
                     boxShadow: 'var(--sh-3), 0 0 0 6px rgb(var(--accent-rgb) / 0.05)',

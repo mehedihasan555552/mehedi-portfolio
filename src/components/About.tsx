@@ -1,5 +1,6 @@
 'use client'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
 
@@ -37,9 +38,15 @@ export default function About() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
           {/* ── Portrait panel ── */}
-          <div className="reveal-left relative">
+          <motion.div
+            initial={{ opacity: 0, x: -32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="relative"
+          >
             <div
-              className="relative h-[440px] overflow-hidden group"
+              className="relative h-[440px] overflow-hidden group about-photo-frame"
               style={{
                 borderRadius: 'var(--r-xl)',
                 border: '1px solid var(--border)',
@@ -54,8 +61,6 @@ export default function About() {
                 sizes="(max-width:1024px) 100vw, 50vw"
                 loading="lazy"
               />
-              {/* Pulls the stock photo's saturated blue toward the palette so it
-                  stops fighting the greens, without flattening it to a duotone. */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{ background: 'var(--accent)', mixBlendMode: 'color', opacity: 0.34 }}
@@ -74,70 +79,87 @@ export default function About() {
             </div>
 
             {/* Floating stat */}
-            <div
-              className="absolute -top-5 -right-4 glass-card px-5 py-4 hidden sm:block animate-float-b"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.82, y: 14 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2, type: 'spring', stiffness: 350, damping: 25 }}
+              whileHover={{ scale: 1.06, y: -4 }}
+              className="absolute -top-5 -right-4 glass-card tilt-3d px-5 py-4 hidden sm:block cursor-default"
               style={{ boxShadow: 'var(--sh-3)' }}
             >
+              <div className="tilt-glare" />
               <div
-                className="text-3xl font-bold"
+                className="text-3xl sm:text-4xl font-extrabold"
                 style={{ fontFamily: 'var(--font-display)', color: 'var(--accent)' }}
               >
                 5+
               </div>
-              <div className="text-[11px] font-mono uppercase tracking-[0.12em] text-[--text-dim] mt-0.5">
+              <div className="text-[11.5px] sm:text-xs font-mono uppercase tracking-[0.14em] text-[--text-dim] mt-0.5 font-bold">
                 Years Experience
               </div>
-            </div>
+            </motion.div>
 
-            {/* Current role — top-left, not bottom-left: the bottom of the
-                image belongs to the pull quote. */}
-            <div
-              className="absolute -top-5 -left-4 glass-card px-5 py-3.5 hidden sm:block"
+            {/* Current role */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.82, y: 14 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3, type: 'spring', stiffness: 350, damping: 25 }}
+              whileHover={{ scale: 1.06, y: -4 }}
+              className="absolute -top-5 -left-4 glass-card tilt-3d px-5 py-3.5 hidden sm:block cursor-default"
               style={{ boxShadow: 'var(--sh-3)' }}
             >
-              <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-[--text-dim]">
+              <div className="tilt-glare" />
+              <div className="text-[11.5px] font-mono uppercase tracking-[0.16em] text-[--text-dim] font-bold">
                 Current Role
               </div>
-              <div className="font-semibold text-sm mt-0.5" style={{ color: 'var(--text)' }}>
+              <div className="font-extrabold text-[15.5px] mt-0.5" style={{ color: 'var(--text)' }}>
                 Senior LLM Engineer
               </div>
               <a
                 href="https://www.facebook.com/MYai-Robotics-1058509204012017/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-mono transition-colors duration-200 hover:underline underline-offset-2"
+                className="text-[13.5px] font-mono font-bold transition-colors duration-200 hover:underline underline-offset-2"
                 style={{ color: 'var(--accent)' }}
               >
                 @ MYai Robotics
               </a>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* ── Copy ── */}
-          <div className="reveal-right space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-6"
+          >
             <h3
-              className="text-[clamp(1.5rem,3vw,2.1rem)] font-bold leading-[1.15]"
+              className="text-[clamp(1.85rem,3.4vw,2.5rem)] font-extrabold leading-[1.15]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Senior AI/LLM Engineer &amp;{' '}
               <span style={{ color: 'var(--accent)' }}>Systems Architect</span>
             </h3>
 
-            <p className="text-[15.5px] leading-relaxed text-[--text-muted]">
+            <p className="text-[17px] sm:text-[18px] font-medium leading-relaxed text-[--text-muted]">
               Based in{' '}
-              <strong className="font-semibold" style={{ color: 'var(--text)' }}>
+              <strong className="font-bold" style={{ color: 'var(--text)' }}>
                 Dhaka, Bangladesh
               </strong>
               , I specialize in building production AI systems and scalable Python backends with over 5+ years of hands-on engineering experience.
             </p>
 
-            <p className="text-[15.5px] leading-relaxed text-[--text-muted]">
-              Specialised in <strong className="font-semibold" style={{ color: 'var(--text)' }}>LLM-powered multi-agent systems</strong>, RAG pipelines, agent orchestration, and AI evaluation frameworks. Experienced in designing tool-enabled agents, hybrid retrieval systems, provider-agnostic LLM architectures, guardrails, observability, regression testing, and production deployment. Currently engineering human-AI teammate systems at{' '}
+            <p className="text-[17px] sm:text-[18px] font-medium leading-relaxed text-[--text-muted]">
+              Specialised in <strong className="font-bold" style={{ color: 'var(--text)' }}>LLM-powered multi-agent systems</strong>, RAG pipelines, agent orchestration, and AI evaluation frameworks. Experienced in designing tool-enabled agents, hybrid retrieval systems, provider-agnostic LLM architectures, guardrails, observability, regression testing, and production deployment. Currently engineering human-AI teammate systems at{' '}
               <a
                 href="https://www.facebook.com/MYai-Robotics-1058509204012017/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold hover:underline underline-offset-2 transition-colors"
+                className="font-bold hover:underline underline-offset-2 transition-colors"
                 style={{ color: 'var(--accent)' }}
               >
                 MYai Robotics
@@ -146,22 +168,25 @@ export default function About() {
             </p>
 
             <blockquote
-              className="pl-5 py-1 text-[16px] leading-relaxed italic"
-              style={{ borderLeft: '2px solid var(--accent)', color: 'var(--text)' }}
+              className="pl-5 py-2 text-[17.5px] sm:text-[18.5px] font-semibold leading-relaxed italic"
+              style={{ borderLeft: '3px solid var(--accent)', color: 'var(--text)' }}
             >
               &ldquo;Engineering resilient, non-deterministic AI pipelines into deterministic, high-throughput production realities.&rdquo;
             </blockquote>
 
-            <dl className="grid sm:grid-cols-2 gap-3 pt-2">
+            <dl className="grid sm:grid-cols-2 gap-3.5 pt-2">
               {FACTS.map(item => (
-                <div
+                <motion.div
                   key={item.label}
-                  className="glass-card glass-card-hover spotlight px-4 py-3"
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                  className="glass-card glass-card-hover spotlight tilt-3d px-4 py-3.5"
                 >
-                  <dt className="text-[10px] font-mono uppercase tracking-[0.14em] text-[--text-dim]">
+                  <div className="tilt-glare" />
+                  <dt className="text-[12px] font-mono uppercase tracking-[0.16em] text-[--text-dim] font-bold">
                     {item.label}
                   </dt>
-                  <dd className="text-[13.5px] font-medium mt-0.5" style={{ color: 'var(--text)' }}>
+                  <dd className="text-[15px] sm:text-[16px] font-bold mt-0.5" style={{ color: 'var(--text)' }}>
                     {item.href ? (
                       <a
                         href={item.href}
@@ -173,17 +198,23 @@ export default function About() {
                       item.value
                     )}
                   </dd>
-                </div>
+                </motion.div>
               ))}
             </dl>
-          </div>
+          </motion.div>
         </div>
 
         {/* ── Marquee ── */}
-        <div className="mt-20 reveal">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.65, delay: 0.2 }}
+          className="mt-20"
+        >
           <div className="flex items-center gap-4 mb-5">
             <span className="flex-1 h-px" style={{ background: 'var(--border)' }} aria-hidden="true" />
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[--text-dim] whitespace-nowrap">
+            <span className="text-[11px] font-mono uppercase tracking-[0.2em] font-bold text-[--text-dim] whitespace-nowrap">
               Technologies I work with
             </span>
             <span className="flex-1 h-px" style={{ background: 'var(--border)' }} aria-hidden="true" />
@@ -195,7 +226,7 @@ export default function About() {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

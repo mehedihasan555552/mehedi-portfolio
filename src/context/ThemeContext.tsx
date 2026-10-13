@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react'
 
 type Theme = 'dark' | 'light'
-interface ThemeCtx { theme: Theme; toggle: () => void }
+interface ThemeCtx { theme: Theme; toggle: (event?: React.MouseEvent | MouseEvent) => void }
 
 const Ctx = createContext<ThemeCtx>({ theme: 'dark', toggle: () => {} })
 
@@ -21,24 +21,71 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  const toggle = useCallback(() => {
-    setTheme(prev => {
-      const next = prev === 'dark' ? 'light' : 'dark'
-      const root = document.documentElement
+  const toggle = useCallback((event?: React.MouseEvent | MouseEvent) => {
+    const root = document.documentElement
+    const isDark = root.classList.contains('dark')
+    const next: Theme = isDark ? 'light' : 'dark'
 
-      // Colour transitions are enabled only for the length of the swap.
-      // Leaving them on permanently makes every hover in the app feel mushy.
-      root.classList.add('theme-transition')
-      window.clearTimeout(swapTimer.current)
-      swapTimer.current = window.setTimeout(
-        () => root.classList.remove('theme-transition'),
-        440
+    // View Transitions API circular ripple when supported
+    const hasViewTransition =
+      typeof document !== 'undefined' &&
+      'startViewTransition' in document &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (hasViewTransition) {
+      let x = event?.clientX ?? window.innerWidth - 60
+      let y = event?.clientY ?? 34
+
+      // Use the center of the trigger element if available
+      const target = (event?.currentTarget || event?.target) as HTMLElement | undefined
+      if (target?.getBoundingClientRect) {
+        const rect = target.getBoundingClientRect()
+        x = rect.left + rect.width / 2
+        y = rect.top + rect.height / 2
+      }
+
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
       )
 
-      root.classList.toggle('dark', next === 'dark')
-      try { localStorage.setItem('theme', next) } catch {}
-      return next
-    })
+      const transition = (document as any).startViewTransition(() => {
+        root.classList.toggle('dark', next === 'dark')
+        setTheme(next)
+        try { localStorage.setItem('theme', next) } catch {}
+      })
+
+      transition.ready
+        .then(() => {
+          root.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 520,
+              easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+              pseudoElement: '::view-transition-new(root)',
+            }
+          )
+        })
+        .catch(() => {})
+      return
+    }
+
+    // Fallback: smooth temporary transition class for standard browsers
+    root.classList.add('theme-transition')
+    window.clearTimeout(swapTimer.current)
+    swapTimer.current = window.setTimeout(
+      () => root.classList.remove('theme-transition'),
+      480
+    )
+
+    root.classList.toggle('dark', next === 'dark')
+    setTheme(next)
+    try { localStorage.setItem('theme', next) } catch {}
   }, [])
 
   useEffect(() => () => window.clearTimeout(swapTimer.current), [])

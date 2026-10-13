@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, memo, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { useReveal } from '@/hooks/useReveal'
 import { useCountUp } from '@/hooks/useCountUp'
 import SectionHeader from './SectionHeader'
@@ -39,12 +40,12 @@ const SkillBar = memo(function SkillBar({
 
   return (
     <div>
-      <div className="flex justify-between items-baseline mb-2">
-        <span className="text-[14px] font-medium" style={{ color: 'var(--text)' }}>
+      <div className="flex justify-between items-baseline mb-2.5">
+        <span className="text-[15.5px] sm:text-[16.5px] font-bold" style={{ color: 'var(--text)' }}>
           {skill.name}
         </span>
         <span
-          className="text-[13px] font-mono font-semibold tabular-nums"
+          className="text-[14.5px] sm:text-[15.5px] font-mono font-bold tabular-nums"
           style={{ color: 'var(--accent)' }}
         >
           {count}%
@@ -52,18 +53,21 @@ const SkillBar = memo(function SkillBar({
       </div>
 
       <div
-        className="progress-track"
+        className="progress-track overflow-hidden"
         role="progressbar"
         aria-valuenow={skill.level}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={`${skill.name} proficiency`}
       >
-        <div
-          className="progress-fill"
-          style={{
-            width: animated ? `${skill.level}%` : '0%',
-            ['--delay' as string]: `${skill.delay}ms`,
+        <motion.div
+          className="progress-fill h-full rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: animated ? `${skill.level}%` : '0%' }}
+          transition={{
+            duration: 1.2,
+            delay: skill.delay / 1000,
+            ease: [0.16, 1, 0.3, 1],
           }}
         />
       </div>
@@ -85,56 +89,63 @@ const CategoryCard = memo(function CategoryCard({
   const dimmed = active !== null && !on
 
   return (
-    <div
+    <motion.div
       data-reveal="scale"
-      className="glass-card spotlight p-5 cursor-default transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+      whileHover={{ y: -6, scale: 1.015 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      className="glass-card spotlight tilt-3d p-5 cursor-default transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
       style={{
         borderColor: on ? `color-mix(in srgb, ${cat.tone} 40%, transparent)` : 'var(--border)',
         boxShadow:   on ? `0 18px 44px -18px color-mix(in srgb, ${cat.tone} 55%, transparent)` : 'var(--sh-1)',
         opacity:     dimmed ? 0.42 : 1,
-        transform:   on ? 'translateY(-4px)' : 'none',
       }}
       onMouseEnter={() => onHover(index)}
       onMouseLeave={onLeave}
     >
+      <div className="tilt-glare" />
       <div className="flex items-center justify-between mb-4">
         <h3
-          className="text-[15px] font-bold tracking-[-0.01em] transition-colors duration-300"
+          className="text-[17px] sm:text-[18.5px] font-extrabold tracking-[-0.01em] transition-colors duration-300"
           style={{ fontFamily: 'var(--font-display)', color: on ? cat.tone : 'var(--text)' }}
         >
           {cat.title}
         </h3>
-        <span className="text-[10px] font-mono text-[--text-dim]">
+        <span className="text-[11.5px] font-mono font-extrabold text-[--text-dim]">
           {String(cat.skills.length).padStart(2, '0')}
         </span>
       </div>
 
       {/* Accent rule that fills on hover */}
-      <span
-        className="block h-px mb-4 origin-left transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{ background: cat.tone, transform: on ? 'scaleX(1)' : 'scaleX(0.14)' }}
+      <motion.span
+        className="block h-px mb-4 origin-left"
+        animate={{
+          scaleX: on ? 1 : 0.14,
+        }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        style={{ background: cat.tone }}
         aria-hidden="true"
       />
 
-      <div className="flex flex-wrap gap-1.5">
-        {cat.skills.map((skill, si) => (
-          <span
+      <div className="flex flex-wrap gap-2">
+        {cat.skills.map((skill) => (
+          <motion.span
             key={skill}
-            className="px-2 py-[3px] text-[11px] font-mono transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            whileHover={{ scale: 1.08, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+            className="inline-block px-2.5 py-1 text-[12.5px] sm:text-[13px] font-mono font-semibold cursor-default transition-colors duration-200"
             style={{
               borderRadius: 'var(--r-xs)',
               background: on ? `color-mix(in srgb, ${cat.tone} 12%, transparent)` : 'var(--bg-2)',
               color:      on ? cat.tone : 'var(--text-dim)',
               border:     `1px solid ${on ? `color-mix(in srgb, ${cat.tone} 26%, transparent)` : 'var(--border)'}`,
-              transitionDelay: on ? `${si * 22}ms` : '0ms',
-              transform: on ? 'translateY(-1px)' : 'none',
             }}
           >
             {skill}
-          </span>
+          </motion.span>
         ))}
       </div>
-    </div>
+    </motion.div>
   )
 })
 
@@ -201,31 +212,35 @@ export default function Skills() {
               <span className="w-1 h-4 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
               Specializations
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3.5">
               {SPECIALIZATIONS.map(s => (
-                <div
+                <motion.div
                   key={s.title}
-                  className="glass-card glass-card-hover spotlight p-4 group cursor-default"
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                  className="glass-card glass-card-hover spotlight tilt-3d p-4 group cursor-default"
                 >
+                  <div className="tilt-glare" />
                   <div className="flex items-start gap-2.5">
                     <span
-                      className="mt-[7px] w-1.5 h-1.5 rounded-full flex-shrink-0 transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-150"
+                      className="mt-[7px] w-2 h-2 rounded-full flex-shrink-0 transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-150"
                       style={{ background: 'var(--accent)' }}
                       aria-hidden="true"
                     />
                     <div className="min-w-0">
                       <div
-                        className="text-[13.5px] font-semibold leading-snug transition-colors duration-200 group-hover:text-[--accent]"
+                        className="text-[14.5px] sm:text-[15.5px] font-bold leading-snug transition-colors duration-200 group-hover:text-[--accent]"
                         style={{ color: 'var(--text)' }}
                       >
                         {s.title}
                       </div>
-                      <div className="text-[11.5px] text-[--text-dim] mt-0.5 leading-snug">
+                      <div className="text-[12.5px] sm:text-[13px] text-[--text-dim] mt-1 leading-snug">
                         {s.desc}
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

@@ -1,5 +1,6 @@
 'use client'
-import { useState, memo, useCallback, useEffect, useRef } from 'react'
+import { useState, memo, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
 
@@ -124,21 +125,21 @@ const EXPERIENCES: Experience[] = [
 ]
 
 /* ─── Detail panel ─────────────────────────────────────────────────────── */
-const DetailPanel = memo(function DetailPanel({
-  exp, visible,
-}: { exp: Experience; visible: boolean }) {
-  const ease = 'cubic-bezier(0.16,1,0.3,1)'
-
+const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
   return (
-    <article
-      className="glass-card spotlight p-6 md:p-8 h-full"
+    <motion.article
+      key={exp.id}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-card spotlight p-6 md:p-8 h-full tilt-3d"
       style={{
         borderColor: `color-mix(in srgb, ${exp.tone} 26%, var(--border))`,
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'none' : 'translateY(14px) scale(0.99)',
-        transition: `opacity 380ms ${ease}, transform 380ms ${ease}`,
       }}
     >
+      <div className="tilt-glare" />
+
       {/* Header */}
       <div
         className="flex flex-wrap items-start justify-between gap-4 mb-5 pb-5"
@@ -146,32 +147,32 @@ const DetailPanel = memo(function DetailPanel({
       >
         <div className="min-w-0">
           <h3
-            className="text-xl md:text-2xl font-bold leading-tight tracking-[-0.02em]"
+            className="text-2xl md:text-3xl font-extrabold leading-tight tracking-[-0.015em]"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             {exp.role}
           </h3>
-          <div className="flex items-center gap-1.5 mt-2 font-mono text-[15px]">
+          <div className="flex items-center gap-1.5 mt-2 font-mono font-bold text-[16px] sm:text-[17px]">
             <span style={{ color: exp.tone }}>@</span>
             {exp.companyUrl ? (
               <a
                 href={exp.companyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold hover:underline underline-offset-4 transition-colors"
+                className="font-bold hover:underline underline-offset-4 transition-colors"
                 style={{ color: exp.tone }}
               >
                 {exp.company}
               </a>
             ) : (
-              <span className="font-semibold" style={{ color: exp.tone }}>{exp.company}</span>
+              <span className="font-bold" style={{ color: exp.tone }}>{exp.company}</span>
             )}
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <span
-            className="px-3 py-1 rounded-full text-[11px] font-mono font-semibold uppercase tracking-[0.08em]"
+            className="px-3.5 py-1 rounded-full text-[12px] font-mono font-bold uppercase tracking-[0.08em]"
             style={{
               background: `color-mix(in srgb, ${exp.tone} 12%, transparent)`,
               color: exp.tone,
@@ -180,31 +181,29 @@ const DetailPanel = memo(function DetailPanel({
           >
             {exp.type}
           </span>
-          <span className="text-xs font-mono text-[--text-dim]">{exp.period}</span>
+          <span className="text-[13px] font-mono font-bold text-[--text-dim]">{exp.period}</span>
         </div>
       </div>
 
-      <p className="text-[15px] leading-relaxed text-[--text-muted] mb-7">
+      <p className="text-[16.5px] sm:text-[17.5px] font-medium leading-relaxed text-[--text-muted] mb-7">
         {exp.description}
       </p>
 
       {/* Highlights */}
-      <h4 className="text-[10px] font-mono font-semibold uppercase tracking-[0.18em] mb-4" style={{ color: exp.tone }}>
+      <h4 className="text-[12px] font-mono font-bold uppercase tracking-[0.16em] mb-4" style={{ color: exp.tone }}>
         Key Highlights
       </h4>
       <ul className="space-y-3 mb-7">
         {exp.highlights.map((h, i) => (
-          <li
+          <motion.li
             key={i}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, delay: 0.05 + i * 0.06 }}
             className="flex items-start gap-3"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? 'none' : 'translateX(-10px)',
-              transition: `opacity 420ms ${ease} ${120 + i * 70}ms, transform 420ms ${ease} ${120 + i * 70}ms`,
-            }}
           >
             <span
-              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[10px] font-mono font-bold"
+              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[11px] font-mono font-extrabold"
               style={{
                 background: `color-mix(in srgb, ${exp.tone} 16%, transparent)`,
                 color: exp.tone,
@@ -214,58 +213,47 @@ const DetailPanel = memo(function DetailPanel({
             >
               {i + 1}
             </span>
-            <span className="text-[14.5px] leading-relaxed text-[--text-muted]">{h}</span>
-          </li>
+            <span className="text-[15.5px] sm:text-[16px] font-medium leading-relaxed text-[--text-muted]">{h}</span>
+          </motion.li>
         ))}
       </ul>
 
       {/* Stack */}
-      <h4 className="text-[10px] font-mono font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: exp.tone }}>
+      <h4 className="text-[12px] font-mono font-bold uppercase tracking-[0.16em] mb-3" style={{ color: exp.tone }}>
         Tech Stack
       </h4>
       <div className="flex flex-wrap gap-2">
         {exp.stack.map((tech, i) => (
-          <span
+          <motion.span
             key={tech}
-            className="px-2.5 py-1 text-xs font-mono"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.15 + i * 0.04 }}
+            whileHover={{ scale: 1.05, y: -2 }}
+            className="px-3 py-1 text-[12.5px] sm:text-[13px] font-mono font-semibold cursor-default"
             style={{
               borderRadius: 'var(--r-sm)',
               background: `color-mix(in srgb, ${exp.tone} 9%, transparent)`,
               border: `1px solid color-mix(in srgb, ${exp.tone} 22%, transparent)`,
               color: 'var(--text)',
-              opacity: visible ? 1 : 0,
-              transform: visible ? 'none' : 'scale(0.9)',
-              transition: `opacity 340ms ${ease} ${280 + i * 40}ms, transform 340ms ${ease} ${280 + i * 40}ms`,
             }}
           >
             {tech}
-          </span>
+          </motion.span>
         ))}
       </div>
-    </article>
+    </motion.article>
   )
 })
 
 /* ─── Main ─────────────────────────────────────────────────────────────── */
 export default function Experience() {
-  const [active, setActive]       = useState(0)
-  const [visible, setVisible]     = useState(true)
-  const [displayed, setDisplayed] = useState(0)
+  const [active, setActive] = useState(0)
   const ref = useReveal()
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const handleSelect = useCallback((i: number) => {
-    if (i === active) return
     setActive(i)
-    setVisible(false)
-    if (timerRef.current) clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => {
-      setDisplayed(i)
-      setVisible(true)
-    }, 220)
-  }, [active])
-
-  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
+  }, [])
 
   const tone = EXPERIENCES[active].tone
 
@@ -282,6 +270,15 @@ export default function Experience() {
         aria-hidden="true"
       />
 
+      {/* Ambient 3D floating accent */}
+      <div
+        className="floating-3d-geom hidden lg:block absolute top-12 left-10 w-16 h-16 pointer-events-none opacity-30"
+        style={{ animationDuration: '19s' }}
+        aria-hidden="true"
+      >
+        <div className="w-full h-full border border-[--accent] rounded-xl transform -rotate-12" />
+      </div>
+
       <div className="container-x">
         <SectionHeader
           index="02 —"
@@ -293,24 +290,18 @@ export default function Experience() {
         <div className="grid lg:grid-cols-5 gap-8">
 
           {/* ── Timeline rail ── */}
-          <div className="lg:col-span-2 reveal-left">
+          <motion.div
+            initial={{ opacity: 0, x: -25 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-2"
+          >
             <div className="relative" role="tablist" aria-label="Roles">
               {/* Rail */}
               <span
                 className="absolute left-[13px] top-3 bottom-3 w-px"
                 style={{ background: 'var(--border)' }}
-                aria-hidden="true"
-              />
-              {/* Travelling highlight */}
-              <span
-                className="absolute left-[12px] w-[3px] rounded-full pointer-events-none"
-                style={{
-                  top: `calc(${(active / EXPERIENCES.length) * 100}% + 12px)`,
-                  height: `calc(${100 / EXPERIENCES.length}% - 12px)`,
-                  background: tone,
-                  boxShadow: `0 0 12px ${tone}`,
-                  transition: 'top 480ms cubic-bezier(0.16,1,0.3,1), background 480ms ease, box-shadow 480ms ease',
-                }}
                 aria-hidden="true"
               />
 
@@ -323,17 +314,28 @@ export default function Experience() {
                       role="tab"
                       aria-selected={on}
                       onClick={() => handleSelect(i)}
-                      className="w-full text-left p-3.5 pl-10 relative group transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      className="w-full text-left p-4 pl-10 relative group transition-colors duration-200"
                       style={{
                         borderRadius: 'var(--r-md)',
-                        background: on ? `color-mix(in srgb, ${e.tone} 8%, transparent)` : 'transparent',
-                        border: `1px solid ${on ? `color-mix(in srgb, ${e.tone} 28%, transparent)` : 'transparent'}`,
-                        transform: on ? 'translateX(4px)' : 'none',
                       }}
                     >
+                      {/* Active sliding pill */}
+                      {on && (
+                        <motion.span
+                          layoutId="active-experience-pill"
+                          className="absolute inset-0 rounded-[var(--r-md)] pointer-events-none"
+                          style={{
+                            background: `color-mix(in srgb, ${e.tone} 11%, transparent)`,
+                            border: `1px solid color-mix(in srgb, ${e.tone} 36%, transparent)`,
+                            boxShadow: `0 4px 22px -4px color-mix(in srgb, ${e.tone} 28%, transparent)`,
+                          }}
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        />
+                      )}
+
                       {/* Node */}
                       <span
-                        className="absolute left-[7px] top-1/2 -translate-y-1/2 rounded-full transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                        className="absolute left-[7px] top-1/2 -translate-y-1/2 rounded-full transition-all duration-300"
                         style={{
                           width: on ? 13 : 9,
                           height: on ? 13 : 9,
@@ -344,16 +346,16 @@ export default function Experience() {
                       />
 
                       <span
-                        className="block text-[14.5px] font-semibold leading-snug transition-colors duration-200"
+                        className="block text-[16px] font-bold leading-snug transition-colors duration-200 relative z-10"
                         style={{ color: on ? 'var(--text)' : 'var(--text-muted)' }}
                       >
                         {e.role}
                       </span>
-                      <span className="block text-[13px] mt-0.5 text-[--text-dim]">
+                      <span className="block text-[14px] sm:text-[14.5px] font-semibold mt-0.5 text-[--text-dim] relative z-10">
                         @ {e.company}
                       </span>
                       <span
-                        className="block text-[11px] font-mono mt-1 transition-colors duration-200"
+                        className="block text-[12.5px] font-mono font-bold mt-1 transition-colors duration-200 relative z-10"
                         style={{ color: on ? e.tone : 'var(--text-dim)' }}
                       >
                         {e.period}
@@ -363,11 +365,13 @@ export default function Experience() {
                 })}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── Detail ── */}
-          <div className="lg:col-span-3 reveal-right">
-            <DetailPanel exp={EXPERIENCES[displayed]} visible={visible} />
+          {/* ── Detail with AnimatePresence ── */}
+          <div className="lg:col-span-3">
+            <AnimatePresence mode="wait">
+              <DetailPanel key={active} exp={EXPERIENCES[active]} />
+            </AnimatePresence>
           </div>
         </div>
       </div>

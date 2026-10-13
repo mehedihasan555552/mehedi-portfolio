@@ -1,3 +1,6 @@
+'use client'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import FooterSocials from '@/components/FooterSocials'
 
 const YEAR = 2026
@@ -18,6 +21,24 @@ const CONTACT = [
 ]
 
 export default function Footer() {
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      try {
+        window.history.pushState(null, '', '/')
+      } catch {}
+    } else {
+      router.push('/')
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 50)
+    }
+  }
+
   return (
     <footer className="relative overflow-hidden" role="contentinfo" style={{ borderTop: '1px solid var(--border)' }}>
       {/* Top edge glow */}
@@ -32,9 +53,14 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              onClick={scrollToTop}
+              className="inline-flex items-center gap-3 group cursor-pointer"
+              aria-label="Mehedi Hasan — Back to top"
+            >
               <span
-                className="w-10 h-10 rounded-md grid place-items-center font-mono text-[13px] font-bold flex-shrink-0"
+                className="footer-mh-badge w-10 h-10 rounded-xl grid place-items-center font-extrabold text-[13.5px] flex-shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:-translate-y-0.5"
                 style={{
                   background: 'var(--accent-soft)',
                   border: '1px solid var(--accent-line)',
@@ -46,24 +72,24 @@ export default function Footer() {
               </span>
               <span>
                 <span
-                  className="block font-bold text-[16px] leading-tight"
+                  className="block font-extrabold text-[19px] tracking-[-0.015em] leading-tight transition-colors duration-200 group-hover:text-[--accent]"
                   style={{ fontFamily: 'var(--font-display)', color: 'var(--text)' }}
                 >
                   Mehedi Hasan
                 </span>
-                <span className="block text-[11px] font-mono text-[--text-dim] mt-0.5">
+                <span className="block text-[12.5px] font-mono font-bold text-[--text-dim] mt-0.5">
                   Sr. Full-Stack &amp; LLM Engineer
                 </span>
               </span>
-            </div>
+            </Link>
 
-            <p className="text-[13.5px] leading-relaxed text-[--text-muted]">
+            <p className="text-[15px] font-medium leading-relaxed text-[--text-muted]">
               Building smart solutions with code &amp; AI.
               <br />
               Full-Stack · AI/ML · Automation.
             </p>
 
-            <div className="announce-badge" style={{ borderColor: 'var(--accent-line)', color: 'var(--accent)' }}>
+            <div className="announce-badge font-bold" style={{ borderColor: 'var(--accent-line)', color: 'var(--accent)' }}>
               <span className="status-dot" aria-hidden="true" />
               Available for new projects
             </div>
@@ -71,7 +97,7 @@ export default function Footer() {
 
           {/* Quick links */}
           <nav aria-label="Footer navigation">
-            <h3 className="flex items-center gap-2 text-[10px] font-mono font-semibold uppercase tracking-[0.18em] text-[--text-muted] mb-5">
+            <h3 className="flex items-center gap-2 text-[11.5px] font-mono font-bold uppercase tracking-[0.2em] text-[--text-muted] mb-5">
               <span className="w-1 h-3.5 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
               Quick Links
             </h3>
@@ -80,7 +106,7 @@ export default function Footer() {
                 <a
                   key={l.label}
                   href={l.href}
-                  className="group inline-flex items-center gap-2 text-[13.5px] text-[--text-muted] hover:text-[--accent] transition-colors duration-200"
+                  className="group inline-flex items-center gap-2 text-[15px] font-semibold text-[--text-muted] hover:text-[--accent] transition-colors duration-200"
                 >
                   <span
                     className="w-1 h-1 rounded-full flex-shrink-0 transition-all duration-300 group-hover:w-3"
@@ -95,7 +121,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="flex items-center gap-2 text-[10px] font-mono font-semibold uppercase tracking-[0.18em] text-[--text-muted] mb-5">
+            <h3 className="flex items-center gap-2 text-[11.5px] font-mono font-bold uppercase tracking-[0.2em] text-[--text-muted] mb-5">
               <span className="w-1 h-3.5 rounded-full" style={{ background: 'var(--accent)' }} aria-hidden="true" />
               Contact
             </h3>
@@ -105,12 +131,12 @@ export default function Footer() {
                   {item.href ? (
                     <a
                       href={item.href}
-                      className="text-[13.5px] text-[--text-muted] hover:text-[--accent] transition-colors duration-200 break-all"
+                      className="text-[15px] font-semibold text-[--text-muted] hover:text-[--accent] transition-colors duration-200 break-all"
                     >
                       {item.value}
                     </a>
                   ) : (
-                    <span className="text-[13.5px] text-[--text-muted]">{item.value}</span>
+                    <span className="text-[15px] font-medium text-[--text-muted]">{item.value}</span>
                   )}
                 </div>
               ))}
@@ -125,7 +151,7 @@ export default function Footer() {
         />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
-          <p className="text-[11.5px] font-mono text-[--text-dim] order-2 sm:order-1">
+          <p className="text-[12.5px] font-mono font-medium text-[--text-dim] order-2 sm:order-1">
             © {YEAR} Md Mehedi Hasan. All rights reserved.
           </p>
 
@@ -133,9 +159,27 @@ export default function Footer() {
             <FooterSocials />
           </div>
 
-          <p className="text-[11.5px] font-mono text-[--text-dim] order-3 hidden sm:block">
-            Built with Next.js
-          </p>
+          <div className="order-3 flex items-center gap-4">
+            <span className="text-[12.5px] font-mono font-medium text-[--text-dim] hidden md:inline">
+              Built with Next.js 16 &amp; React 19
+            </span>
+            <button
+              onClick={scrollToTop}
+              className="inline-flex items-center gap-1.5 text-[12.5px] font-mono font-bold text-[--text-muted] hover:text-[--accent] transition-colors duration-200 group cursor-pointer"
+              aria-label="Back to top"
+            >
+              <span>Back to top</span>
+              <svg
+                className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-y-0.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback, useRef, memo } from 'react'
+import { motion } from 'framer-motion'
 import { useTheme } from '@/context/ThemeContext'
 import SocialIcon from './SocialIcon'
 import { usePathname, useRouter } from 'next/navigation'
@@ -64,40 +65,43 @@ const MehediLogo = memo(function MehediLogo({ size = 38 }: { size?: number }) {
 /* ─── Theme toggle — sun/moon crossfade on one axis ───────────────────── */
 const ThemeButton = memo(function ThemeButton({
   theme, toggle,
-}: { theme: string; toggle: () => void }) {
+}: { theme: string; toggle: (e?: React.MouseEvent) => void }) {
   const isDark = theme === 'dark'
   return (
-    <button
-      onClick={toggle}
+    <motion.button
+      onClick={(e) => toggle(e)}
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-      className="relative w-10 h-10 rounded-md glass-card glass-card-hover grid place-items-center text-[--text-muted] hover:text-[--accent] overflow-hidden"
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.92 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+      className="relative w-11 h-11 rounded-xl glass-card glass-card-hover grid place-items-center text-[--text-muted] hover:text-[--accent] overflow-hidden cursor-pointer"
     >
-      <span className="relative block w-[18px] h-[18px]">
+      <span className="relative block w-5 h-5 pointer-events-none">
         {/* Sun */}
         <svg
-          className="absolute inset-0 w-[18px] h-[18px] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          className="absolute inset-0 w-5 h-5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           style={{
             opacity: isDark ? 1 : 0,
-            transform: isDark ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.4)',
+            transform: isDark ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.3)',
           }}
-          fill="none" stroke="currentColor" strokeWidth={1.9} viewBox="0 0 24 24" aria-hidden="true"
+          fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true"
         >
           <circle cx="12" cy="12" r="4.5" />
           <path strokeLinecap="round" d="M12 2v2.4M12 19.6V22M4.22 4.22l1.7 1.7M18.08 18.08l1.7 1.7M2 12h2.4M19.6 12H22M4.22 19.78l1.7-1.7M18.08 5.92l1.7-1.7" />
         </svg>
         {/* Moon */}
         <svg
-          className="absolute inset-0 w-[18px] h-[18px] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+          className="absolute inset-0 w-5 h-5 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           style={{
             opacity: isDark ? 0 : 1,
-            transform: isDark ? 'rotate(90deg) scale(0.4)' : 'rotate(0deg) scale(1)',
+            transform: isDark ? 'rotate(90deg) scale(0.3)' : 'rotate(0deg) scale(1)',
           }}
           fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"
         >
           <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
       </span>
-    </button>
+    </motion.button>
   )
 })
 
@@ -206,6 +210,24 @@ export default function Navbar() {
     }
   }, [pathname, router])
 
+  const scrollToTop = useCallback((e?: React.MouseEvent) => {
+    if (e) e.preventDefault()
+    setMenuOpen(false)
+    if (pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      try {
+        window.history.pushState(null, '', '/')
+      } catch {}
+      setActive('')
+      movePill(null)
+    } else {
+      router.push('/')
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 50)
+    }
+  }, [pathname, router, movePill])
+
   return (
     <>
       <nav
@@ -223,7 +245,12 @@ export default function Navbar() {
         <div className="container-x h-[68px] flex items-center justify-between gap-4">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group" aria-label="Mehedi Hasan — Home">
+          <Link
+            href="/"
+            onClick={scrollToTop}
+            className="flex items-center gap-2.5 flex-shrink-0 group cursor-pointer"
+            aria-label="Mehedi Hasan — Home, scroll to top"
+          >
             <span className="relative block transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105 group-hover:-translate-y-0.5">
               <MehediLogo />
               <span
@@ -234,12 +261,12 @@ export default function Navbar() {
             </span>
             <span className="leading-none">
               <span
-                className="block font-bold text-[16px] tracking-tight"
+                className="block font-extrabold text-[17px] tracking-tight"
                 style={{ fontFamily: 'var(--font-display)', color: 'var(--text)' }}
               >
                 mehedi<span style={{ color: 'var(--accent)' }}>.dev</span>
               </span>
-              <span className="hidden sm:block text-[9px] font-mono tracking-[0.2em] uppercase mt-[3px] text-[--text-dim]">
+              <span className="hidden sm:block text-[9.5px] font-mono font-bold tracking-[0.2em] uppercase mt-[3px] text-[--text-dim]">
                 Full-Stack &amp; AI
               </span>
             </span>
@@ -253,7 +280,7 @@ export default function Navbar() {
           >
             <span
               aria-hidden="true"
-              className="absolute top-1/2 -translate-y-1/2 h-9 rounded-md pointer-events-none"
+              className="absolute top-1/2 -translate-y-1/2 h-9 rounded-full pointer-events-none"
               style={{
                 left: pill.left,
                 width: pill.width,
@@ -275,7 +302,7 @@ export default function Navbar() {
                   onMouseEnter={() => movePill(item.id)}
                   onFocus={() => movePill(item.id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className="relative z-10 px-3.5 py-2 text-[13px] font-mono font-medium rounded-md transition-colors duration-200"
+                  className="relative z-10 px-4 py-2 text-[14.5px] font-bold rounded-full transition-colors duration-200"
                   style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}
                   onMouseOver={e => { if (!isActive) e.currentTarget.style.color = 'var(--text)' }}
                   onMouseOut={e => { if (!isActive) e.currentTarget.style.color = 'var(--text-muted)' }}
@@ -290,21 +317,26 @@ export default function Navbar() {
           <div className="flex items-center gap-2 flex-shrink-0">
             <ThemeButton theme={theme} toggle={toggle} />
 
-            <a
+            <motion.a
               href="#contact"
               onClick={e => { e.preventDefault(); navTo('contact') }}
-              className="hidden lg:inline-flex btn btn-primary text-[13px]"
+              whileHover={{ scale: 1.05, y: -1 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              className="hidden lg:inline-flex btn btn-primary text-[14px] font-bold"
             >
               Hire Me
-            </a>
+            </motion.a>
 
             {/* Hamburger → X */}
-            <button
+            <motion.button
               onClick={() => setMenuOpen(v => !v)}
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
-              className="lg:hidden relative z-[60] w-10 h-10 rounded-md glass-card flex flex-col items-center justify-center gap-[5px] text-[--text] transition-colors duration-200"
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              className="lg:hidden relative z-[60] w-10 h-10 rounded-xl glass-card flex flex-col items-center justify-center gap-[5px] text-[--text] transition-colors duration-200 cursor-pointer"
             >
               <span
                 className="block w-[18px] h-[1.5px] rounded-full bg-current origin-center transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
@@ -318,7 +350,7 @@ export default function Navbar() {
                 className="block w-[18px] h-[1.5px] rounded-full bg-current origin-center transition-transform duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
                 style={{ transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none' }}
               />
-            </button>
+            </motion.button>
           </div>
         </div>
       </nav>
@@ -357,7 +389,7 @@ export default function Navbar() {
               key={item.id}
               href={pathname === '/' ? `#${item.id}` : (item.path || `/#${item.id}`)}
               onClick={e => { e.preventDefault(); navTo(item.id, item.path) }}
-              className="relative py-2.5 text-[34px] font-bold tracking-tight"
+              className="relative py-2.5 text-[34px] font-extrabold tracking-tight"
               style={{
                 fontFamily: 'var(--font-display)',
                 color: active === item.id ? 'var(--accent)' : 'var(--text)',
@@ -370,7 +402,7 @@ export default function Navbar() {
                              color 200ms ease`,
               }}
             >
-              <span className="mr-3 text-sm font-mono align-middle text-[--text-dim]">
+              <span className="mr-3 text-sm font-mono font-bold align-middle text-[--text-dim]">
                 0{i + 1}
               </span>
               {item.label}
@@ -380,7 +412,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={e => { e.preventDefault(); navTo('contact') }}
-            className="btn btn-primary mt-9 text-base px-9 py-3.5"
+            className="btn btn-primary mt-9 text-base font-bold px-9 py-3.5"
             style={{
               opacity: menuOpen ? 1 : 0,
               transform: menuOpen ? 'none' : 'translateY(18px)',

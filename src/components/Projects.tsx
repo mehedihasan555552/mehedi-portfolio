@@ -1,7 +1,8 @@
 'use client'
-import { useState, memo, useCallback, useEffect, useRef } from 'react'
+import { useState, memo, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import { projects } from '@/data/projects'
 import { useReveal } from '@/hooks/useReveal'
 import SectionHeader from './SectionHeader'
@@ -25,10 +26,17 @@ const ProjectCard = memo(function ProjectCard({
   project,
 }: { project: typeof projects[0] }) {
   return (
-    <article
-      data-reveal="scale"
-      className="group relative glass-card glass-card-hover spotlight overflow-hidden flex flex-col"
+    <motion.article
+      layout
+      initial={{ opacity: 0, scale: 0.94, y: 18 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.94, y: 18 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -7, transition: { type: 'spring', stiffness: 350, damping: 25 } }}
+      className="group relative glass-card glass-card-hover spotlight overflow-hidden flex flex-col tilt-3d h-full"
     >
+      <div className="tilt-glare" />
+
       {/* Whole-card link; the action buttons sit above it on z-10 */}
       <Link
         href={`/projects/${project.id}`}
@@ -38,7 +46,7 @@ const ProjectCard = memo(function ProjectCard({
       />
 
       {/* Media */}
-      <div className="relative h-44 overflow-hidden flex-shrink-0">
+      <div className="relative h-48 overflow-hidden flex-shrink-0">
         <Image
           src={project.image}
           alt={`${project.title} — ${project.tagline}`}
@@ -53,7 +61,7 @@ const ProjectCard = memo(function ProjectCard({
           aria-hidden="true"
         />
         <span
-          className="absolute top-3.5 left-3.5 px-2.5 py-1 text-[10px] font-mono font-semibold uppercase tracking-[0.1em] backdrop-blur-sm"
+          className="card-category-badge absolute top-3.5 left-3.5 px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-[0.1em] backdrop-blur-sm"
           style={{
             borderRadius: 'var(--r-sm)',
             background: 'rgb(2 8 5 / 0.62)',
@@ -64,7 +72,7 @@ const ProjectCard = memo(function ProjectCard({
           {project.category}
         </span>
         <span
-          className="absolute top-3.5 right-3.5 px-2 py-1 text-[10px] font-mono backdrop-blur-sm text-white/85"
+          className="card-year-badge absolute top-3.5 right-3.5 px-2.5 py-1 text-[11px] font-mono backdrop-blur-sm text-white/85"
           style={{ borderRadius: 'var(--r-sm)', background: 'rgb(0 0 0 / 0.42)' }}
         >
           {project.year}
@@ -72,20 +80,17 @@ const ProjectCard = memo(function ProjectCard({
       </div>
 
       {/* Body */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
         <h3
-          className="text-[16.5px] font-bold leading-snug tracking-[-0.02em] transition-colors duration-200 group-hover:text-[--accent]"
+          className="text-[19px] sm:text-[21px] font-extrabold leading-snug tracking-[-0.015em] transition-colors duration-200 group-hover:text-[--accent]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           {project.title}
         </h3>
-        <p className="text-[12.5px] font-mono mt-1 mb-3" style={{ color: 'var(--accent)' }}>
+        <p className="text-[13.5px] sm:text-[14px] font-mono font-bold mt-1 mb-3" style={{ color: 'var(--accent)' }}>
           {project.tagline}
         </p>
-        {/* No flex-1 here: growing the box lets every line fit, which stops
-            -webkit-line-clamp from ever kicking in. The actions row uses
-            mt-auto to take up the slack instead. */}
-        <p className="text-[13.5px] leading-relaxed text-[--text-muted] mb-4 line-clamp-2">
+        <p className="text-[15px] sm:text-[15.5px] font-medium leading-relaxed text-[--text-muted] mb-4 line-clamp-2">
           {project.description}
         </p>
 
@@ -101,10 +106,10 @@ const ProjectCard = memo(function ProjectCard({
                 border: '1px solid var(--border)',
               }}
             >
-              <div className="text-[14px] font-mono font-semibold" style={{ color: 'var(--accent)' }}>
+              <div className="text-[15.5px] sm:text-[16.5px] font-mono font-bold" style={{ color: 'var(--accent)' }}>
                 {s.value}
               </div>
-              <div className="text-[10px] text-[--text-dim] mt-0.5 truncate">{s.label}</div>
+              <div className="text-[11.5px] font-bold text-[--text-dim] mt-0.5 truncate uppercase tracking-wider">{s.label}</div>
             </div>
           ))}
         </div>
@@ -114,7 +119,7 @@ const ProjectCard = memo(function ProjectCard({
           {project.tech.slice(0, 4).map(t => (
             <span
               key={t}
-              className="px-2 py-[3px] text-[10.5px] font-mono text-[--text-dim]"
+              className="px-2.5 py-1 text-[12px] font-mono font-semibold text-[--text-dim]"
               style={{
                 borderRadius: 'var(--r-xs)',
                 background: 'var(--bg-2)',
@@ -126,8 +131,12 @@ const ProjectCard = memo(function ProjectCard({
           ))}
           {project.tech.length > 4 && (
             <span
-              className="px-2 py-[3px] text-[10.5px] font-mono text-[--text-dim]"
-              style={{ borderRadius: 'var(--r-xs)', background: 'var(--bg-2)', border: '1px solid var(--border)' }}
+              className="px-2.5 py-1 text-[12px] font-mono font-semibold text-[--text-dim]"
+              style={{
+                borderRadius: 'var(--r-xs)',
+                background: 'var(--bg-2)',
+                border: '1px solid var(--border)',
+              }}
             >
               +{project.tech.length - 4}
             </span>
@@ -136,21 +145,16 @@ const ProjectCard = memo(function ProjectCard({
 
         {/* Actions */}
         <div
-          className="flex items-center gap-2.5 pt-4 mt-auto"
-          style={{ borderTop: '1px solid var(--border)' }}
+          className="flex items-center gap-2 pt-4 mt-auto border-t"
+          style={{ borderColor: 'var(--border)' }}
         >
-          <span
-            className="flex-1 py-2 text-center text-[12.5px] font-mono font-semibold pointer-events-none select-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:gap-2"
-            style={{
-              borderRadius: 'var(--r-sm)',
-              background: 'var(--accent-soft)',
-              border: '1px solid var(--accent-line)',
-              color: 'var(--accent)',
-            }}
+          <Link
+            href={`/projects/${project.id}`}
+            prefetch
+            className="btn btn-primary text-xs flex-1 text-center py-2 relative z-10"
           >
-            View Details{' '}
-            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </span>
+            Case Study →
+          </Link>
 
           <a
             href={project.github}
@@ -158,7 +162,7 @@ const ProjectCard = memo(function ProjectCard({
             rel="noopener noreferrer"
             aria-label={`${project.title} source code on GitHub`}
             onClick={e => e.stopPropagation()}
-            className="relative z-10 w-9 h-9 rounded-md glass-card grid place-items-center text-[--text-muted] hover:text-[--accent] hover:border-[--accent-line] transition-colors duration-200"
+            className="relative z-10 w-10 h-10 rounded-md glass-card grid place-items-center text-[--text-muted] hover:text-[--accent] hover:border-[--accent-line] transition-colors duration-200"
           >
             <GitHubIcon />
           </a>
@@ -169,55 +173,28 @@ const ProjectCard = memo(function ProjectCard({
             rel="noopener noreferrer"
             aria-label={`${project.title} live demo`}
             onClick={e => e.stopPropagation()}
-            className="relative z-10 w-9 h-9 rounded-md glass-card grid place-items-center text-[--text-muted] hover:text-[--accent] hover:border-[--accent-line] transition-colors duration-200"
+            className="relative z-10 w-10 h-10 rounded-md glass-card grid place-items-center text-[--text-muted] hover:text-[--accent] hover:border-[--accent-line] transition-colors duration-200"
           >
             <ExternalIcon />
           </a>
         </div>
       </div>
-    </article>
+    </motion.article>
   )
 })
 
-/* Remount on filter change so the reveal cascade replays */
-function ProjectGrid({ filtered }: { filtered: typeof projects }) {
-  const gridRef = useReveal(0.05, 65)
-  return (
-    <div
-      ref={gridRef as React.RefObject<HTMLDivElement>}
-      className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
-    >
-      {filtered.map(p => (
-        <ProjectCard key={p.id} project={p} />
-      ))}
-    </div>
-  )
-}
-
 /* ─── Main ─────────────────────────────────────────────────────────────── */
 export default function Projects() {
-  const [filter, setFilter]             = useState('All')
-  const [visible, setVisible]           = useState(true)
-  const [activeFilter, setActiveFilter] = useState('All')
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [filter, setFilter] = useState('All')
   const ref = useReveal(0.05)
 
   const handleFilter = useCallback((f: string) => {
-    if (f === filter) return
     setFilter(f)
-    setVisible(false)
-    if (timerRef.current) clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => {
-      setActiveFilter(f)
-      setVisible(true)
-    }, 200)
-  }, [filter])
+  }, [])
 
-  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
-
-  const filtered = activeFilter === 'All'
+  const filtered = filter === 'All'
     ? projects
-    : projects.filter(p => p.category === activeFilter)
+    : projects.filter(p => p.category === filter)
 
   return (
     <section
@@ -240,61 +217,85 @@ export default function Projects() {
           standfirst="Showcasing innovative solutions built with cutting-edge technologies."
         />
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-10 reveal" role="tablist" aria-label="Filter projects by category">
+        {/* Ambient 3D floating shape */}
+        <div
+          className="floating-3d-geom hidden lg:block absolute top-12 right-8 w-16 h-16 pointer-events-none opacity-30"
+          style={{ animationDuration: '18s' }}
+          aria-hidden="true"
+        >
+          <div className="w-full h-full border border-dashed border-[--accent] rounded-lg transform rotate-45" />
+        </div>
+
+        {/* Filters with sliding layoutId pill */}
+        <div className="flex flex-wrap gap-2.5 mb-10" role="tablist" aria-label="Filter projects by category">
           {FILTERS.map(f => {
             const on = filter === f
             return (
-              <button
+              <motion.button
                 key={f}
                 role="tab"
                 aria-selected={on}
                 onClick={() => handleFilter(f)}
-                className="px-4 py-2 text-[13px] font-mono font-medium transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.96 }}
+                className="relative px-5 py-2 text-[13.5px] font-bold rounded-full transition-colors duration-200 cursor-pointer"
                 style={{
-                  borderRadius: 'var(--r-md)',
-                  background: on ? 'var(--accent)' : 'var(--card)',
-                  color:      on ? 'var(--on-accent)' : 'var(--text-muted)',
-                  border:     `1px solid ${on ? 'var(--accent)' : 'var(--border)'}`,
-                  boxShadow:  on ? '0 6px 18px -6px rgb(var(--accent-rgb) / 0.55)' : 'none',
-                  transform:  on ? 'translateY(-1px)' : 'none',
+                  color: on ? 'var(--on-accent)' : 'var(--text-muted)',
                 }}
               >
-                {f}
-              </button>
+                {on && (
+                  <motion.span
+                    layoutId="active-project-pill"
+                    className="absolute inset-0 rounded-full -z-10"
+                    style={{
+                      background: 'var(--accent)',
+                      boxShadow: '0 6px 18px -6px rgb(var(--accent-rgb) / 0.55)',
+                    }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  />
+                )}
+                {!on && (
+                  <span
+                    className="absolute inset-0 rounded-full -z-10 border border-[--border] bg-[--card]"
+                  />
+                )}
+                <span className="relative z-10">{f}</span>
+              </motion.button>
             )
           })}
         </div>
 
-        <div
-          style={{
-            opacity:   visible ? 1 : 0,
-            transform: visible ? 'none' : 'translateY(10px)',
-            transition: 'opacity 260ms cubic-bezier(0.16,1,0.3,1), transform 260ms cubic-bezier(0.16,1,0.3,1)',
-          }}
-        >
-          <ProjectGrid key={activeFilter} filtered={filtered} />
-        </div>
+        {/* Grid with AnimatePresence */}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <AnimatePresence mode="popLayout">
+            {filtered.map(p => (
+              <ProjectCard key={p.id} project={p} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
-        <p className="text-center mt-8 text-[12.5px] font-mono text-[--text-dim]">
+        <p className="text-center mt-8 text-[13.5px] font-mono text-[--text-dim]">
           Showing <span style={{ color: 'var(--accent)' }}>{filtered.length}</span>{' '}
           {filtered.length === 1 ? 'project' : 'projects'}
-          {activeFilter !== 'All' && (
-            <> in <span style={{ color: 'var(--accent)' }}>{activeFilter}</span></>
+          {filter !== 'All' && (
+            <> in <span style={{ color: 'var(--accent)' }}>{filter}</span></>
           )}
         </p>
 
-        <div className="text-center mt-9 reveal">
-          <a
+        <div className="text-center mt-9">
+          <motion.a
             href="https://github.com/mehedihasan555552"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-ghost"
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="btn btn-ghost inline-flex items-center gap-2"
           >
             <GitHubIcon />
             View all repositories on GitHub
             <span aria-hidden="true">↗</span>
-          </a>
+          </motion.a>
         </div>
       </div>
     </section>
