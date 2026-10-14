@@ -1,93 +1,29 @@
-# Mehedi Hasan — Portfolio v2.1
+# Md Mehedi Hasan — Portfolio & Dynamic CMS (Next.js 16 + 3D AI + Local DB)
 
-A premium, fully-responsive portfolio built with **Next.js 14** + **Tailwind CSS**.
+A smooth, 60fps portfolio and full-featured **Admin CMS (`/admin`)** built with **Next.js 16**, **React 19**, **Framer Motion**, **Tailwind CSS**, and a **Vercel-ready Local JSON Database**.
 
-## ✨ What's New in v2
+## 🔐 Admin Panel (`/admin`)
 
-- 🌙 **Dark / Light mode** — toggle with one click, persisted to localStorage
-- 📄 **Project detail pages** — rich `/projects/[id]` pages with gallery, stats, highlights
-- 🎨 **Playfair Display + DM Sans + Cormorant Garamond** — elegant italic serif typography
-- ✦ **More animations** — morphing blobs, orbiting rings, floating particles, reveal-on-scroll
-- 🖼️ **Online images** via Unsplash (no placeholder needed)
-- 📱 **Mobile navbar fixed** — full-screen overlay menu with staggered animation
-- ♿ **Accessible** — aria-labels, keyboard navigation, focus states
+Open `http://localhost:3000/admin` (or click **Admin** in the top navigation bar / footer) and sign in with the default credentials:
+
+- **Email**: `mehedi@gmail.com`
+- **Password**: `Mehedihasan1.###`
+
+### What You Can Manage Dynamically in `/admin`:
+1. **📝 Blogs Manager**: Publish new Markdown blog posts, edit existing articles, or delete posts.
+2. **🚀 Projects Manager**: Add new portfolio projects with full case studies, stats, tech stack, and gallery images, or edit/delete existing projects.
+3. **👤 Profile, Hero & Contact Info**: Update your name, navbar cycling taglines, hero badge, hero bio, typewriter roles, stats, about section copy, email, phone numbers, address, and social links.
+4. **💼 Experience Manager**: Add, edit, or delete work experience timeline entries.
+5. **🎓 Education & Certifications**: Add or remove degrees and certifications.
+6. **⚡ Skills & Proficiencies**: Adjust core proficiency percentages and tech stack categories.
+7. **💾 Local Database & Vercel Sync**: Uses `src/data/local-db.json` via `/api/db` + instant browser persistence (`localStorage`) + serverless `/tmp` fallback so it works seamlessly both locally (`npm run dev`) and when deployed to **Vercel** (`vercel --prod`).
 
 ## 🚀 Quick Start
 
 ```bash
-unzip mehedi-portfolio.zip
-cd mehedi-portfolio
+rm -rf .next
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000
-
-## 📁 Structure
-
-```
-src/
-├── app/
-│   ├── globals.css              # Tokens, animations, dark/light vars
-│   ├── layout.tsx               # Root layout + Google Fonts
-│   ├── page.tsx                 # Home page
-│   └── projects/[id]/page.tsx   # Dynamic project detail page
-├── components/
-│   ├── Navbar.tsx               # Fixed nav + mobile overlay + theme toggle
-│   ├── Hero.tsx                 # Typing animation + floating particles
-│   ├── About.tsx                # Image + bio + skill marquee
-│   ├── Experience.tsx           # Tab-panel timeline
-│   ├── Skills.tsx               # Animated progress bars + categories
-│   ├── Projects.tsx             # Filterable grid → links to detail pages
-│   ├── Education.tsx            # Timeline + certs + campus photo
-│   ├── Contact.tsx              # Form + contact info
-│   └── Footer.tsx               # 3-col footer
-├── context/
-│   └── ThemeContext.tsx          # Dark/light toggle (localStorage)
-└── data/
-    └── projects.ts              # All project data (single source of truth)
-```
-
-## 🖼️ Add Your Own Photo
-
-In `Hero.tsx`, the Unsplash placeholder is already set. To use your own:
-
-1. Place your photo at `public/mehedi.jpg`
-2. In `Hero.tsx`, change the `<Image>` `src` to `"/mehedi.jpg"`
-
-## 📧 Activate Contact Form (EmailJS)
-
-```bash
-npm install emailjs-com
-```
-
-In `Contact.tsx`, replace `handleSubmit`:
-
-```tsx
-import emailjs from 'emailjs-com'
-const handleSubmit = async (e) => {
-  e.preventDefault(); setStatus('sending')
-  try {
-    await emailjs.send('SERVICE_ID', 'TEMPLATE_ID', form, 'PUBLIC_KEY')
-    setStatus('sent')
-  } catch { setStatus('idle') }
-}
-```
-
-## 🚢 Deploy
-
-```bash
-npm i -g vercel
-vercel --prod
-```
-
-## 🎨 Customize
-
-| What | Where |
-|------|-------|
-| Colors / tokens | `tailwind.config.js` + `globals.css` `:root` |
-| Dark/light vars | `globals.css` `.dark {}` and `:root:not(.dark) {}` |
-| Fonts | `layout.tsx` Google Fonts link + `tailwind.config.js` fontFamily |
-| Projects data | `src/data/projects.ts` |
-| Experience data | `src/components/Experience.tsx` `experiences` array |
-| SEO metadata | `src/app/layout.tsx` `metadata` object |
+Open [http://localhost:3000](http://localhost:3000) (Portfolio) or [http://localhost:3000/admin](http://localhost:3000/admin) (Admin CMS).

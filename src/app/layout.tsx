@@ -1,42 +1,11 @@
 import type { Metadata } from 'next'
-import { JetBrains_Mono, Inter, Fredoka, Plus_Jakarta_Sans } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 import { ThemeProvider } from '@/context/ThemeContext'
+import { PortfolioDataProvider } from '@/context/PortfolioDataContext'
 import SiteEffects from '@/components/SiteEffects'
+import VisitorTracker from '@/components/VisitorTracker'
 import LiveBackground from '@/components/LiveBackground'
-
-// Mono carries the terminal identity: headlines, labels, code.
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-jetbrains',
-  display: 'swap',
-})
-
-// Sans carries body prose.
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-inter',
-  display: 'swap',
-})
-
-// Display font for playful neo-brutalist light mode
-const fredoka = Fredoka({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-fredoka',
-  display: 'swap',
-})
-
-// UI font for clean modern light mode
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-jakarta',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://mehediswpu.vercel.app'),
@@ -181,18 +150,27 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`dark scroll-smooth ${jetbrains.variable} ${inter.variable} ${fredoka.variable} ${jakarta.variable}`}
+      className="dark scroll-smooth"
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
 
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
-          <LiveBackground />
-          <SiteEffects />
-          {children}
+          <PortfolioDataProvider>
+            <LiveBackground />
+            <SiteEffects />
+            <VisitorTracker />
+            {children}
+          </PortfolioDataProvider>
         </ThemeProvider>
 
         <Script id="reb2b-snippet" strategy="beforeInteractive">

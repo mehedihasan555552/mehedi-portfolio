@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { BlogPost } from '@/data/blogs'
+import { usePortfolioData } from '@/context/PortfolioDataContext'
 import me from '@/../images/professional-mehedi.png'
 
 /* ─── Copy Button for Code Blocks ─── */
@@ -299,21 +300,35 @@ function MarkdownRenderer({ content }: { content: string }) {
   )
 }
 
-/* Format bold, inline code, and links in markdown text */
+/* Format bold, italic, inline code, images, and links in markdown text */
 function formatInline(text: string): string {
   return text
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="my-5 rounded-xl border border-[var(--border)] max-h-[460px] w-auto object-cover shadow-md" />')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[var(--accent)] underline underline-offset-4 font-semibold">$1</a>')
     .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-[--text]">$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em class="italic text-[--text]">$1</em>')
     .replace(/`([^`]+)`/g, '<code class="px-2 py-0.5 rounded text-[13.5px] font-mono bg-[var(--bg-2)] text-[var(--accent)] border border-[var(--border)]">$1</code>')
 }
 
 /* ─── Main Client Component ─── */
 export default memo(function BlogPostClient({
-  blog,
-  related,
+  slug,
+  initialBlog,
+  initialRelated,
 }: {
-  blog: BlogPost
-  related: BlogPost[]
+  slug: string
+  initialBlog: BlogPost | null
+  initialRelated: BlogPost[]
 }) {
+  const { db } = usePortfolioData()
+  const blog = useMemo(
+    () => db.blogs.find(b => b.slug === slug) || initialBlog || db.blogs[0],
+    [db.blogs, slug, initialBlog]
+  )
+  const related = useMemo(
+    () => db.blogs.filter(b => b.slug !== blog?.slug).slice(0, 3) || initialRelated,
+    [db.blogs, blog?.slug, initialRelated]
+  )
   const [activeSection, setActiveSection] = useState<string>('')
   const [readingProgress, setReadingProgress] = useState(0)
 

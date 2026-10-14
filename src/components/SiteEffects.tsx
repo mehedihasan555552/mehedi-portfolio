@@ -2,11 +2,10 @@
 import { useEffect } from 'react'
 
 /**
- * Page-level motion engine:
- *   • Scroll-progress bar
- *   • Spotlight illumination tracking
- *   • Interactive 3D perspective tilt for `.tilt-3d` cards
- *   • Normalized pointer coordinates (--mouse-x, --mouse-y) for ambient 3D depth
+ * Lightweight, zero-lag page effects:
+ *   • Scroll-progress bar (rAF throttled)
+ *   • Card-scoped 3D tilt & spotlight (only updates the hovered card, never mutates documentElement)
+ *   • No custom mouse cursor ring/dot (native OS cursor only)
  */
 export default function SiteEffects() {
   useEffect(() => {
@@ -17,7 +16,7 @@ export default function SiteEffects() {
     let frame = 0
     let queued = false
 
-    const paint = () => {
+    const paintScroll = () => {
       queued = false
       if (!bar) return
       const max = doc.scrollHeight - window.innerHeight
@@ -27,7 +26,7 @@ export default function SiteEffects() {
     const onScroll = () => {
       if (queued) return
       queued = true
-      frame = requestAnimationFrame(paint)
+      frame = requestAnimationFrame(paintScroll)
     }
 
     let pointerQueued = false
@@ -39,24 +38,10 @@ export default function SiteEffects() {
       const e = lastEvent
       if (!e) return
 
-      // Global normalized cursor coordinates (-1 to 1) for ambient 3D depth
-      const nx = (e.clientX / window.innerWidth) * 2 - 1
-      const ny = (e.clientY / window.innerHeight) * 2 - 1
-      doc.style.setProperty('--mouse-x', nx.toFixed(3))
-      doc.style.setProperty('--mouse-y', ny.toFixed(3))
+      const targetEl = e.target as Element | null
+      const tiltTarget = targetEl?.closest?.('.tilt-3d') as HTMLElement | null
 
-      // Spotlight tracking
-      const spotlight = (e.target as Element | null)?.closest?.('.spotlight') as HTMLElement | null
-      if (spotlight) {
-        const rect = spotlight.getBoundingClientRect()
-        spotlight.style.setProperty('--mx', `${e.clientX - rect.left}px`)
-        spotlight.style.setProperty('--my', `${e.clientY - rect.top}px`)
-      }
-
-      // 3D Tilt tracking on .tilt-3d elements
-      const tiltTarget = (e.target as Element | null)?.closest?.('.tilt-3d') as HTMLElement | null
       if (activeTiltTarget && activeTiltTarget !== tiltTarget) {
-        // Reset previous tilt target
         activeTiltTarget.style.setProperty('--rx', '0deg')
         activeTiltTarget.style.setProperty('--ry', '0deg')
         activeTiltTarget.style.setProperty('--tz', '0px')
@@ -67,17 +52,16 @@ export default function SiteEffects() {
         const rect = tiltTarget.getBoundingClientRect()
         const px = e.clientX - rect.left
         const py = e.clientY - rect.top
-        const cx = rect.width / 2
-        const cy = rect.height / 2
-        const dx = (px - cx) / cx
-        const dy = (py - cy) / cy
+        const cx = rect.width * 0.5
+        const cy = rect.height * 0.5
+        const dx = (px - cx) / Math.max(1, cx)
+        const dy = (py - cy) / Math.max(1, cy)
 
-        // Gentle, responsive 3D tilt
-        tiltTarget.style.setProperty('--rx', `${(-dy * 7.5).toFixed(2)}deg`)
-        tiltTarget.style.setProperty('--ry', `${(dx * 7.5).toFixed(2)}deg`)
-        tiltTarget.style.setProperty('--tz', '10px')
-        tiltTarget.style.setProperty('--glare-x', `${px.toFixed(1)}px`)
-        tiltTarget.style.setProperty('--glare-y', `${py.toFixed(1)}px`)
+        tiltTarget.style.setProperty('--rx', `${(-dy * 5.5).toFixed(2)}deg`)
+        tiltTarget.style.setProperty('--ry', `${(dx * 5.5).toFixed(2)}deg`)
+        tiltTarget.style.setProperty('--tz', '6px')
+        tiltTarget.style.setProperty('--mx', `${px.toFixed(0)}px`)
+        tiltTarget.style.setProperty('--my', `${py.toFixed(0)}px`)
       } else {
         activeTiltTarget = null
       }
@@ -99,7 +83,7 @@ export default function SiteEffects() {
       }
     }
 
-    paint()
+    paintScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
     window.addEventListener('pointermove', onPointerMove, { passive: true })

@@ -2,146 +2,23 @@
 import { useState, memo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useReveal } from '@/hooks/useReveal'
+import { usePortfolioData } from '@/context/PortfolioDataContext'
+import type { ExperienceItem } from '@/data/defaultDb'
 import SectionHeader from './SectionHeader'
 
-type Experience = {
-  id: number
-  period: string
-  role: string
-  company: string
-  type: string
-  description: string
-  highlights: string[]
-  stack: string[]
-  /** Index into the harmonised --c-1..--c-6 ramp, so nothing sits outside the palette. */
-  tone: string
-  companyUrl?: string
-}
-
-const EXPERIENCES: Experience[] = [
-  {
-    id: 0,
-    period: 'Mar 2026 – Present',
-    role: 'Senior LLM Engineer',
-    company: 'MYai Robotics',
-    type: 'Full-time',
-    description:
-      'Working at the forefront of Human AI teammate development — building intelligent agents that augment workforce capabilities across industries. Contributing to advanced search engine applications that deliver clarity in authentication and amplify unfiltered insights to guide business strategies and inform public policy.',
-    highlights: [
-      'Engineering advanced LLM-powered agents that act as Human AI teammates across enterprise workflows',
-      'Building intelligent search engine applications for authentication clarity and business strategy insights',
-      'Designing multi-agent systems that amplify workforce capabilities and automate complex decision-making',
-      'Contributing to AI infrastructure powering public policy insight and real-time data intelligence',
-    ],
-    stack: ['LLMs', 'LangChain', 'LangGraph', 'RAG', 'FastAPI', 'Python', 'Vector DB', 'OpenAI'],
-    tone: 'var(--c-1)',
-    companyUrl: 'https://www.facebook.com/MYai-Robotics-1058509204012017/',
-  },
-  {
-    id: 5,
-    period: '2023 – Present',
-    role: 'CEO & Full-Stack Developer',
-    company: 'StyleBuzzBD',
-    type: 'Founder',
-    description:
-      'Founded and leading StyleBuzzBD as CEO while hands-on developing the full-stack platform. Overseeing product vision, team management, and technical architecture to build a thriving fashion-tech brand in Bangladesh.',
-    highlights: [
-      'Founded and scaled StyleBuzzBD from concept to a live fashion-tech platform',
-      'Architected and built the full-stack platform with React frontend and Django backend',
-      'Leading product strategy, brand direction, and business development as CEO',
-      'Managing a cross-functional team across design, development, and marketing',
-    ],
-    stack: ['React', 'Next.js', 'Django', 'PostgreSQL', 'Tailwind CSS', 'Python', 'Stripe'],
-    tone: 'var(--c-5)',
-  },
-  {
-    id: 1,
-    period: '2024 – Present',
-    role: 'Python Backend & AI Developer',
-    company: 'SoftwareBari',
-    type: 'Full-time',
-    description:
-      'Building intelligent backend systems with Python Django and integrating AI/ML models into production pipelines. Leading architecture decisions and deploying scalable, high-performance applications for enterprise clients.',
-    highlights: [
-      'Designed AI-powered REST APIs serving 10K+ requests/day with sub-100ms response',
-      'Integrated LLM models (GPT-4, Claude) into live web applications with streaming responses',
-      'Built end-to-end ML pipelines with TensorFlow & PyTorch, deployed via Docker + CI/CD',
-      'Led backend architecture decisions for 5+ client projects from scoping to production',
-    ],
-    stack: ['Python', 'Django', 'FastAPI', 'TensorFlow', 'Docker', 'PostgreSQL', 'Redis'],
-    tone: 'var(--c-3)',
-  },
-  {
-    id: 2,
-    period: 'Nov 2021 – May 2023',
-    role: 'Python Backend Developer',
-    company: 'Automation Solutionz',
-    type: 'Full-time',
-    description:
-      'Developed and maintained robust Python Django applications, REST APIs, and intelligent automation scripts. Collaborated closely with frontend teams to deliver complete, production-ready web solutions.',
-    highlights: [
-      'Built and maintained 15+ Django REST API applications across diverse industries',
-      'Automated critical business workflows reducing manual processing time by 60%',
-      'Integrated Stripe, SSL Commerz payment gateways and 10+ third-party API services',
-      'Optimized complex PostgreSQL queries cutting average response time by 40%',
-    ],
-    stack: ['Python', 'Django', 'REST API', 'Celery', 'Redis', 'MySQL', 'Nginx'],
-    tone: 'var(--c-6)',
-  },
-  {
-    id: 3,
-    period: 'May 2021 – Oct 2021',
-    role: 'Full-Stack Developer',
-    company: 'DevHub Tech',
-    type: 'Full-time',
-    description:
-      'Built complete web applications from design to deployment, handling both React frontend and Python Django backend. Delivered polished, responsive products in a fast-paced agile team environment.',
-    highlights: [
-      'Delivered 8+ full-stack web applications end-to-end within tight deadlines',
-      'Implemented pixel-perfect responsive UIs using React.js and Tailwind CSS',
-      'Developed RESTful APIs and seamlessly integrated them with React frontend',
-      'Participated in daily agile standups, sprint planning, and peer code reviews',
-    ],
-    stack: ['React', 'Python', 'Django', 'HTML5', 'CSS3', 'JavaScript', 'Bootstrap'],
-    tone: 'var(--c-2)',
-  },
-  {
-    id: 4,
-    period: '2021 – Present',
-    role: 'Freelance AI/ML Consultant',
-    company: 'Freelancer.com',
-    type: 'Freelance',
-    description:
-      'Providing expert AI/ML consulting and development services to international clients across 10+ countries. Building custom ML models, NLP solutions, computer vision systems, and intelligent web applications that deliver real business value.',
-    highlights: [
-      'Delivered 30+ successful freelance projects with 5-star ratings from global clients',
-      'Built custom NLP pipelines for sentiment analysis, text classification & summarization',
-      'Developed computer vision solutions with OpenCV for defect detection and recognition',
-      'Created LLM-powered chatbots and RAG systems for enterprise knowledge bases',
-    ],
-    stack: ['Python', 'TensorFlow', 'PyTorch', 'LangChain', 'NLP', 'OpenCV', 'Scikit-learn'],
-    tone: 'var(--c-4)',
-  },
-]
-
-/* ─── Detail panel ─────────────────────────────────────────────────────── */
-const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
+const DetailPanel = memo(function DetailPanel({ exp }: { exp: ExperienceItem }) {
   return (
     <motion.article
       key={exp.id}
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.25 }}
       className="glass-card spotlight p-6 md:p-8 h-full tilt-3d"
       style={{
         borderColor: `color-mix(in srgb, ${exp.tone} 40%, var(--border))`,
-        boxShadow: `0 18px 44px -8px rgba(0,0,0,0.75), 0 0 28px -4px color-mix(in srgb, ${exp.tone} 22%, transparent)`,
       }}
     >
-      <div className="tilt-glare" />
-
-      {/* Header */}
       <div
         className="flex flex-wrap items-start justify-between gap-4 mb-6 pb-6"
         style={{ borderBottom: '1px solid var(--border)' }}
@@ -173,11 +50,11 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
 
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <span
-            className="px-3.5 py-1 rounded-full text-[12px] font-mono font-extrabold uppercase tracking-[0.08em] shadow-sm"
+            className="px-3.5 py-1 rounded-full text-[12px] font-mono font-extrabold uppercase tracking-[0.08em]"
             style={{
-              background: `color-mix(in srgb, ${exp.tone} 18%, rgba(0,0,0,0.4))`,
+              background: `color-mix(in srgb, ${exp.tone} 16%, transparent)`,
               color: exp.tone,
-              border: `1.5px solid color-mix(in srgb, ${exp.tone} 45%, transparent)`,
+              border: `1.5px solid color-mix(in srgb, ${exp.tone} 40%, transparent)`,
             }}
           >
             {exp.type}
@@ -190,75 +67,66 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
         {exp.description}
       </p>
 
-      {/* Highlights */}
       <h4 className="text-[12px] font-mono font-extrabold uppercase tracking-[0.16em] mb-4 flex items-center gap-2" style={{ color: exp.tone }}>
         <span className="w-1.5 h-3 rounded-full" style={{ background: exp.tone }} aria-hidden="true" />
         Key Highlights
       </h4>
       <ul className="space-y-3.5 mb-8">
         {exp.highlights.map((h, i) => (
-          <motion.li
-            key={i}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, delay: 0.05 + i * 0.06 }}
-            className="flex items-start gap-3.5"
-          >
+          <li key={i} className="flex items-start gap-3.5">
             <span
-              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[11px] font-mono font-extrabold shadow-sm"
+              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[11px] font-mono font-extrabold"
               style={{
-                background: `color-mix(in srgb, ${exp.tone} 22%, rgba(0,0,0,0.4))`,
+                background: `color-mix(in srgb, ${exp.tone} 18%, transparent)`,
                 color: exp.tone,
-                border: `1.5px solid color-mix(in srgb, ${exp.tone} 48%, transparent)`,
+                border: `1px solid color-mix(in srgb, ${exp.tone} 40%, transparent)`,
               }}
               aria-hidden="true"
             >
               {i + 1}
             </span>
             <span className="text-[15.5px] sm:text-[16.5px] font-medium leading-relaxed text-[--text-muted]">{h}</span>
-          </motion.li>
+          </li>
         ))}
       </ul>
 
-      {/* Stack */}
       <h4 className="text-[12px] font-mono font-extrabold uppercase tracking-[0.16em] mb-3 flex items-center gap-2" style={{ color: exp.tone }}>
         <span className="w-1.5 h-3 rounded-full" style={{ background: exp.tone }} aria-hidden="true" />
         Tech Stack
       </h4>
       <div className="flex flex-wrap gap-2">
-        {exp.stack.map((tech, i) => (
-          <motion.span
+        {exp.stack.map((tech) => (
+          <span
             key={tech}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.15 + i * 0.04 }}
-            whileHover={{ scale: 1.06, y: -2 }}
-            className="px-3.5 py-1.5 text-[12.5px] sm:text-[13px] font-mono font-bold cursor-default shadow-sm"
+            className="px-3.5 py-1.5 text-[12.5px] sm:text-[13px] font-mono font-bold cursor-default"
             style={{
               borderRadius: 'var(--r-sm)',
-              background: `color-mix(in srgb, ${exp.tone} 14%, rgba(255,255,255,0.06))`,
-              border: `1.5px solid color-mix(in srgb, ${exp.tone} 36%, rgba(255,255,255,0.12))`,
+              background: 'var(--bg-2)',
+              border: '1px solid var(--border)',
               color: 'var(--text)',
             }}
           >
             {tech}
-          </motion.span>
+          </span>
         ))}
       </div>
     </motion.article>
   )
 })
 
-/* ─── Main ─────────────────────────────────────────────────────────────── */
 export default function Experience() {
+  const { db } = usePortfolioData()
+  const experiences = db.experiences
   const [active, setActive] = useState(0)
   const ref = useReveal()
+
+  const safeActive = active < experiences.length ? active : 0
 
   const handleSelect = useCallback((i: number) => {
     setActive(i)
   }, [])
 
-  const tone = EXPERIENCES[active].tone
+  if (!experiences.length) return null
 
   return (
     <section
@@ -266,22 +134,6 @@ export default function Experience() {
       ref={ref as React.RefObject<HTMLDivElement>}
       className="section"
     >
-      {/* Ambient wash that follows the selected role */}
-      <div
-        className="absolute top-1/3 right-0 w-[380px] aspect-square rounded-full opacity-[0.07] blur-[100px] pointer-events-none"
-        style={{ background: tone, transition: 'background 700ms cubic-bezier(0.16,1,0.3,1)' }}
-        aria-hidden="true"
-      />
-
-      {/* Ambient 3D floating accent */}
-      <div
-        className="floating-3d-geom hidden lg:block absolute top-12 left-10 w-16 h-16 pointer-events-none opacity-30"
-        style={{ animationDuration: '19s' }}
-        aria-hidden="true"
-      >
-        <div className="w-full h-full border border-[--accent] rounded-xl transform -rotate-12" />
-      </div>
-
       <div className="container-x">
         <SectionHeader
           index="02 —"
@@ -291,17 +143,8 @@ export default function Experience() {
         />
 
         <div className="grid lg:grid-cols-5 gap-8">
-
-          {/* ── Timeline rail ── */}
-          <motion.div
-            initial={{ opacity: 0, x: -25 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-2"
-          >
+          <div className="lg:col-span-2 reveal-left">
             <div className="relative" role="tablist" aria-label="Roles">
-              {/* Rail */}
               <span
                 className="absolute left-[13px] top-3 bottom-3 w-px"
                 style={{ background: 'var(--border)' }}
@@ -309,56 +152,45 @@ export default function Experience() {
               />
 
               <div className="space-y-2">
-                {EXPERIENCES.map((e, i) => {
-                  const on = active === i
+                {experiences.map((e, i) => {
+                  const on = safeActive === i
                   return (
                     <button
-                      key={e.id}
+                      key={`${e.id}-${i}`}
                       role="tab"
                       aria-selected={on}
                       onClick={() => handleSelect(i)}
-                      className="w-full text-left p-4 pl-10 relative group rounded-[var(--r-md)] transition-all duration-200 hover:bg-[rgba(255,255,255,0.04)]"
+                      className="w-full text-left p-4 pl-10 relative group rounded-[var(--r-md)] transition-all duration-200 cursor-pointer"
+                      style={{
+                        background: on ? 'var(--card)' : 'transparent',
+                        border: on ? `1.5px solid ${e.tone}` : '1.5px solid transparent',
+                        boxShadow: on ? 'var(--sh-2)' : 'none',
+                      }}
                     >
-                      {/* Active sliding pill */}
-                      {on && (
-                        <motion.span
-                          layoutId="active-experience-pill"
-                          className="absolute inset-0 rounded-[var(--r-md)] pointer-events-none"
-                          style={{
-                            background: `color-mix(in srgb, ${e.tone} 16%, rgba(16, 26, 20, 0.95))`,
-                            border: `1.5px solid ${e.tone}`,
-                            boxShadow: `0 8px 28px -4px color-mix(in srgb, ${e.tone} 40%, transparent), inset 0 1px 0 rgba(255,255,255,0.25)`,
-                          }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                        />
-                      )}
-
-                      {/* Node */}
                       <span
                         className="absolute left-[7px] top-1/2 -translate-y-1/2 rounded-full transition-all duration-300"
                         style={{
                           width: on ? 13 : 9,
                           height: on ? 13 : 9,
                           background: on ? e.tone : 'var(--border-hi)',
-                          boxShadow: on ? `0 0 0 4px color-mix(in srgb, ${e.tone} 25%, transparent), 0 0 10px ${e.tone}` : 'none',
                         }}
                         aria-hidden="true"
                       />
 
                       <span
-                        className="block text-[16px] font-extrabold leading-snug transition-colors duration-200 relative z-10"
-                        style={{ color: on ? '#ffffff' : 'var(--text)' }}
+                        className="block text-[16px] font-extrabold leading-snug relative z-10"
+                        style={{ color: 'var(--text)' }}
                       >
                         {e.role}
                       </span>
                       <span
-                        className="block text-[14px] sm:text-[14.5px] font-bold mt-0.5 relative z-10 transition-colors duration-200"
+                        className="block text-[14px] sm:text-[14.5px] font-bold mt-0.5 relative z-10"
                         style={{ color: on ? e.tone : 'var(--text-muted)' }}
                       >
                         @ {e.company}
                       </span>
                       <span
-                        className="block text-[12.5px] font-mono font-bold mt-1 transition-colors duration-200 relative z-10"
+                        className="block text-[12.5px] font-mono font-bold mt-1 relative z-10"
                         style={{ color: on ? e.tone : 'var(--text-dim)' }}
                       >
                         {e.period}
@@ -368,12 +200,11 @@ export default function Experience() {
                 })}
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* ── Detail with AnimatePresence ── */}
           <div className="lg:col-span-3">
             <AnimatePresence mode="wait">
-              <DetailPanel key={active} exp={EXPERIENCES[active]} />
+              <DetailPanel key={safeActive} exp={experiences[safeActive]} />
             </AnimatePresence>
           </div>
         </div>
