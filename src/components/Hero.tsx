@@ -14,7 +14,9 @@ const SYN = {
   txt:  'var(--text-muted)',
 }
 
-const TERMINAL_TABS: Record<string, { label: string; lines: { text: string; color: string }[] }> = {
+type TerminalTabKey = 'orchestrator' | 'rag' | 'telemetry'
+
+const TERMINAL_TABS: Record<TerminalTabKey, { label: string; lines: { text: string; color: string }[] }> = {
   orchestrator: {
     label: 'engineer.py',
     lines: [
@@ -63,7 +65,7 @@ const TERMINAL_TABS: Record<string, { label: string; lines: { text: string; colo
 }
 
 function TerminalWindow() {
-  const [activeTab, setActiveTab]       = useState<'orchestrator' | 'rag' | 'telemetry'>('orchestrator')
+  const [activeTab, setActiveTab]       = useState<TerminalTabKey>('orchestrator')
   const [visibleLines, setVisibleLines] = useState(0)
   const [charCount, setCharCount]       = useState(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -130,7 +132,7 @@ function TerminalWindow() {
         </div>
 
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
-          {(Object.keys(TERMINAL_TABS) as Array<keyof typeof TERMINAL_TABS>).map(key => {
+          {(Object.keys(TERMINAL_TABS) as TerminalTabKey[]).map(key => {
             const on = activeTab === key
             return (
               <button
