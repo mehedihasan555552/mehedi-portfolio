@@ -25,7 +25,12 @@ export interface VisitorRecord {
   lastActive: string
 }
 
-const LOCAL_VISITORS_PATH = path.join(process.cwd(), 'src', 'data', 'visitors-db.json')
+const LOCAL_VISITORS_PATH = path.join(
+  /*turbopackIgnore: true*/ process.cwd(),
+  'src',
+  'data',
+  'visitors-db.json'
+)
 const TMP_VISITORS_PATH = '/tmp/mehedi-visitors-db.json'
 
 function toSafeCoord(val: unknown, fallback: number): number {
@@ -182,15 +187,22 @@ const SEED_VISITORS: VisitorRecord[] = [
 ]
 
 async function readVisitors(): Promise<VisitorRecord[]> {
-  for (const p of [TMP_VISITORS_PATH, LOCAL_VISITORS_PATH]) {
-    try {
-      const raw = await fs.readFile(p, 'utf-8')
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map((item, idx) => normalizeRecord(item, idx))
-      }
-    } catch {}
-  }
+  try {
+    const tmpRaw = await fs.readFile(/*turbopackIgnore: true*/ TMP_VISITORS_PATH, 'utf-8')
+    const parsed = JSON.parse(tmpRaw)
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.map((item, idx) => normalizeRecord(item, idx))
+    }
+  } catch {}
+
+  try {
+    const localRaw = await fs.readFile(/*turbopackIgnore: true*/ LOCAL_VISITORS_PATH, 'utf-8')
+    const parsed = JSON.parse(localRaw)
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.map((item, idx) => normalizeRecord(item, idx))
+    }
+  } catch {}
+
   return SEED_VISITORS
 }
 
@@ -198,11 +210,13 @@ async function writeVisitors(list: VisitorRecord[]) {
   const normalized = list.slice(0, 250).map((item, idx) => normalizeRecord(item, idx))
   const raw = JSON.stringify(normalized, null, 2)
   try {
-    await fs.mkdir(path.dirname(LOCAL_VISITORS_PATH), { recursive: true })
-    await fs.writeFile(LOCAL_VISITORS_PATH, raw, 'utf-8')
+    await fs.mkdir(/*turbopackIgnore: true*/ path.dirname(LOCAL_VISITORS_PATH), {
+      recursive: true,
+    })
+    await fs.writeFile(/*turbopackIgnore: true*/ LOCAL_VISITORS_PATH, raw, 'utf-8')
   } catch {}
   try {
-    await fs.writeFile(TMP_VISITORS_PATH, raw, 'utf-8')
+    await fs.writeFile(/*turbopackIgnore: true*/ TMP_VISITORS_PATH, raw, 'utf-8')
   } catch {}
 }
 

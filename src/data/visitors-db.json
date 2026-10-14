@@ -1,33 +1,5 @@
 [
   {
-    "visitorId": "vis-2yl2cjga-mv8ln7mn",
-    "ip": "103.148.15.101 (Local Dev)",
-    "city": "Dhaka",
-    "region": "Asia",
-    "country": "Bangladesh",
-    "countryCode": "BD",
-    "latitude": 23.8103,
-    "longitude": 90.4125,
-    "timezone": "Asia/Dhaka",
-    "isp": "Broadband / Fiber Network",
-    "deviceType": "Desktop",
-    "os": "macOS",
-    "browser": "Google Chrome",
-    "screen": "1920x1080",
-    "language": "en-US",
-    "referrer": "Direct",
-    "pagesVisited": [
-      "/",
-      "/blog/production-multi-agent-orchestration",
-      "/blog",
-      "/admin",
-      "/visitors"
-    ],
-    "visitCount": 1,
-    "firstSeen": "2026-10-14T21:05:47.523Z",
-    "lastActive": "2026-10-14T22:00:43.313Z"
-  },
-  {
     "visitorId": "v-dhaka-01",
     "ip": "103.148.15.42",
     "city": "Dhaka",
@@ -42,14 +14,8 @@
     "os": "macOS",
     "browser": "Chrome 131",
     "screen": "2560x1440",
-    "language": "en-US",
     "referrer": "Direct",
-    "pagesVisited": [
-      "/",
-      "/blog",
-      "/blog/production-multi-agent-orchestration",
-      "/admin"
-    ],
+    "pagesVisited": ["/", "/blog", "/blog/production-multi-agent-orchestration", "/admin"],
     "visitCount": 6,
     "firstSeen": "2026-10-14T18:12:00.000Z",
     "lastActive": "2026-10-14T20:25:00.000Z"
@@ -69,12 +35,8 @@
     "os": "macOS",
     "browser": "Arc / Chrome",
     "screen": "3024x1964",
-    "language": "en-US",
     "referrer": "https://www.linkedin.com/",
-    "pagesVisited": [
-      "/",
-      "/blog/hybrid-rag-reranking-at-scale"
-    ],
+    "pagesVisited": ["/", "/blog/hybrid-rag-reranking-at-scale"],
     "visitCount": 3,
     "firstSeen": "2026-10-14T16:40:00.000Z",
     "lastActive": "2026-10-14T19:50:00.000Z"
@@ -94,12 +56,8 @@
     "os": "iOS 18",
     "browser": "Safari",
     "screen": "393x852",
-    "language": "en-US",
     "referrer": "https://github.com/mehedihasan555552",
-    "pagesVisited": [
-      "/",
-      "/blog/llm-evals-guardrails-production"
-    ],
+    "pagesVisited": ["/", "/blog/llm-evals-guardrails-production"],
     "visitCount": 2,
     "firstSeen": "2026-10-14T15:15:00.000Z",
     "lastActive": "2026-10-14T18:05:00.000Z"
@@ -119,12 +77,8 @@
     "os": "Ubuntu Linux",
     "browser": "Firefox 132",
     "screen": "1920x1080",
-    "language": "en-US",
     "referrer": "https://x.com/ridoy123439",
-    "pagesVisited": [
-      "/",
-      "/blog"
-    ],
+    "pagesVisited": ["/", "/blog"],
     "visitCount": 4,
     "firstSeen": "2026-10-14T11:30:00.000Z",
     "lastActive": "2026-10-14T17:44:00.000Z"
@@ -144,12 +98,8 @@
     "os": "iPadOS",
     "browser": "Safari",
     "screen": "1024x1366",
-    "language": "en-US",
     "referrer": "https://google.com/",
-    "pagesVisited": [
-      "/",
-      "/blog/provider-agnostic-llm-gateway"
-    ],
+    "pagesVisited": ["/", "/blog/provider-agnostic-llm-gateway"],
     "visitCount": 1,
     "firstSeen": "2026-10-14T14:20:00.000Z",
     "lastActive": "2026-10-14T14:24:00.000Z"
