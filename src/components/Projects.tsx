@@ -119,7 +119,7 @@ const ProjectCard = memo(function ProjectCard({
           {project.tech.slice(0, 4).map(t => (
             <span
               key={t}
-              className="px-2.5 py-1 text-[12px] font-mono font-semibold text-[--text-dim]"
+              className="px-2.5 py-1 text-[12px] font-mono font-bold text-[--text-muted]"
               style={{
                 borderRadius: 'var(--r-xs)',
                 background: 'var(--bg-2)',
@@ -131,7 +131,7 @@ const ProjectCard = memo(function ProjectCard({
           ))}
           {project.tech.length > 4 && (
             <span
-              className="px-2.5 py-1 text-[12px] font-mono font-semibold text-[--text-dim]"
+              className="px-2.5 py-1 text-[12px] font-mono font-bold text-[--text-dim]"
               style={{
                 borderRadius: 'var(--r-xs)',
                 background: 'var(--bg-2)',

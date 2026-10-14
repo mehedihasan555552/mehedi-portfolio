@@ -1,10 +1,9 @@
 'use client'
 import { useCallback, memo, useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 import SocialIcon from './SocialIcon'
+import HeroAvatar3D from './HeroAvatar3D'
 import { useTypewriter } from '@/hooks/useTypewriter'
-import me from '../../images/professional-mehedi.png'
 
 /* ─── Constants ─────────────────────────────────────────────── */
 const ROLES = [
@@ -22,17 +21,6 @@ const SOCIALS = [
   { href: 'https://www.facebook.com/mehedihasan555552/',    name: 'facebook' as const, label: 'Facebook' },
 ]
 
-/**
- * Badges sit on the circle inscribed in the orbit wrapper.
- */
-const TECH_STACK = [
-  { label: 'Python',       angle: -38 },
-  { label: 'LangGraph',    angle:  16 },
-  { label: 'FastAPI',      angle: 148 },
-  { label: 'Hybrid RAG',   angle: 190 },
-  { label: 'Multi-Agent',  angle: 232 },
-  { label: 'Claude/GPT-4', angle: 288 },
-]
 
 const SYN = {
   kw:   'var(--syn-kw, var(--accent))',
@@ -177,33 +165,6 @@ function TerminalWindow() {
   )
 }
 
-/* ─── Orbiting tech badge ───────────────────────────────────── */
-function TechBadge({
-  label, angle, index,
-}: { label: string; angle: number; index: number }) {
-  const rad = (angle * Math.PI) / 180
-  const x = 50 + 50 * Math.cos(rad)
-  const y = 50 + 50 * Math.sin(rad)
-
-  return (
-    <div
-      className="absolute"
-      style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
-    >
-      <span
-        className={`skill-pill orbit-pill orbit-pill-${index} block text-[9.5px] sm:text-[11px] px-3 py-1 animate-float`}
-        style={{
-          animationDelay:    `${index * 0.55}s`,
-          animationDuration: `${6.5 + index * 0.4}s`,
-          backdropFilter:    'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  )
-}
 
 /* ─── Stat ──────────────────────────────────────────────────── */
 function StatCard({ value, label, delay }: { value: string; label: string; delay: number }) {
@@ -448,75 +409,8 @@ export default function Hero() {
             className="order-2 flex flex-col items-center gap-9 animate-fade-in-up"
             style={{ animationDelay: '260ms' }}
           >
-            {/* Portrait + orbit */}
-            <div className="relative flex flex-col items-center w-full pt-10">
-              <div className="relative w-52 h-52 sm:w-60 sm:h-60 lg:w-64 lg:h-64">
-
-                {/* Dashed rings */}
-                <div
-                  className="absolute rounded-full border border-dashed animate-spin-slow"
-                  style={{ inset: '-30px', borderColor: 'rgb(var(--accent-rgb) / 0.16)' }}
-                  aria-hidden="true"
-                />
-                <div
-                  className="absolute rounded-full border border-dashed animate-spin-rev"
-                  style={{ inset: '-15px', borderColor: 'rgb(var(--accent-rgb) / 0.09)' }}
-                  aria-hidden="true"
-                />
-
-                {/* Halo */}
-                <div
-                  className="absolute inset-0 rounded-full blur-[60px] scale-125 animate-glow-pulse"
-                  style={{ background: 'radial-gradient(circle, rgb(var(--accent-rgb) / 0.22), transparent 70%)' }}
-                  aria-hidden="true"
-                />
-
-                {/* Photo */}
-                <div
-                  className="relative w-full h-full rounded-full overflow-hidden hero-photo-ring"
-                  style={{
-                    border: '1px solid var(--border-hi)',
-                    boxShadow: 'var(--sh-3), 0 0 0 6px rgb(var(--accent-rgb) / 0.05)',
-                  }}
-                >
-                  <Image
-                    src={me}
-                    alt="Mehedi Hasan — Full-Stack & AI Engineer"
-                    fill
-                    priority
-                    fetchPriority="high"
-                    quality={90}
-                    className="object-cover"
-                    sizes="(max-width:640px) 208px, (max-width:1024px) 240px, 256px"
-                  />
-                </div>
-
-                {/* Badge ring — square wrapper inset from the photo */}
-                <div className="absolute pointer-events-none" style={{ inset: '-36px' }} aria-hidden="true">
-                  {TECH_STACK.map((t, i) => (
-                    <TechBadge key={t.label} {...t} index={i} />
-                  ))}
-                </div>
-
-              </div>
-
-              {/* Name plate — kept in flow (tucked up under the portrait) so it
-                  always reserves its own space and can never be overlapped. */}
-              <div
-                className="relative z-10 -mt-5 px-4 py-2 glass-card text-center"
-                style={{ boxShadow: 'var(--sh-3)' }}
-              >
-                <div
-                  className="font-semibold text-[11px] sm:text-xs"
-                  style={{ fontFamily: 'var(--font-display)', color: 'var(--text)' }}
-                >
-                  Md Mehedi Hasan
-                </div>
-                <div className="font-mono text-[9px] sm:text-[10px] mt-0.5" style={{ color: 'var(--accent)' }}>
-                  Sr. AI/LLM &amp; Systems Architect
-                </div>
-              </div>
-            </div>
+            {/* 3D Interactive Portrait Stage with Live Orbiting Badges */}
+            <HeroAvatar3D />
 
             {/* Terminal */}
             <div className="w-full">

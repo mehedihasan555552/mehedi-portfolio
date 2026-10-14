@@ -225,11 +225,11 @@ function LiveBackgroundComponent() {
 
           if (dist < maxDist) {
             activePairs.push([i, j])
-            // In dark mode: crisp, luminous phosphor filaments (0.28)
-            // In light mode: ultra-subtle, airy lines (0.04) so it NEVER looks like spiderwebs
-            const alpha = (1 - dist / maxDist) * (dark ? 0.28 : 0.04)
+            // In dark mode: elegant, soft cyber filaments (0.18) so text stays crystal clear
+            // In light mode: ultra-subtle, airy lines (0.04)
+            const alpha = (1 - dist / maxDist) * (dark ? 0.18 : 0.04)
             ctx.strokeStyle = `rgba(${lineRgb}, ${alpha.toFixed(3)})`
-            ctx.lineWidth = dark ? 1.05 : 0.75
+            ctx.lineWidth = dark ? 0.95 : 0.75
             ctx.beginPath()
             ctx.moveTo(n1.x, n1.y)
             ctx.lineTo(n2.x, n2.y)

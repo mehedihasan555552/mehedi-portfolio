@@ -90,7 +90,7 @@ const BlogCard = memo(function BlogCard({
           {blog.tags.slice(0, 3).map(tag => (
             <span
               key={tag}
-              className="px-2.5 py-[3px] text-[11.5px] font-mono font-semibold text-[--text-dim]"
+              className="px-2.5 py-[3px] text-[11.5px] font-mono font-bold text-[--text-muted]"
               style={{
                 borderRadius: 'var(--r-xs)',
                 background: 'var(--bg-2)',

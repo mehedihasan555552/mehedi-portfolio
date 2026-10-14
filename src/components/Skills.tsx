@@ -133,12 +133,12 @@ const CategoryCard = memo(function CategoryCard({
             whileHover={{ scale: 1.08, y: -2 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-            className="inline-block px-2.5 py-1 text-[12.5px] sm:text-[13px] font-mono font-semibold cursor-default transition-colors duration-200"
+            className="inline-block px-2.5 py-1 text-[12.5px] sm:text-[13px] font-mono font-bold cursor-default transition-colors duration-200"
             style={{
               borderRadius: 'var(--r-xs)',
-              background: on ? `color-mix(in srgb, ${cat.tone} 12%, transparent)` : 'var(--bg-2)',
-              color:      on ? cat.tone : 'var(--text-dim)',
-              border:     `1px solid ${on ? `color-mix(in srgb, ${cat.tone} 26%, transparent)` : 'var(--border)'}`,
+              background: on ? `color-mix(in srgb, ${cat.tone} 14%, rgba(255,255,255,0.06))` : 'var(--bg-2)',
+              color:      on ? cat.tone : 'var(--text-muted)',
+              border:     `1px solid ${on ? `color-mix(in srgb, ${cat.tone} 32%, transparent)` : 'var(--border)'}`,
             }}
           >
             {skill}

@@ -135,20 +135,21 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
       className="glass-card spotlight p-6 md:p-8 h-full tilt-3d"
       style={{
-        borderColor: `color-mix(in srgb, ${exp.tone} 26%, var(--border))`,
+        borderColor: `color-mix(in srgb, ${exp.tone} 40%, var(--border))`,
+        boxShadow: `0 18px 44px -8px rgba(0,0,0,0.75), 0 0 28px -4px color-mix(in srgb, ${exp.tone} 22%, transparent)`,
       }}
     >
       <div className="tilt-glare" />
 
       {/* Header */}
       <div
-        className="flex flex-wrap items-start justify-between gap-4 mb-5 pb-5"
+        className="flex flex-wrap items-start justify-between gap-4 mb-6 pb-6"
         style={{ borderBottom: '1px solid var(--border)' }}
       >
         <div className="min-w-0">
           <h3
             className="text-2xl md:text-3xl font-extrabold leading-tight tracking-[-0.015em]"
-            style={{ fontFamily: 'var(--font-display)' }}
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--text)' }}
           >
             {exp.role}
           </h3>
@@ -172,11 +173,11 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
 
         <div className="flex flex-col items-end gap-2 flex-shrink-0">
           <span
-            className="px-3.5 py-1 rounded-full text-[12px] font-mono font-bold uppercase tracking-[0.08em]"
+            className="px-3.5 py-1 rounded-full text-[12px] font-mono font-extrabold uppercase tracking-[0.08em] shadow-sm"
             style={{
-              background: `color-mix(in srgb, ${exp.tone} 12%, transparent)`,
+              background: `color-mix(in srgb, ${exp.tone} 18%, rgba(0,0,0,0.4))`,
               color: exp.tone,
-              border: `1px solid color-mix(in srgb, ${exp.tone} 32%, transparent)`,
+              border: `1.5px solid color-mix(in srgb, ${exp.tone} 45%, transparent)`,
             }}
           >
             {exp.type}
@@ -185,41 +186,43 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
         </div>
       </div>
 
-      <p className="text-[16.5px] sm:text-[17.5px] font-medium leading-relaxed text-[--text-muted] mb-7">
+      <p className="text-[16.5px] sm:text-[17.5px] font-medium leading-relaxed text-[--text-muted] mb-8">
         {exp.description}
       </p>
 
       {/* Highlights */}
-      <h4 className="text-[12px] font-mono font-bold uppercase tracking-[0.16em] mb-4" style={{ color: exp.tone }}>
+      <h4 className="text-[12px] font-mono font-extrabold uppercase tracking-[0.16em] mb-4 flex items-center gap-2" style={{ color: exp.tone }}>
+        <span className="w-1.5 h-3 rounded-full" style={{ background: exp.tone }} aria-hidden="true" />
         Key Highlights
       </h4>
-      <ul className="space-y-3 mb-7">
+      <ul className="space-y-3.5 mb-8">
         {exp.highlights.map((h, i) => (
           <motion.li
             key={i}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, delay: 0.05 + i * 0.06 }}
-            className="flex items-start gap-3"
+            className="flex items-start gap-3.5"
           >
             <span
-              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[11px] font-mono font-extrabold"
+              className="mt-[3px] flex-shrink-0 w-5 h-5 rounded-full grid place-items-center text-[11px] font-mono font-extrabold shadow-sm"
               style={{
-                background: `color-mix(in srgb, ${exp.tone} 16%, transparent)`,
+                background: `color-mix(in srgb, ${exp.tone} 22%, rgba(0,0,0,0.4))`,
                 color: exp.tone,
-                border: `1px solid color-mix(in srgb, ${exp.tone} 34%, transparent)`,
+                border: `1.5px solid color-mix(in srgb, ${exp.tone} 48%, transparent)`,
               }}
               aria-hidden="true"
             >
               {i + 1}
             </span>
-            <span className="text-[15.5px] sm:text-[16px] font-medium leading-relaxed text-[--text-muted]">{h}</span>
+            <span className="text-[15.5px] sm:text-[16.5px] font-medium leading-relaxed text-[--text-muted]">{h}</span>
           </motion.li>
         ))}
       </ul>
 
       {/* Stack */}
-      <h4 className="text-[12px] font-mono font-bold uppercase tracking-[0.16em] mb-3" style={{ color: exp.tone }}>
+      <h4 className="text-[12px] font-mono font-extrabold uppercase tracking-[0.16em] mb-3 flex items-center gap-2" style={{ color: exp.tone }}>
+        <span className="w-1.5 h-3 rounded-full" style={{ background: exp.tone }} aria-hidden="true" />
         Tech Stack
       </h4>
       <div className="flex flex-wrap gap-2">
@@ -229,12 +232,12 @@ const DetailPanel = memo(function DetailPanel({ exp }: { exp: Experience }) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.15 + i * 0.04 }}
-            whileHover={{ scale: 1.05, y: -2 }}
-            className="px-3 py-1 text-[12.5px] sm:text-[13px] font-mono font-semibold cursor-default"
+            whileHover={{ scale: 1.06, y: -2 }}
+            className="px-3.5 py-1.5 text-[12.5px] sm:text-[13px] font-mono font-bold cursor-default shadow-sm"
             style={{
               borderRadius: 'var(--r-sm)',
-              background: `color-mix(in srgb, ${exp.tone} 9%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${exp.tone} 22%, transparent)`,
+              background: `color-mix(in srgb, ${exp.tone} 14%, rgba(255,255,255,0.06))`,
+              border: `1.5px solid color-mix(in srgb, ${exp.tone} 36%, rgba(255,255,255,0.12))`,
               color: 'var(--text)',
             }}
           >
@@ -314,10 +317,7 @@ export default function Experience() {
                       role="tab"
                       aria-selected={on}
                       onClick={() => handleSelect(i)}
-                      className="w-full text-left p-4 pl-10 relative group transition-colors duration-200"
-                      style={{
-                        borderRadius: 'var(--r-md)',
-                      }}
+                      className="w-full text-left p-4 pl-10 relative group rounded-[var(--r-md)] transition-all duration-200 hover:bg-[rgba(255,255,255,0.04)]"
                     >
                       {/* Active sliding pill */}
                       {on && (
@@ -325,9 +325,9 @@ export default function Experience() {
                           layoutId="active-experience-pill"
                           className="absolute inset-0 rounded-[var(--r-md)] pointer-events-none"
                           style={{
-                            background: `color-mix(in srgb, ${e.tone} 11%, transparent)`,
-                            border: `1px solid color-mix(in srgb, ${e.tone} 36%, transparent)`,
-                            boxShadow: `0 4px 22px -4px color-mix(in srgb, ${e.tone} 28%, transparent)`,
+                            background: `color-mix(in srgb, ${e.tone} 16%, rgba(16, 26, 20, 0.95))`,
+                            border: `1.5px solid ${e.tone}`,
+                            boxShadow: `0 8px 28px -4px color-mix(in srgb, ${e.tone} 40%, transparent), inset 0 1px 0 rgba(255,255,255,0.25)`,
                           }}
                           transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                         />
@@ -340,18 +340,21 @@ export default function Experience() {
                           width: on ? 13 : 9,
                           height: on ? 13 : 9,
                           background: on ? e.tone : 'var(--border-hi)',
-                          boxShadow: on ? `0 0 0 3px color-mix(in srgb, ${e.tone} 18%, transparent)` : 'none',
+                          boxShadow: on ? `0 0 0 4px color-mix(in srgb, ${e.tone} 25%, transparent), 0 0 10px ${e.tone}` : 'none',
                         }}
                         aria-hidden="true"
                       />
 
                       <span
-                        className="block text-[16px] font-bold leading-snug transition-colors duration-200 relative z-10"
-                        style={{ color: on ? 'var(--text)' : 'var(--text-muted)' }}
+                        className="block text-[16px] font-extrabold leading-snug transition-colors duration-200 relative z-10"
+                        style={{ color: on ? '#ffffff' : 'var(--text)' }}
                       >
                         {e.role}
                       </span>
-                      <span className="block text-[14px] sm:text-[14.5px] font-semibold mt-0.5 text-[--text-dim] relative z-10">
+                      <span
+                        className="block text-[14px] sm:text-[14.5px] font-bold mt-0.5 relative z-10 transition-colors duration-200"
+                        style={{ color: on ? e.tone : 'var(--text-muted)' }}
+                      >
                         @ {e.company}
                       </span>
                       <span
