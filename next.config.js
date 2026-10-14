@@ -1,32 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Strict mode catches extra re-renders in dev
   reactStrictMode: true,
-
-  // Don't leak the framework via the X-Powered-By response header
   poweredByHeader: false,
 
-  // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
 
-  // Image optimization
   images: {
+    unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: '**' },
     ],
-    // Modern formats — avoids serving PNG/JPG when AVIF/WebP is supported
     formats: ['image/avif', 'image/webp'],
-    // Cache optimized images for 7 days
     minimumCacheTTL: 604800,
-    // Limit to sizes we actually use
     deviceSizes: [375, 640, 768, 1024, 1280, 1536],
     imageSizes: [96, 256, 320, 384, 480, 700, 800],
-    qualities: [75, 80, 85, 90],
+    qualities: [75, 80, 85, 90, 95],
   },
 
-  // HTTP headers for performance
   async headers() {
     return [
       {
@@ -39,7 +32,6 @@ const nextConfig = {
         ],
       },
       {
-        // Cache fonts aggressively
         source: '/fonts/(.*)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },

@@ -3,7 +3,8 @@ import { useState, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { blogs, BLOG_CATEGORIES } from '@/data/blogs'
+import { BLOG_CATEGORIES } from '@/data/blogs'
+import { usePortfolioData } from '@/context/PortfolioDataContext'
 
 const ClockIcon = () => (
   <svg className="w-3.5 h-3.5 inline-block mr-1 opacity-70" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24" aria-hidden="true">
@@ -13,10 +14,12 @@ const ClockIcon = () => (
 )
 
 export default function BlogListClient() {
+  const { db } = usePortfolioData()
+  const blogs = db.blogs
   const [activeCategory, setActiveCategory] = useState<string>('All')
   const [search, setSearch] = useState('')
 
-  const featuredPost = useMemo(() => blogs[0], [])
+  const featuredPost = useMemo(() => blogs[0], [blogs])
 
   const filteredPosts = useMemo(() => {
     return blogs.filter(b => {
@@ -30,7 +33,7 @@ export default function BlogListClient() {
         b.tags.some(t => t.toLowerCase().includes(q))
       return matchCat && matchSearch
     })
-  }, [activeCategory, search])
+  }, [blogs, activeCategory, search])
 
   return (
     <div className="container-x">
