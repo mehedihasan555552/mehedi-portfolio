@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 import { useTheme } from '@/context/ThemeContext'
 import RichTextEditor from '@/components/RichTextEditor'
-import type { BlogPost } from '@/data/blogs'
+import type { BlogPost, TableOfContentItem } from '@/data/blogs'
 import type {
   ProjectItem,
   ExperienceItem,
@@ -400,13 +400,13 @@ export default function AdminDashboardPage() {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '')
 
-    const headings = Array.from(blogForm.content.matchAll(/^##\s+(.+)$/gm)).map(m => {
+    const headings: TableOfContentItem[] = Array.from(blogForm.content.matchAll(/^##\s+(.+)$/gm)).map(m => {
       const title = m[1].trim()
       const id = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '')
-      return { id, title }
+      return { id, title, level: 2 }
     })
 
     const metrics = blogForm.metricsText
@@ -445,7 +445,7 @@ export default function AdminDashboardPage() {
       tableOfContents:
         headings.length > 0
           ? headings
-          : [{ id: 'overview', title: '1. Architectural Overview' }],
+          : [{ id: 'overview', title: '1. Architectural Overview', level: 2 }],
       content: blogForm.content,
     }
 

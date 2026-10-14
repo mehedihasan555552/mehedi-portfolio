@@ -2,19 +2,23 @@
 import React, { useState, useRef, useMemo } from 'react'
 
 interface RichTextEditorProps {
+  label?: string
   value: string
   onChange: (nextValue: string) => void
   onUploadImage?: (file: File) => Promise<string | null>
   placeholder?: string
   minHeight?: number
+  rows?: number
 }
 
 export default function RichTextEditor({
+  label,
   value,
   onChange,
   onUploadImage,
   placeholder = 'Write your content here...',
   minHeight = 360,
+  rows,
 }: RichTextEditorProps) {
   const [mode, setMode] = useState<'write' | 'split' | 'preview'>('split')
   const [uploading, setUploading] = useState(false)
@@ -178,136 +182,146 @@ export default function RichTextEditor({
     { label: '— Rule', title: 'Horizontal Divider', action: () => insertAtCursor('\n---\n', '', '') },
   ]
 
+  const effectiveMinHeight = rows ? Math.max(rows * 22, 180) : minHeight
+
   return (
-    <div
-      className="rounded-2xl overflow-hidden border"
-      style={{
-        background: 'var(--bg-2)',
-        borderColor: 'var(--border)',
-      }}
-    >
-      {/* Editor Toolbar */}
+    <div className="space-y-1.5">
+      {label && (
+        <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[--text-dim]">
+          {label}
+        </label>
+      )}
       <div
-        className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 border-b"
+        className="rounded-2xl overflow-hidden border"
         style={{
-          background: 'var(--card)',
+          background: 'var(--bg-2)',
           borderColor: 'var(--border)',
         }}
       >
-        <div className="flex flex-wrap items-center gap-1">
-          {tools.map(t => (
-            <button
-              key={t.label}
-              type="button"
-              onClick={t.action}
-              title={t.title}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer hover:text-[--accent]"
-              style={{
-                background: 'var(--bg-2)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-muted)',
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
-
-          {onUploadImage && (
-            <>
+        {/* Editor Toolbar */}
+        <div
+          className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 border-b"
+          style={{
+            background: 'var(--card)',
+            borderColor: 'var(--border)',
+          }}
+        >
+          <div className="flex flex-wrap items-center gap-1">
+            {tools.map(t => (
               <button
+                key={t.label}
                 type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                onClick={t.action}
+                title={t.title}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer hover:text-[--accent]"
                 style={{
-                  background: 'var(--accent-soft)',
-                  border: '1px solid var(--accent-line)',
-                  color: 'var(--accent)',
+                  background: 'var(--bg-2)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-muted)',
                 }}
               >
-                <span>{uploading ? '⏳ Uploading...' : '🖼️ Upload & Insert Image'}</span>
+                {t.label}
               </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageFile}
-                className="hidden"
-              />
-            </>
+            ))}
+
+            {onUploadImage && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                  style={{
+                    background: 'var(--accent-soft)',
+                    border: '1px solid var(--accent-line)',
+                    color: 'var(--accent)',
+                  }}
+                >
+                  <span>{uploading ? '⏳ Uploading...' : '🖼️ Upload & Insert Image'}</span>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageFile}
+                  className="hidden"
+                />
+              </>
+            )}
+          </div>
+
+          {/* Mode Switcher */}
+          <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
+            {(
+              [
+                { id: 'write', label: '✍️ Write' },
+                { id: 'split', label: '👁️ Split View' },
+                { id: 'preview', label: '📖 Preview' },
+              ] as const
+            ).map(m => {
+              const on = mode === m.id
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setMode(m.id)}
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-colors cursor-pointer"
+                  style={{
+                    background: on ? 'var(--accent)' : 'transparent',
+                    color: on ? 'var(--on-accent)' : 'var(--text-muted)',
+                  }}
+                >
+                  {m.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Editor Body */}
+        <div className={`grid ${mode === 'split' ? 'lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-[--border]' : 'grid-cols-1'}`}>
+          {(mode === 'write' || mode === 'split') && (
+            <textarea
+              ref={textareaRef}
+              value={value}
+              onChange={e => onChange(e.target.value)}
+              placeholder={placeholder}
+              rows={rows}
+              style={{ minHeight: effectiveMinHeight, color: 'var(--text)', background: 'transparent' }}
+              className="w-full p-4 sm:p-5 text-sm font-mono leading-relaxed outline-none resize-y"
+            />
+          )}
+
+          {(mode === 'preview' || mode === 'split') && (
+            <div
+              style={{ minHeight: effectiveMinHeight, maxHeight: effectiveMinHeight + 180 }}
+              className="p-4 sm:p-5 overflow-y-auto"
+            >
+              <div className="text-[10.5px] font-mono uppercase tracking-wider text-[--text-dim] mb-3 pb-2 border-b border-[--border]">
+                Live Formatted Preview
+              </div>
+              {value.trim() ? (
+                renderPreview(value)
+              ) : (
+                <p className="text-xs font-mono text-[--text-dim] italic">
+                  Start typing on the left to see your formatted article preview here...
+                </p>
+              )}
+            </div>
           )}
         </div>
 
-        {/* Mode Switcher */}
-        <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
-          {(
-            [
-              { id: 'write', label: '✍️ Write' },
-              { id: 'split', label: '👁️ Split View' },
-              { id: 'preview', label: '📖 Preview' },
-            ] as const
-          ).map(m => {
-            const on = mode === m.id
-            return (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => setMode(m.id)}
-                className="px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-colors cursor-pointer"
-                style={{
-                  background: on ? 'var(--accent)' : 'transparent',
-                  color: on ? 'var(--on-accent)' : 'var(--text-muted)',
-                }}
-              >
-                {m.label}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Editor Body */}
-      <div className={`grid ${mode === 'split' ? 'lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-[--border]' : 'grid-cols-1'}`}>
-        {(mode === 'write' || mode === 'split') && (
-          <textarea
-            ref={textareaRef}
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            placeholder={placeholder}
-            style={{ minHeight, color: 'var(--text)', background: 'transparent' }}
-            className="w-full p-4 sm:p-5 text-sm font-mono leading-relaxed outline-none resize-y"
-          />
-        )}
-
-        {(mode === 'preview' || mode === 'split') && (
-          <div
-            style={{ minHeight, maxHeight: minHeight + 180 }}
-            className="p-4 sm:p-5 overflow-y-auto"
-          >
-            <div className="text-[10.5px] font-mono uppercase tracking-wider text-[--text-dim] mb-3 pb-2 border-b border-[--border]">
-              Live Formatted Preview
-            </div>
-            {value.trim() ? (
-              renderPreview(value)
-            ) : (
-              <p className="text-xs font-mono text-[--text-dim] italic">
-                Start typing on the left to see your formatted article preview here...
-              </p>
-            )}
+        {/* Status Footer */}
+        <div
+          className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-[11px] font-mono border-t"
+          style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-dim)' }}
+        >
+          <span>Markdown &amp; Rich Code Blocks Supported</span>
+          <div className="flex items-center gap-4">
+            <span>{stats.words} words</span>
+            <span>{stats.chars} chars</span>
+            <span style={{ color: 'var(--accent)' }}>~{stats.readMin} min read</span>
           </div>
-        )}
-      </div>
-
-      {/* Status Footer */}
-      <div
-        className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-[11px] font-mono border-t"
-        style={{ background: 'var(--card)', borderColor: 'var(--border)', color: 'var(--text-dim)' }}
-      >
-        <span>Markdown &amp; Rich Code Blocks Supported</span>
-        <div className="flex items-center gap-4">
-          <span>{stats.words} words</span>
-          <span>{stats.chars} chars</span>
-          <span style={{ color: 'var(--accent)' }}>~{stats.readMin} min read</span>
         </div>
       </div>
     </div>
